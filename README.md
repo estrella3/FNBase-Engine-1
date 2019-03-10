@@ -17,7 +17,7 @@ PHP | 5.4 + | 7.0 |
 
 이 프로그램은 MIT 라이선스에 따라 배포되는 [Bootstrap](https://getbootstrap.com) 프레임워크와 [SCEditor](https://sceditor.com)가 필요합니다.
 # 설치 방법
-아래는 간략한 사용 방법이 나와있습니다. 설치 과정이나 이용 과정에서 문제가 생길 경우 [매뉴얼](https://fnbase.xyz/manual)을 참고하십시오.
+아래는 간략한 사용 방법이 나와있습니다. 설치 과정이나 이용 과정에서 문제가 생길 경우 [매뉴얼](https://github.com/estrella3/FNBase-Engine/wiki)을 참고하십시오.
 ### 첫번째 단계
 이 프로그램을 내려받아 당신의 웹 서버에 업로드하고, [여기](https://piedots.xyz/files/fnb.7z)에서 파일을 다운받아 압축을 풀고 업로드 하십시오.
 설치한 주소를 입력한 뒤 설치 페이지로 이동되면, 정보를 입력합니다.
