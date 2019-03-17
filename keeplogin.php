@@ -1,4 +1,5 @@
 <?php
+include 'setting.php';
 $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
         session_start();
  

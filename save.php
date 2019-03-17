@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?php include 'setting.php';?>
 <html>
 <head>
   <meta charset="UTF-8">
