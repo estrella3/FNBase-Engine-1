@@ -1,38 +1,11 @@
 <?php
-function HTTT($id){
-        $id = str_replace('<', 'n', $id);
-        $id = str_replace(';', 'n', $id);
-        $id = str_replace('}', 'n', $id);
-        $id = str_replace('/', 'n', $id);
-        $id = str_replace('*', 'n', $id);
-        $id = str_replace('+', 'n', $id);
-        $id = str_replace('-', 'n', $id);
-        $id = str_replace('=', 'n', $id);
-        $id = str_replace('(', 'n', $id);
-        $id = str_replace('&', 'n', $id);
-        $id = str_replace('^', 'n', $id);
-        $id = str_replace('%', 'n', $id);
-        $id = str_replace('$', 'n', $id);
-        $id = str_replace('#', 'n', $id);
-        $id = str_replace('@', 'n', $id);
-        $id = str_replace('!', 'n', $id);
-        $id = str_replace('`', 'n', $id);
-        $id = str_replace('~', 'n', $id);
-        $id = str_replace('"', 'n', $id);
-        $id = str_replace("'", 'n', $id);
-        return $id;
-        }
+include 'setting.php';
         $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
-        $id = HTTT($_POST['id']);
-        $pw = HTTT($_POST['pw']);
-        $email = HTTT($_POST['email']);
-        $nickname = HTTT($_POST['nickname']);
-        $uip = HTTT($_POST['UIP']);
-        $id = mysqli_real_escape_string($conn, $id);
-        $pw = mysqli_real_escape_string($conn, $pw);
-        $email = mysqli_real_escape_string($conn, $email);
-        $nickname = mysqli_real_escape_string($conn, $nickname);
-        $uip = mysqli_real_escape_string($conn, $uip);
+        $id = $_POST['id'];
+        $pw = $_POST['pw'];
+        $email = $_POST['email'];
+        $nickname = $_POST['nickname'];
+        $uip = $_POST['UIP'];
         if(empty($id)){
                 ?><script>alert('id가 비어있습니다.');history.back();</script><?php
         }elseif(empty($pw)){

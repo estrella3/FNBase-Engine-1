@@ -63,6 +63,9 @@ $mode = jse($_GET['mode']);
 $query = jse($_GET['query']);
 $board = jse($_GET['board']);
 
+$i = 1;
+echo '<h6>검색 결과입니다.</h6>';
+
 if($mode == '1'){
 $m = 'title';
 echo '<table class="table table-striped"><thead>
@@ -77,6 +80,10 @@ while ($row = mysqli_fetch_array($result)){
     echo '<tr><td><a href="'.$row['from'].'-'.$row['id'].'.base">'.$row['title'].'</a></td>';
     echo '<td>'.$row['name'].'</td>';
     echo '<td>'.$row['created'].'</td></tr>';
+    $i++;
+    if($i > 200){
+      break;
+    }
     }
 if(1 > mysqli_num_rows($result)){
 	 echo '<td>검색 결과가 없습니다.</td><td></td><td></td>';
@@ -99,6 +106,10 @@ while ($row = mysqli_fetch_array($result)){
     echo '<td><a href="'.$row['from'].'-'.$row['id'].'.base">'.$row['title'].'</a></td>';
     echo '<td>'.$row['name'].'</td>';
     echo '<td>'.$row['created'].'</td></tr>';
+    $i++;
+    if($i > 200){
+      break;
+    }
 }
 if($result === FALSE){
 echo '데이터베이스 연결 오류';
@@ -121,6 +132,10 @@ while ($row = mysqli_fetch_array($result)){
     echo '<td><a href="'.$row['board'].'-'.$row['original'].'.base">바로가기</a></td>';
     echo '<td>'.$row['name'].'</td>';
     echo '<td>'.$row['created'].'</td></tr>';
+    $i++;
+    if($i > 200){
+      break;
+    }
 }
 if(1 > mysqli_num_rows($result)){
 	 echo '<td>검색 결과가 없습니다.</td><td></td><td></td>';
@@ -143,6 +158,10 @@ while ($row = mysqli_fetch_array($result)){
     echo '<td><a href="'.$row['from'].'-'.$row['id'].'.base">'.$row['title'].'</a></td>';
     echo '<td>'.$row['name'].'</td>';
     echo '<td>'.$row['created'].'</td></tr>';
+    $i++;
+    if($i > 200){
+      break;
+    }
 }
 if(1 > mysqli_num_rows($result)){
 	 echo '<td>검색 결과가 없습니다.</td><td></td><td></td>';
@@ -152,6 +171,8 @@ echo '데이터베이스 연결 오류';
 }
 echo '</tbody></table>';
 }
-
+if($i >= 200){
+  echo '200번째 이후의 검색 결과는 생략됩니다.';
+}
 include 'down.php';
 ?>

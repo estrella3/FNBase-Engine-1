@@ -4,8 +4,6 @@ include 'up.php';
         $id = $_GET['id'];
         $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}' and `to` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
-        echo '<table class="table">';
-        echo '<a class="links" href="../'.$board.'.fn">'.$boardname.'</a>';
         $n = 1;
         while($raw = mysqli_fetch_array($result)){
         $aid = $raw['author_id'];
@@ -18,16 +16,61 @@ include 'up.php';
         if($result === false){
           echo '조회수 집계 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
         }
-
+        $ednrm = '<form method="post"><input name="id" type="hidden" value="'.$id.'">
+        <input name="b" type="hidden" value="'.$board.'"><button type="submit" class="dropdown-item" formaction="./push.php">추천</button>
+        <button type="submit" class="dropdown-item" formaction="./push.php?mode=un">비추천</button>';
         if($aid == $_SESSION['userid']){
-        $ednrm = '<input name="v" type="hidden" value="viewer"><input name="id" type="hidden" value="'.$id.'"><input name="b" type="hidden" value="'.$board.'"><button type="submit" class="btn-sm btn-light">수정하기</button><button type="submit" formaction="../delete.php" class="btn-sm btn-light">삭제하기</button></form>';
-        }
-        elseif($_SESSION['userid'] == 'admin'){
-        $ednrm = '<input name="v" type="hidden" value="viewer"><input name="id" type="hidden" value="'.$id.'"><input name="b" type="hidden" value="'.$board.'"><button type="submit" class="btn-sm btn-light">수정하기</button><button type="submit" formaction="../delete.php" class="btn-sm btn-light">삭제하기</button></form>';
+        $ednrm .= '<input name="v" type="hidden" value="viewer">
+        <button type="submit" formaction="./edit.php" class="dropdown-item">수정</button>
+        <button type="submit" formaction="./delete.php" class="dropdown-item">삭제</button></form>';
         }else{
-        $ednrm = '</form>';
+        $ednrm .= '</form>';
         }
-        $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}' and `to` LIKE '".$board."'";
+        $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
+        $result = mysqli_query($conn, $sql);
+        
+        while($row = mysqli_fetch_array($result)){
+        
+            $board1 = $row['id'];
+            $boardname = $row['name'].' '.$row['suffix'];
+            $boardsuffix = $row['suffix'];
+            $owner = $row['owner'];
+            $boardstat = $row['stat'];
+            $boardnum = $row['num'];
+            $notice = $row['notice'];
+            if(!empty($row['text'])){
+                $boardtext = '<span style="color: gray; font-size: 0.5em; text-decoration: none">'.$row['text'].'</span><br>';
+            }else{
+                $boardtext = '';
+            }
+            if($boardstat == 1){
+                $boardstat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
+            }elseif($boardstat == 0){
+                $boardstat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
+            }elseif($boardstat == 8){
+                $boardstat = '<span class="badge badge-warning">비활성</span>';
+                $nowrite = true;
+            }elseif($boardstat == 9){
+                $boardstat = '<span class="badge badge-danger">차단됨</span>';
+                $nowrite = true;
+            }
+        }
+            if(1 > mysqli_num_rows($result)){
+            echo '<script>alert("없는 게시판입니다.")</script>';
+            include_once 'down.php';
+            exit;
+        }
+        ?><div style="padding-left:3px;padding-right:3px">
+        <hr>
+            <form method="post" action="write.php">
+            <h4><?php echo '<a style="color:black" href="'.$board1.'.fn">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
+            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
+            <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
+            <input type="hidden" name="from" value="<?php echo $board1 ?>">
+            </form>
+        <hr>
+    </div><?php
+        $sql = "SELECT * FROM `_article` where id like '{$id}' and `to` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         while($row = mysqli_fetch_array($result)){
         	if($row['stat'] == 0){
@@ -36,23 +79,42 @@ include 'up.php';
         		 $g = '<span style="color: red">'.$row['stat'].'</span>';
         	}else{
         		$g = '<span style="color: blue">'.$row['stat'].'</span>';
-        	}
-        echo "<tr>";
-        echo '<td><h2>'.$row['title']."</h1>";
+            }
+            if($row['edited'] == 1){
+                $commentedited = '<sup><b><mark>*수정됨</mark></b></sup> ';
+            }else{
+                $commentedited = '';
+            }
+        echo '<div class="card"><div class="card-header" style="background-color: #ddeaff"><h5 style="float:left">'
+        .$row['title'].'</h5><div class="btn-group" role="group" style="float:right;">
+         <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">이 글을</button>
+           <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> '.$ednrm.'</div> </div></div><div class="card-body">';
         $rowtitle = $row['title'];
-        echo "</tr>";
-        echo "<tr>";
-        if($row['author_id'] == '_anon'){
-                $row['author_id'] = '익명';
-        }
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
-        echo '<td><form method="post" action="../edit.php"><b>' . $row['name'].'</b><span style="color: gray; font-size: 7pt">('.$row['author_id'].')</span> / <span style="color: gray">'.$row['created']. '</span>'.$ednrm.'<p style="color: gray">댓글 수 <span style="color: green">'.$row['comment'].'</span> &nbsp; 조회수 <span style="color: green">'.$row['view'].'</span> &nbsp; 추천 수 '.$g.'</p></td>';
-        echo "</tr>";
-        echo "<tr>";
+        echo '<form method="post" action="../edit.php"><b><a href="user.php?a='
+        .$row['name'].'">'.$row['name'].'</a></b><span style="color: gray; font-size: 7pt">('
+        .$row['author_id'].')</span> / <span style="color: gray">'
+        .$row['created']. '</span> <a class="badge badge-secondary" data-toggle="collapse" 
+        href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">상세정보</a>
+        <div class="collapse" id="collapseExample">
+        <br>'.$commentedited.'<span style="color: gray">댓글 수 <span style="color: green">'
+        .$row['comment'].'</span> &nbsp; 조회수 <span style="color: green">'
+        .$row['view'].'</span> &nbsp; 추천 수 '.$g.'</span>';
+        $sqi = "SELECT * FROM `_account` WHERE id = '".$row['author_id']."'";
+        $resulp = mysqli_query($conn, $sqi);
+        while ($raw = mysqli_fetch_array($resulp)){
+            $user_email = $raw['email'];
+            $user_exp = $raw['introduce'];
+        }
+        $hash = md5( strtolower( trim( "$user_email" ) ) );
+        echo '<img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" style="float:left" class="mr-3" alt="Gravatar">';
+        echo '<br>'.$user_exp;
+        echo "</div></div></form>";
         $cont = $row['description'];
-        $pattern = "/@[a-z,A-Z,가-힣,0-9]+/";
+        $pattern = "/@[a-z,A-Z,가-힣,ㄱ-ㅎ,ㅏ-ㅣ,0-9]+/";
         $ismatch = preg_match_all($pattern, $cont, $matches, PREG_SET_ORDER);
-        echo '<td><br>'. nl2br($cont);
+        echo '<div class="card-body border-white">'.nl2br($cont).'</div>';
         $i = 0;
         session_start();
         if($ismatch > 0){
@@ -81,22 +143,57 @@ include 'up.php';
         }
         echo '</div>';
     }
-        echo "<br></td>";
-        echo "</tr><tr><td align=center>";
-        echo '<form method="post" action="./push.php">';
-        echo '<input type="hidden" value="'.$row['id'].'" name="id">';
-        echo '<input type="hidden" value="'.$board.'" name="b">';
-        echo '<input class="btn btn-success" type="submit" value="추천"> &nbsp; ';
-        echo '<input type="submit" class="btn btn-danger" value="비추천" formaction="./push.php?mode=un">';
-        echo '</form></td></tr>';
         $count = $row['comment'];
         $n++;
         }
-
-        echo '</table>';
+        echo "</div>";
         echo '<table width="100%">';
+        $sql = "SELECT * FROM `_comment` WHERE board = '".$board."' AND original = '{$id}'";
+        $result = mysqli_query($conn, $sql);
+        while ($row = mysqli_fetch_array($result)){
+            $sqi = "SELECT * FROM `_account` WHERE id = '".$row['id']."'";
+            $resulp = mysqli_query($conn, $sqi);
+            while ($raw = mysqli_fetch_array($resulp)){
+                $user_email = $raw['email'];
+            }
+            $hash = md5( strtolower( trim( "$user_email" ) ) );
+            if($row['stat'] > 6){
+                $commentheadline = 'style="background-color:lightgreen"';
+                $commentheadtext = '<span class="badge badge-primary">추천 : '.$row['stat'].'명</span> ';
+            }elseif($row['blame'] > 6){
+                $commentheadline = 'style="background-color:#ffcccb"';
+                $commentheadtext = '<span class="badge badge-warning">반대 : '.$row['blame'].'명</span> ';
+            }else{
+                $commentheadline = '';
+                $commentheadtext = '';
+            }
+            if($row['edited'] == 1){
+                $commentedited = '<sup><b><mark>*수정됨</mark></b></sup> ';
+            }else{
+                $commentedited = '';
+            }
+            echo '<tr style="width:90%"><td><hr><div class="media">
+            <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3" alt="Gravatar">
+            <div class="media-body" '.$commentheadline.'>
+              <h5 class="mt-0"><a href="user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
+            echo '<p>'.$commentheadtext.$commentedited.$row['content'].'</p>';
+            echo '<span style="color: gray">'.$row['created'].'</span>';
+            if($_SESSION['userid'] == $row['id']){
+                echo ' <a class="badge badge-secondary text-white" href="comment_mod.php?a=edit&n='.$row['num'].'">수정</a>
+                <a class="badge badge-danger text-white" href="comment_mod.php?a=delete&n='.$row['num'].'">삭제</a>';
+            }
+            if(!empty($_SESSION['userck'])){
+                    if($row['id'] !== $_SESSION['userid']){
+                        echo ' <a class="badge badge-success" href="comment_mod.php?a=push&n='.$row['num'].'">추천</a>
+                        <a class="badge badge-warning" href="comment_mod.php?a=blame&n='.$row['num'].'">반대</a>';
+                    }
+                echo ' <a class="badge badge-light">대댓글</a>';
+            }
+            echo '</div></div></tr></td>';
+        }
+        echo '<tr><td><hr></td></tr><p><br><br></p>';
         if(!empty($_SESSION['userid'])){echo '<tr><td><form method="post" action="./comment.php">
-        <textarea id="pppp" onload="document.getElementById('."'pppp'".').innerHTML = '."' '".'" style="width: 100%" name="description" placeholder="댓글 작성" required"></textarea>
+        <textarea class="border text-dark" id="pppp" onload="document.getElementById('."'pppp'".').innerHTML = '."' '".'" style="width: 100%" name="description" placeholder="댓글 작성" required"></textarea>
         <button type="submit" style="width: 100%" type="button" class="btn-lg btn-primary">작성</button>
         <input type="hidden" name="id" value="'.$_SESSION['userid'].'"><input type="hidden" name="islogged" value="true">
         <input name="origin" type="hidden" value="'.$id.'">
@@ -104,16 +201,8 @@ include 'up.php';
         <input type="hidden" name="ip" value="'.$uip.'">
         </form></td></tr>';
 }
-        $sql = "SELECT * FROM `_comment` WHERE board = '".$board."' AND original = '{$id}'";
-        $result = mysqli_query($conn, $sql);
-        while ($row = mysqli_fetch_array($result)){
-            echo '<tr><td id="aa"><hr size="1"><h4>'.$row['name'].'</h4></tr></td>';
-            echo '<tr><td id="aa"><p>'.$row['content'].'</p></tr></td>';
-            echo '<tr><td id="aa"><span style="color: gray">'.$row['created'].'</span></tr></td>';
-        }
-        echo '</table><p><br><br></p>';
         mysqli_close($conn, $sql);
-echo '</div>';
+echo '</table></div></div>';
 $db = $conn;
 if(isset($_GET['page'])) {
         $page = $_GET['page'];
@@ -176,7 +265,6 @@ if(isset($_GET['page'])) {
                 <hr>
                     <form method="post" action="write.php">
                     <button type="submit" formaction="blame.php" style="float: left" class="btn-sm btn-warning">이 게시글 신고</button>
-                    <h4 class="display-6"><?php echo $boardname?>
                     <input type="hidden" name="from" value="<?php echo $board ?>">
                     <input type="hidden" name="id" value="<?php echo $id ?>">
                     <input type="hidden" name="title" value="<?php echo $rowtitle ?>">

@@ -23,9 +23,6 @@ if($result === FALSE){
     echo '<script>history.go(-3)</script>';
 }
 }else{
-    include 'up.php';
-
-
 echo '<div class="container"><form action="delete.php" method="post">
 <h2>삭제하면 되돌릴 수 없습니다!</h2>
 <p>정말 삭제하시겠습니까?<button type="button" class="btn-sm btn-warning" onclick="history.back()">뒤로가기</button><button class="btn-sm btn-danger" type="submit">삭제하기</button></p>

@@ -16,9 +16,6 @@ while($row = mysqli_fetch_array($result)){
     $t = $row['title'];
     $n = $row['description'];
 }
-if($_SESSION['userid'] == 'admin'){
-$notice = '<label>제목 굵게 : <input type="checkbox" name="notice" value="yes"></label>';
-}
 echo '<div class="container"><form action="keepedit.php" method="post">
 <hr>
 <p><input type="text" style="outline: 0; width: 100%; border: none; background-color: transparent" value="'.$t.'" name="title" placeholder="제목" required></p>
@@ -36,7 +33,7 @@ style: "assets/minified/themes/content/default.min.css"
 });
 </script>
 
-<p align="right"><input class="btn btn-success" type="submit" value="작성"></p><p align="left">'.$notice.'</p></div>
+<p align="right"><br><input class="btn btn-success" style="width: 100%" type="submit" value="작성 완료"></p></div>
 <input type="hidden" name="id" value="'.$id.'">
 <input type="hidden" name="b" value="'.$b.'">
 </form></div>';

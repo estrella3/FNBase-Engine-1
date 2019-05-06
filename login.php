@@ -1,4 +1,6 @@
 <?php
+include 'setting.php';
+include 'ip_ban.php';
 if($_COOKIE['keeplogin'] == 'FNBase.xyz'){
   $id = 'value="'.$_COOKIE['keeplogin-id'].'"';
   $pw = 'value="'.$_COOKIE['keeplogin-password'].'"';

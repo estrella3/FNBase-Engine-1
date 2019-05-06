@@ -2,6 +2,7 @@
 $is_file = file_exists('./setting.php');
 if($is_file == TRUE){
 include 'setting.php';
+include 'ip_ban.php';
 }else{
 echo '<script>window.location.href = "./install/index.php";</script>';
 }
@@ -31,6 +32,8 @@ echo '<script>window.location.href = "./install/index.php";</script>';
           font-size: 3.5rem;
         }
       }
+          @media (max-width: 800px) { .body .right-sidebar{display: none;}}
+          .body .right-sidebar{float:right;width:20rem;padding:1rem 1rem 1rem 0}
     </style>
 
     <link href="navbar.css" rel="stylesheet">
@@ -64,17 +67,28 @@ if($stat == 1){
 <nav class="navbar navbar-expand" style="background-color: <?php echo $fnSiteColor;?>">
   <div class="container">
     <a class="navbar-brand text-white" href="<?php echo $fnSite;?>"><?php echo $fnSiteName;?></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="text-white">메뉴</span>
-    </button>
 
     <div class="collapse navbar-collapse" id="navbarsExample07">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown">
-          <?=$fnSiteNav1?>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">공설</a>
+          <div class="dropdown-menu">
+          <a class="dropdown-item" href="board.fn">방명록</a>
+            <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="maint.fn">운영실</a>
+              <a class="dropdown-item" href="recent.php">실시간</a>
+            </div>
         </li>
         <li class="nav-item dropdown">
-          <?=$fnSiteNav2?>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">사립</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="fn2nd.fn">가상국가 채널</a>
+              <a class="dropdown-item" href="wrtnv.fn">창작소설 채널</a>
+              <a class="dropdown-item" href="alter.fn">대안 채널</a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link text-white" href="/wiki">위키로</a>
         </li>
       </ul>
   </div>
@@ -84,12 +98,13 @@ if(!empty($_SESSION['userid'])){
       data-toggle="dropdown" id="dropdown08"><a href="#">'.$_SESSION['userck'].'</a></button>';
       echo '<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
       <div class="modal-dialog" role="document">
-        <div class="modal-content"><div class="modal-body"><p align="right"><button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div class="modal-content"><div class="modal-body"><button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
-      </button></p><p align="center">
-        <button class="btn btn-outline-primary" style="width: 9em"><a href="login.php?log=out">로그아웃</a></button><br><br>
-        <button class="btn btn-outline-dark" style="width: 9em"><a style="color: gray" href="user.php?mode=account">회원 정보 수정</a></button>
-        </p></div></div></div></div>';
+      </button>
+      <button class="btn btn-outline-dark" style="width: 6em"><a style="color: gray" href="user.php?a='.$_SESSION['userck'].'"><span class="text-dark">회원 정보</span></a></button>
+      <button class="btn btn-outline-primary" style="width: 6em"><a style="color: gray" href="tools.php"><span class="text-primary">계정 활용</span></a></button>
+        <button class="btn btn-outline-danger" style="width: 6em"><a href="login.php?log=out"><span class="text-danger">로그아웃</span></a></button>
+        </div></div></div></div>';
 }else{
       echo '<a class="btn btn-outline-primary" style="background-color: #fff" href="login.php">로그인</a>';
 }
@@ -97,4 +112,4 @@ if(!empty($_SESSION['userid'])){
 </nav>
   <main style="background-color: transparent" role="main">
     <div style="height: 40px; width: 100%"></div>
-  <div class="container">
+<div class="container">

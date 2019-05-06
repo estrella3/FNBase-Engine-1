@@ -2,7 +2,7 @@
 include 'setting.php';
 $id = $_POST['id'];
 $b = $_POST['b'];
-$ip = $_POST['ip'];
+$ip = $_SERVER['REMOTE_ADDR'];
 $mode = $_GET['mode'];
 
 if($mode == 'un'){
@@ -20,11 +20,11 @@ if(!isset($id)){
 }
 
 if($id == 0){
-    echo "<script>alert('게시판 이용 안내는 추천할 수 없습니다.'); history.go(-1)</script>";
+    echo "<script>alert('추천할 수 없습니다.'); history.go(-1)</script>";
     exit;
 }
 
-$sql = "SELECT * FROM _log WHERE `id` = '$id' AND `b` = '$b'";
+$sql = "SELECT * FROM `_push` WHERE `id` = '$id' AND `b` = '$b' AND `type` = 'article'";
 $result = mysqli_query($conn, $sql);
 while($row = mysqli_fetch_array($result)){
 if($row['ip'] == $ip){
@@ -47,12 +47,13 @@ if($result === FALSE){
     echo "데이터베이스 접속 오류";
 }else{
     $sql = "
-  INSERT INTO _log
-    (id, ip, b)
+  INSERT INTO _push
+    (id, ip, b, type)
     VALUES(
         '{$id}',
         '{$ip}',
-        '{$b}'
+        '{$b}',
+        'article'
     )
 ";
 $result = mysqli_query($conn, $sql);

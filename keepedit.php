@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<?php include 'setting.php';include 'function.php';?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="<?=$fnSiteFab?>" type="image/x-icon">
@@ -21,27 +22,11 @@
 $id = $_POST['id'];
 $b = $_POST['b'];
 
-function HTD($argu){
-  $argu = htmlspecialchars($argu);
-  return $argu;
-}
-function HXS($argu){
-  $argu = str_replace('<script>','<div>',$argu);
-  $argu = str_replace('</script>','</div>',$argu);
-  $argu = str_replace('<script','<div',$argu);
-  $argu = str_replace('onclick','on click',$argu);
-  return $argu;
-}
-
-$t = HTD($_POST['title']);
-$n = HXS($_POST['description']);
-
-if($_POST['notice'] == 'yes'){
-  $t = '<b>'.$t.'</b>';
-}
+$t = Filt($_POST['title']);
+$n = Filt($_POST['description']);
 
 $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
-$sql = "UPDATE `_article` set title = '{$t}', description = '{$n}' where `id` like '{$id}' and `from` like '{$b}'";
+$sql = "UPDATE `_article` set title = '{$t}', edited = 1, description = '{$n}' where `id` like '{$id}' and `from` like '{$b}'";
 $result = mysqli_query($conn, $sql);
 if($result === false){
   echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';

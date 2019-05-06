@@ -12,10 +12,10 @@ echo '<form action="search.php" method="get"><select class="form-control-sm" nam
   </main>
 
         <div class="container">
-    <hr>
-    <p align="center"><button type="button" class="btn btn-lg btn-light" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+   <hr>
+    <p align="center"><button type="button" class="btn btn-lg btn-light" data-toggle="collapse" href="#footer" role="button" aria-expanded="false" aria-controls="footer">
     (c) 2019 <?=$fnSiteName?></button>
-    <br><div class="collapse" id="collapseExample">
+    <br><div class="collapse" id="footer">
    <?=$fnSiteFooter?>
     </div></p>
 

@@ -1,31 +1,7 @@
 <?php
 include "up.php";
+include 'function.php';
 $id = $_POST['id'];
-function HTTT($id){
-$id = str_replace('<', 'n', $id);
-$id = str_replace(';', 'n', $id);
-$id = str_replace('}', 'n', $id);
-$id = str_replace('/', 'n', $id);
-$id = str_replace('*', 'n', $id);
-$id = str_replace('+', 'n', $id);
-$id = str_replace('-', 'n', $id);
-$id = str_replace('.', 'n', $id);
-$id = str_replace('=', 'n', $id);
-$id = str_replace('(', 'n', $id);
-$id = str_replace('&', 'n', $id);
-$id = str_replace('^', 'n', $id);
-$id = str_replace('%', 'n', $id);
-$id = str_replace('$', 'n', $id);
-$id = str_replace('#', 'n', $id);
-$id = str_replace('@', 'n', $id);
-$id = str_replace('!', 'n', $id);
-$id = str_replace('`', 'n', $id);
-$id = str_replace('~', 'n', $id);
-$id = str_replace('"', 'n', $id);
-$id = str_replace("'", 'n', $id);
-return $id;
-}
-$id = HTTT($id);
 $sql = "SELECT * FROM _account WHERE `id` LIKE '$id'";
 $result = mysqli_query($conn, $sql);
 $count = mysqli_num_rows($result);

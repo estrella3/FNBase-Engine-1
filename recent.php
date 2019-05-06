@@ -1,20 +1,12 @@
 <?php
-$ifindex = true;
 include 'up.php';
 $readpage = $_GET['page'];
-if(empty($_GET['b'])){
-$board = 'board';
-}else{
-$board = $_GET['b'];
-}
-$sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
+$board = 'rct';
+$sql = "SELECT * FROM `_board` where `id` like 'rct'";
 $result = mysqli_query($conn, $sql);
-
 while($row = mysqli_fetch_array($result)){
-
     $board = $row['id'];
-    $boardname = $row['name'].' '.$row['suffix'];
-    $boardsuffix = $row['suffix'];
+    $boardname = $row['name'];
     $owner = $row['owner'];
     $boardstat = $row['stat'];
     $boardnum = $row['num'];
@@ -25,21 +17,16 @@ while($row = mysqli_fetch_array($result)){
         $boardtext = '';
     }
     if($boardstat == 1){
-        $boardstat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
+        $boardstat = '<span class="badge badge-primary">공식 '.$fnSiteBoardName.'</span>';
     }elseif($boardstat == 0){
-        $boardstat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
+        $boardstat = '<span class="badge badge-light">사설 '.$fnSiteBoardName.'</span>';
     }elseif($boardstat == 8){
         $boardstat = '<span class="badge badge-warning">비활성</span>';
         $nowrite = true;
     }elseif($boardstat == 9){
-        $boardstat = '<span class="badge badge-danger">차단됨</span>';
+        $boardstat = '<span class="badge badge-danger">차단</span>';
         $nowrite = true;
     }
-}
-    if(1 > mysqli_num_rows($result)){
-    echo '<script>alert("없는 게시판입니다.")</script>';
-    include_once 'down.php';
-    exit;
 }
 $db = $conn;
 
@@ -48,7 +35,7 @@ if(isset($_GET['page'])) {
 } else {
     $page = 1;
 }
-$sql = 'select count(*) as cnt from `_article` WHERE `to` LIKE "'.$board.'" order by id desc';
+$sql = 'select count(*) as cnt from `_article` order by id desc';
 $result = $db->query($sql);
 $row = $result->fetch_assoc();
 $allPost = $row['cnt'];
@@ -75,41 +62,43 @@ $prevPage = (($currentSection - 1) * $oneSection);
 $nextPage = (($currentSection + 1) * $oneSection) - ($oneSection - 1);
 $paging = '<tr class="table-dark">';
 if($page != 1) {
-    $paging .= '<td class="page"><a href="./index.php?page=1">|←</a></td>';
+    $paging .= '<td class="page"><a href="./recent.php?page=1">|←</a></td>';
 }
 if($currentSection != 1) { 
-    $paging .= '<td class="page"><a href="./index.php?page=' . $prevPage . '">←</a></td>';
+    $paging .= '<td class="page"><a href="./recent.php?page=' . $prevPage . '">←</a></td>';
 }
 for($i = $firstPage; $i <= $lastPage; $i++) {
     if($i == $page) {
         $paging .= '<td class="page">' . $i . '</td>';
     } else {
-        $paging .= '<td class="page"><a href="./index.php?page=' . $i . '">' . $i . '</a></td>';
+        $paging .= '<td class="page"><a href="./recent.php?page=' . $i . '">' . $i . '</a></td>';
     }
 }
 if($currentSection != $allSection) { 
-    $paging .= '<td class="page"><a href="./index.php?page=' . $nextPage . '">→</a></td>';
+    $paging .= '<td class="page"><a href="./recent.php?page=' . $nextPage . '">→</a></td>';
 }
 if($page != $allPage) { 
-    $paging .= '<td class="page"><a href="./index.php?page=' . $allPage . '">→|</a></td>';
+    $paging .= '<td class="page"><a href="./recent.php?page=' . $allPage . '">→|</a></td>';
 }
 $paging .= '</tr>';
 $currentLimit = ($onePage * $page) - $onePage;
 $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
-$sql = 'select * from `_article` WHERE `to` LIKE "'.$board.'" order by id desc' . $sqlLimit;
+$sql = 'select * from `_article` order by id desc' . $sqlLimit;
 $result = $db->query($sql);
 ?>
-<section class="float: left">
 <article>
+    <div class="container">
     <div style="padding-left:3px;padding-right:3px">
             <hr>
                 <form method="post" action="write.php">
-                <h4><?php echo '<a style="color:black" href="'.$board.'.fn">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
+                <h4><?php echo $boardname.' 	글 목록'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
+                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 관리인 : <a href="user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
                 <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
                 <input type="hidden" name="from" value="<?php echo $board ?>">
                 </form>
         </div>
+        </div>
+        <div class="container">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -119,34 +108,33 @@ $result = $db->query($sql);
                 </tr>
             </thead>
             <tbody>
-            <tr>
             <?php if(!$nowrite === true){ echo '<tr>
                 <td>
-                        <a class="links" href="?" data-toggle="modal" data-target="#example" aria-controls="example">'.$boardname.' 이용 안내</a><br>
-                        <div class="modal fade" id="example" tabindex="-1" role="dialog" aria-labelledby="example" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">'.$boardname.' 의 사용 규칙</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                '.nl2br($notice).'
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                                </div>
-                                </div>
-                            </div>
-                            </div>
+                <a class="links" href="?" data-toggle="modal" data-target="#example" aria-controls="example">'.$boardname.' 이용 안내</a><br>
+                <div class="modal fade" id="example" tabindex="-1" role="dialog" aria-labelledby="example" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">'.$boardname.' 의 사용 규칙</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        '.nl2br($notice).'
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
                         </div>
                         </div>
-                </td>
-                <td>'.$owner.'</td>
-                <td>&nbsp;</td>
-                </tr>';}
+                    </div>
+                    </div>
+                </div>
+                </div>
+        </td>
+        <td>'.$owner.'</td>
+        <td>&nbsp;</td>
+        </tr>';}
                         while($row = $result->fetch_assoc())
                         {
                             $datetime = explode(' ', $row['created']);
@@ -173,6 +161,22 @@ $result = $db->query($sql);
                     <tr>
                     <td>
                         <?php
+                        $origin = $row['from'];
+                        $sqi = 'SELECT * from `_board` where `id` like "'.$origin.'"';
+                        $resuit = mysqli_query($conn, $sqi);
+                        while($raw = mysqli_fetch_array($resuit)){
+                            $originboard = $raw['name'];
+                            $originstat = $raw['stat'];
+                        }
+                        if($originstat == '1'){
+                            $badgecolor = 'primary';
+                        }elseif($originstat == '0'){
+                            $badgecolor = 'light';
+                        }elseif($originstat == '8'){
+                            $badgecolor = 'warning';
+                        }elseif($originstat == '9'){
+                            $badgecolor = 'danger';
+                        }
                         $num = 14;
                         if($row['view'] > 999){$row['view'] = '1000+';}
                         $con = $row['title'];
@@ -183,9 +187,10 @@ $result = $db->query($sql);
                             $dot = '';
                         }
                         $con = mb_substr($con, 0, $num, 'UTF-8');
-                        echo '<a class="links" href="./'; echo $board.'-'.$id.'.base?page='.$readpage.'">'; echo $con.'<span 
+                        echo '<a class="links" href="./'; echo $origin.'-'.$id.'.base?page='.$readpage.'">'; echo $con.'<span 
                         style="color:gray">'.$dot.'</span>'; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
+                        <?php echo '<span class="badge badge-'.$badgecolor.'">'.$originboard.'</span>';?>
                     </td>
                     <td><?php echo '<a href="user.php?a='.$row['name'].'">'.$row['name'].'</a>'; ?></td>
                     <td><?php 
@@ -215,9 +220,7 @@ $result = $db->query($sql);
                         </table>
         </div>
     </div>
-</article></div>
-</div>
-                </div>
+</article>
 <hr>
 <?php mysqli_close($conn);
 $is_board = TRUE;

@@ -4,6 +4,7 @@ ErrorDocument 500 /error/500.html
 
 RewriteEngine On
 RewriteRule ^([^/]*)\.fn$ /index.php?b=$1 [L]
+RewriteRule ^admin.base$ /command.php [L]
 RewriteRule ^([^/]*)-([^/]*).base$ /read.php?b=$1&id=$2 [L]
 
 <IfModule mod_php5.c>

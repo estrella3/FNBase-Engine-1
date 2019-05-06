@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<?php include 'setting.php'; ?>
+<?php include 'setting.php'; include 'function.php'; FnCommentTemp();?>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
@@ -41,12 +41,7 @@ if ($rconf == 2){
 
 $UIP = $_POST['ip'];
 
-function HTD($argu){
-  $argu = htmlspecialchars($argu);
-  return $argu;
-}
-
-$desc = HTD($desc);
+$desc = Filt($desc);
 if(!isset($_POST['islogged'])){
   $id = "익명_".HTD($id);
   $pw = HTD($pw);
@@ -61,25 +56,9 @@ if ($conf == 2){
 $board = $_POST['b'];
 $origin = $_POST['origin'];
 
-$desc = str_replace('"', '&quot;', $desc);
-$desc = str_replace("'", '&#39;', $desc);
-$desc = str_replace(';', '&#59;', $desc);
-$desc = str_replace('`', '&#96;', $desc);
-$desc = str_replace('(', '&#40;', $desc);
-$desc = str_replace(')', '&#41;', $desc);
-$desc = str_replace('<', '&lt;', $desc);
-$desc = str_replace('s', '&#115;', $desc);
-$desc = str_replace('o', '&#111;', $desc);
-$desc = str_replace('e', '&#101;', $desc);
-$desc = str_replace('t', '&#116;', $desc);
-$desc = str_replace('S', '&#83;', $desc);
-$desc = str_replace('O', '&#79;', $desc);
-$desc = str_replace('E', '&#69;', $desc);
-$desc = str_replace('T', '&#84;', $desc);
-
 $sql = "
   INSERT INTO `_comment`
-    (board, original, id, name, content, stat, created, ip)
+    (board, original, id, name, content, stat, created, blame, reply)
     VALUES(
         '{$board}',
         '{$origin}',
@@ -88,7 +67,8 @@ $sql = "
         '{$desc}',
         '0',
         NOW(),
-        '{$ip}'
+        '0',
+        '0'
     )
 ";
 $result = mysqli_query($conn, $sql);
