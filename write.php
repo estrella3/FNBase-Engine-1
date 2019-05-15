@@ -7,6 +7,7 @@ if($_COOKIE['dont'] == "yes"){
   echo "<script> alert('아직 글을 작성할 수 없습니다. 1분만 기다려주세요.'); history.back(); </script>";
 }else{
 include "up.php";
+
 if(isset($_SESSION['userid'])){
   $idNpw = '<input type="hidden" name="id" value="'.$_SESSION['userid'].'"><input type="hidden" name="pw" value="_logged"><input type="hidden" name="islogged" value="true">';
 }else{
@@ -73,47 +74,43 @@ if(isset($_SESSION['userid'])){
     if($row['ban'] == 1){
       echo "<script>alert('게시글을 작성할 수 없습니다! 당신은 $ban_reason 에 의해 공통 차단되었습니다.')</script>";
     }else{
-echo '<section class="container">
+ echo '<section class="container">
 <div><h6>글쓰기</h6></div>
 <div>
     <form action="save.php" method="POST" id="wrtatc">
     <hr>
       <p><input type="text" style="outline: 0; width: 100%; border: none; background-color: transparent" name="title" placeholder="제목" required></p>
     <hr>
-      <textarea name="description" id="editor" style="width: 100%; border: none; background-color: white; min-height: 350px"></textarea>
-      <script src="assets/minified/formats/bbcode.min.js"></script>
-<script>
-// Replace the textarea #example with SCEditor
-var textarea = document.getElementById("editor");
-var textarea = document.getElementById("editor");
-sceditor.create(textarea, {
-format: "bbcode",
-toolbar: "bold,italic,strike,superscript|left,center,right|color,size,font|bulletlist,orderedlist,table|link,image,youtube|source,maximize",
-fonts: "",
-style: "assets/minified/themes/content/default.min.css"
-});
-</script>
-      <div>'.$idNpw.'
-      <p align="right"><br><input class="btn btn-success" style="width: 100%" type="submit" value="작성 완료"></p></div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.js"></script>
+    <textarea id="summernote" name="description"></textarea>
+    ';
+    echo "<script>
+              $('#summernote').summernote({
+        placeholder: '내용 작성',
+        tabsize: 2,
+        height: 300,
+        lang: 'ko-KR',
+        focus: true,
+		shortcuts: false,
+			toolbar: [
+			['style', ['bold', 'italic', 'underline', 'strikethrough', 'color', 'fontsize', 'clear']],
+			['para', ['ul', 'ol', 'paragraph']],
+			['insert', ['video', 'link', 'table', 'hr']],
+			['misc', ['codeview', 'undo', 'redo']]
+		]
+              });
+    </script>
+";
+echo $idNpw.'<br><input class="btn btn-success" style="width: 100%" type="submit" value="작성 완료"></p></div>
       <input type="hidden" name="UIP" value="'.$_SERVER['REMOTE_ADDR'].'">
       <input type="hidden" name="b" value="'.$board.'">';
 echo '<input type="hidden" name="editor" value="true">';
 echo '
     </form>
     </div>
-    <script>
-    $(function ()
-    {
-        $(document).on("keydown", "#editor", function(e)
-        {
-            if ((e.keyCode == 10 || e.keyCode == 13) && e.ctrlKey)
-            {
-              $("#wrtatc").submit();
-            }
-        });
-    });
-    </script>
-    ';
+';
 
 }
 include "down.php"; } ?>
