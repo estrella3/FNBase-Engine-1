@@ -20,19 +20,50 @@ if(isset($_SESSION['userid'])){
 			$board = $getturn;
     }
 
-    #빠른 시일 내 수정 예정.
-    if($board == "board"){
-      $boardname = "방명록에 글 남기기";
+    $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
+    $result = mysqli_query($conn, $sql);
+    
+    while($row = mysqli_fetch_array($result)){
+    
+        $board1 = $row['id'];
+        $boardname = $row['name'].' '.$row['suffix'];
+        $boardsuffix = $row['suffix'];
+        $owner = $row['owner'];
+        $boardstat = $row['stat'];
+        $boardnum = $row['num'];
+        $notice = $row['notice'];
+        if(!empty($row['text'])){
+            $boardtext = '<span style="color: gray; font-size: 0.5em; text-decoration: none">'.$row['text'].'</span><br>';
+        }else{
+            $boardtext = '';
+        }
+        if($boardstat == 1){
+            $boardstat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
+        }elseif($boardstat == 0){
+            $boardstat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
+        }elseif($boardstat == 8){
+            $boardstat = '<span class="badge badge-warning">비활성</span>';
+            $nowrite = true;
+        }elseif($boardstat == 9){
+            $boardstat = '<span class="badge badge-danger">차단됨</span>';
+            $nowrite = true;
+        }
     }
-    if($board == "maint"){
-      $boardname = "운영 채널에 글 쓰기";
+        if(1 > mysqli_num_rows($result)){
+        echo '<script>alert("없는 게시판입니다.")</script>';
+        include_once 'down.php';
+        exit;
     }
-    if($board == "fn2nd"){
-      $boardname = "가상국가 제 2 채널에 글 쓰기";
-    }
-    if($board == "wrtnv"){
-      $boardname = "창작소설 채널에 글 쓰기";
-    }
+    ?><div style="padding-left:3px;padding-right:3px">
+    <hr>
+        <form method="post" action="write.php">
+        <h4><?php echo '<a style="color:black" href="'.$board1.'.fn">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
+        <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
+        <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
+        <input type="hidden" name="from" value="<?php echo $board1 ?>">
+        </form>
+    <hr>
+</div><?php
 
     //차단 여부 확인
     $query = "select * from _account where id='".$_SESSION['userid']."'";
@@ -43,9 +74,9 @@ if(isset($_SESSION['userid'])){
       echo "<script>alert('게시글을 작성할 수 없습니다! 당신은 $ban_reason 에 의해 공통 차단되었습니다.')</script>";
     }else{
 echo '<section class="container">
-<div><h4>'.$boardname.'</h4></div>
+<div><h6>글쓰기</h6></div>
 <div>
-    <form action="save.php" method="POST">
+    <form action="save.php" method="POST" id="wrtatc">
     <hr>
       <p><input type="text" style="outline: 0; width: 100%; border: none; background-color: transparent" name="title" placeholder="제목" required></p>
     <hr>
@@ -70,6 +101,18 @@ echo '<input type="hidden" name="editor" value="true">';
 echo '
     </form>
     </div>
+    <script>
+    $(function ()
+    {
+        $(document).on("keydown", "#editor", function(e)
+        {
+            if ((e.keyCode == 10 || e.keyCode == 13) && e.ctrlKey)
+            {
+              $("#wrtatc").submit();
+            }
+        });
+    });
+    </script>
     ';
 
 }

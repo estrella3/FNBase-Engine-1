@@ -2,6 +2,7 @@
 include 'up.php';
         $board = $_GET['b'];
         $id = $_GET['id'];
+        echo $_GET['a'];
         $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}' and `to` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         $n = 1;
@@ -62,9 +63,9 @@ include 'up.php';
         }
         ?><div style="padding-left:3px;padding-right:3px">
         <hr>
-            <form method="post" action="write.php">
-            <h4><?php echo '<a style="color:black" href="'.$board1.'.fn">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
+            <form method="post" action="/write.php">
+            <h4><?php echo '<a style="color:black" href="/b/'.$board1.'">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
+            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
             <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
             <input type="hidden" name="from" value="<?php echo $board1 ?>">
             </form>
@@ -88,7 +89,7 @@ include 'up.php';
         echo '<div class="card"><div class="card-header" style="background-color: #ddeaff"><h5 style="float:left">'
         .$row['title'].'</h5><div class="btn-group" role="group" style="float:right;">
          <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">이 글을</button>
+          data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">이 글을</button>
            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> '.$ednrm.'</div> </div></div><div class="card-body">';
         $rowtitle = $row['title'];
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
@@ -173,7 +174,7 @@ include 'up.php';
                 $commentedited = '';
             }
             echo '<tr style="width:90%"><td><hr><div class="media">
-            <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3" alt="Gravatar">
+            <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
             <div class="media-body" '.$commentheadline.'>
               <h5 class="mt-0"><a href="user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
             echo '<p>'.$commentheadtext.$commentedited.$row['content'].'</p>';
@@ -182,89 +183,137 @@ include 'up.php';
                 echo ' <a class="badge badge-secondary text-white" href="comment_mod.php?a=edit&n='.$row['num'].'">수정</a>
                 <a class="badge badge-danger text-white" href="comment_mod.php?a=delete&n='.$row['num'].'">삭제</a>';
             }
+            $num = $row['num'];
             if(!empty($_SESSION['userck'])){
                     if($row['id'] !== $_SESSION['userid']){
                         echo ' <a class="badge badge-success" href="comment_mod.php?a=push&n='.$row['num'].'">추천</a>
                         <a class="badge badge-warning" href="comment_mod.php?a=blame&n='.$row['num'].'">반대</a>';
                     }
-                echo ' <a class="badge badge-light">대댓글</a>';
+            echo ' <button class="badge badge-light" data-toggle="collapse" href="#reply'.$num.'" role="button" aria-expanded="false" aria-controls="#reply'.$num.'">답변</button>';
             }
-            echo '</div></div></tr></td>';
+            echo '<div class="collapse" id="reply'.$num.'">
+            <form action="/reply.php" id="wrtrpl'.$num.'" method="post">
+            <textarea name="d" id="rpltxt'.$num.'" class="border text-dark" style="width:100%"></textarea>
+            <button type="submit" style="width: 100%" type="button" class="btn btn-success">답변 작성</button>
+            <input type="hidden" name="o" value="'.$num.'">
+            <input type="hidden" name="m" value="'.$id.'">
+            <input type="hidden" name="b" value="'.$board.'">
+            </form></div>
+            <script>
+            $(function ()
+            {
+                $(document).on("keydown", "#rpltxt'.$num.'", function(e)
+                {
+                    if ((e.keyCode == 10 || e.keyCode == 13) && e.ctrlKey)
+                    {
+                      $("#wrtrpl'.$num.'").submit();
+                    }
+                });
+            });
+            </script>
+            ';
+        $sqi = "SELECT * FROM `_reply` WHERE original = '$num' AND step = 1";
+        $resuld = mysqli_query($conn, $sqi);
+        while ($raw = mysqli_fetch_array($resuld)){
+                $user_email = $raw['email'];
+                $hash = md5( strtolower( trim( "$user_email" ) ) );
+        echo '<br><br><div class="media">
+        <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
+        <div class="media-body">
+          <h5 class="mt-0"><a href="user.php?a='.$raw['name'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
+            '.$raw['content'].'
+        </div>
+        </div>';
         }
+        }echo '</div></div></td></tr>';
         echo '<tr><td><hr></td></tr><p><br><br></p>';
-        if(!empty($_SESSION['userid'])){echo '<tr><td><form method="post" action="./comment.php">
-        <textarea class="border text-dark" id="pppp" onload="document.getElementById('."'pppp'".').innerHTML = '."' '".'" style="width: 100%" name="description" placeholder="댓글 작성" required"></textarea>
-        <button type="submit" style="width: 100%" type="button" class="btn-lg btn-primary">작성</button>
+        if(!empty($_SESSION['userid'])){
+        echo '<tr><td><form id="rwtcmt" method="post" action="/comment.php">
+        <textarea id="cmttxt" class="border text-dark" style="width: 100%" name="description" placeholder="댓글 내용" required"></textarea>
+        <button type="submit" style="width: 100%" type="button" class="btn-lg btn-primary">댓글 작성</button>
         <input type="hidden" name="id" value="'.$_SESSION['userid'].'"><input type="hidden" name="islogged" value="true">
         <input name="origin" type="hidden" value="'.$id.'">
         <input name="b" type="hidden" value="'.$board.'">
         <input type="hidden" name="ip" value="'.$uip.'">
-        </form></td></tr>';
-}
+        </form></td></tr>
+        <script>
+$(function ()
+{
+    $(document).on("keydown", "#cmttxt", function(e)
+    {
+        if ((e.keyCode == 10 || e.keyCode == 13) && e.ctrlKey)
+        {
+          $("#rwtcmt").submit();
+        }
+    });
+});
+</script>';
+        }
         mysqli_close($conn, $sql);
 echo '</table></div></div>';
 $db = $conn;
+
 if(isset($_GET['page'])) {
-        $page = $_GET['page'];
+    $page = $_GET['page'];
+}else{
+    $page = 1;
+}
+$sql = 'select count(*) as cnt from `_article` WHERE `to` LIKE "'.$board.'" order by id desc';
+$result = $db->query($sql);
+$row = $result->fetch_assoc();
+$allPost = $row['cnt'];
+$onePage = 20;
+$allPage = ceil($allPost / $onePage);
+if($page < 1 || ($allPage && $page > $allPage)) {
+?>
+    <script>
+        alert("존재하지 않는 페이지입니다.");
+        history.back();
+    </script>
+<?php
+}
+$oneSection = 5;
+$currentSection = ceil($page / $oneSection);
+$allSection = ceil($allPage / $oneSection);
+$firstPage = ($currentSection * $oneSection) - ($oneSection - 1);
+if($currentSection == $allSection) {
+    $lastPage = $allPage;
+} else {
+    $lastPage = $currentSection * $oneSection;
+}
+$prevPage = (($currentSection - 1) * $oneSection);
+$nextPage = (($currentSection + 1) * $oneSection) - ($oneSection - 1);
+$paging = '<tr>';
+if($page != 1) {
+    $paging .= '<td><a href="/b/'.$board.'/1">|←</a></td>';
+}
+if($currentSection != 1) { 
+    $paging .= '<td><a href="/b/'.$board.'/' . $prevPage . '">←</a></td>';
+}
+for($i = $firstPage; $i <= $lastPage; $i++) {
+    if($i == $page) {
+        $paging .= '<td>' . $i . '</td>';
     } else {
-        $page = 1;
+        $paging .= '<td><a href="/b/'.$board. '/' . $i . '">' . $i . '</a></td>';
     }
-    $sql = 'select count(*) as cnt from `_article` where `from` like "'.$board.'" order by id desc';
-    $result = $db->query($sql);
-    $row = $result->fetch_assoc();
-    $allPost = $row['cnt'];
-    $onePage = 20;
-    $allPage = ceil($allPost / $onePage);
-    if($page < 1 || ($allPage && $page > $allPage)) {
-    ?>
-        <script>
-            alert("존재하지 않는 페이지입니다.");
-            history.back();
-        </script>
-    <?php
-    }
-    $oneSection = 10;
-    $currentSection = ceil($page / $oneSection);
-    $allSection = ceil($allPage / $oneSection);
-    $firstPage = ($currentSection * $oneSection) - ($oneSection - 1);
-    if($currentSection == $allSection) {
-        $lastPage = $allPage;
-    } else {
-        $lastPage = $currentSection * $oneSection;
-    }
-    $prevPage = (($currentSection - 1) * $oneSection);
-    $nextPage = (($currentSection + 1) * $oneSection) - ($oneSection - 1);
-    $paging = '<tr class="table-dark">';
-    if($page != 1) {
-        $paging .= '<td class="page"><a href="./index.php?page=1">|←</a></td>';
-    }
-    if($currentSection != 1) { 
-        $paging .= '<td class="page"><a href="./index.php?page=' . $prevPage . '">←</a></td>';
-    }
-    for($i = $firstPage; $i <= $lastPage; $i++) {
-        if($i == $page) {
-            $paging .= '<td class="page">' . $i . '</td>';
-        } else {
-            $paging .= '<td class="page"><a href="./index.php?page=' . $i . '">' . $i . '</a></td>';
-        }
-    }
-    if($currentSection != $allSection) { 
-        $paging .= '<td class="page"><a href="./index.php?page=' . $nextPage . '">→</a></td>';
-    }
-    if($page != $allPage) { 
-        $paging .= '<td class="page"><a href="./index.php?page=' . $allPage . '">→|</a></td>';
-    }
-    $paging .= '</tr>';
-    $currentLimit = ($onePage * $page) - $onePage;
-    $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
+}
+if($currentSection != $allSection) { 
+    $paging .= '<td><a href="/b/'.$board.'/' . $nextPage . '">→</a></td>';
+}
+if($page != $allPage) { 
+    $paging .= '<td><a href="/b/'.$board.'/' . $allPage . '">→|</a></td>';
+}
+$paging .= '</tr>';
+$currentLimit = ($onePage * $page) - $onePage;
+$sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
     $sql = 'select * from `_article` WHERE `to` LIKE "'.$board.'" order by id desc' . $sqlLimit;
     $result = $db->query($sql);
     ?>
     <article>
         <div class="container">
                 <hr>
-                    <form method="post" action="write.php">
-                    <button type="submit" formaction="blame.php" style="float: left" class="btn-sm btn-warning">이 게시글 신고</button>
+                    <form method="post" action="/write.php">
+                    <button type="submit" formaction="/blame.php" style="float: left" class="btn-sm btn-warning">이 게시글 신고</button>
                     <input type="hidden" name="from" value="<?php echo $board ?>">
                     <input type="hidden" name="id" value="<?php echo $id ?>">
                     <input type="hidden" name="title" value="<?php echo $rowtitle ?>">
@@ -309,9 +358,12 @@ if(isset($_GET['page'])) {
                                         $create = $d.$s;
                         ?>
                     <tr><td>
-                    <?php 
+                    <?php
+                        if($readpage == ''){
+                            $readpage = 1;
+                        }
                         if($row['view'] > 999){$row['view'] = '1000+';}
-                        echo '<a class="links" href="./'; echo $board.'-'.$id.'.base">'; echo $row['title']; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
+                        echo '<a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'">'; echo $row['title']; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                     </td>
                     <td><?php echo $row['name']; ?></td>

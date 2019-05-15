@@ -19,7 +19,10 @@ echo '<script>window.location.href = "./install/index.php";</script>';
     <link rel="stylesheet" href="assets/minified/themes/default.min.css" />
 <script src="assets/minified/sceditor.min.js"></script>
 <link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-
+<script
+			  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+			  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+			  crossorigin="anonymous"></script>
 
     <style>
       .bd-placeholder-img {
@@ -71,24 +74,22 @@ if($stat == 1){
     <div class="collapse navbar-collapse" id="navbarsExample07">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">공설</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">공설</a>
           <div class="dropdown-menu">
-          <a class="dropdown-item" href="board.fn">방명록</a>
+          <a class="dropdown-item" href="/b/board">방명록</a>
             <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="maint.fn">운영실</a>
-              <a class="dropdown-item" href="recent.php">실시간</a>
+              <a class="dropdown-item" href="/b/maint">운영실</a>
+              <a class="dropdown-item" href="/b/social">사회 담론</a>
             </div>
         </li>
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">사립</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">사립</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="fn2nd.fn">가상국가 채널</a>
-              <a class="dropdown-item" href="wrtnv.fn">창작소설 채널</a>
-              <a class="dropdown-item" href="alter.fn">대안 채널</a>
+              <a class="dropdown-item" href="/b/fn2nd">가상국가 채널</a>
+              <a class="dropdown-item" href="/b/wrtnv">창작소설 채널</a>
+              <a class="dropdown-item" href="/b/alter">대안 채널</a>
+              <a class="dropdown-item" href="/b/doge">지리 채널</a>
             </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link text-white" href="/wiki">위키로</a>
         </li>
       </ul>
   </div>
@@ -101,12 +102,12 @@ if(!empty($_SESSION['userid'])){
         <div class="modal-content"><div class="modal-body"><button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <button class="btn btn-outline-dark" style="width: 6em"><a style="color: gray" href="user.php?a='.$_SESSION['userck'].'"><span class="text-dark">회원 정보</span></a></button>
-      <button class="btn btn-outline-primary" style="width: 6em"><a style="color: gray" href="tools.php"><span class="text-primary">계정 활용</span></a></button>
-        <button class="btn btn-outline-danger" style="width: 6em"><a href="login.php?log=out"><span class="text-danger">로그아웃</span></a></button>
+      <button class="btn btn-outline-dark" style="width: 6em"><a style="color: gray" href="/user.php?a='.$_SESSION['userck'].'"><span class="text-dark">회원 정보</span></a></button>
+      <button class="btn btn-outline-primary" style="width: 6em"><a style="color: gray" href="/tools.php"><span class="text-primary">계정 활용</span></a></button>
+        <button class="btn btn-outline-danger" style="width: 6em"><a href="/login.php?log=out"><span class="text-danger">로그아웃</span></a></button>
         </div></div></div></div>';
 }else{
-      echo '<a class="btn btn-outline-primary" style="background-color: #fff" href="login.php">로그인</a>';
+      echo '<a class="btn btn-outline-primary" style="background-color: #fff" href="/login.php">로그인</a>';
 }
 ?>
 </nav>

@@ -1,7 +1,7 @@
 <footer>
     <div class="container" align="center">
 <?php if($is_board === TRUE){
-echo '<form action="search.php" method="get"><select class="form-control-sm" name="mode"> <option value="1">제목</option> <option value="2">내용</option> <option value="3">댓글</option> <option value="4">작성자</option> <option disabled>통합검색</option> </select>
+echo '<form action="/search.php" method="get"><select class="form-control-sm" name="mode"> <option value="1">제목</option> <option value="2">내용</option> <option value="3">댓글</option> <option value="4">작성자</option> <option disabled>통합검색</option> </select>
         <input class="form-control-sm" type="text" aria-label="Search" name="query" maxlength="100">
         <span align="right"><button class="btn btn-primary form-control-sm" type="submit">검색</button></span>
         <input type="hidden" name="board" value="'.$board.'">

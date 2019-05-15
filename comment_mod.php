@@ -37,7 +37,7 @@ if($a == 'delete'){
         $o = $row['original'];
         }
         if($uid === $_SESSION['userid']){
-            $sql = "DELETE FROM `_comment` WHERE `num` LIKE '$id'";
+            $sql = "UPDATE `_comment` set id = '', name = '', content = '<sup><b><mark>*삭제됨</mark></b></sup>' WHERE `num` LIKE '$id'";
             $result = mysqli_query($conn, $sql);
             if($result === FALSE){
                 print '삭제 실패, 데이터베이스 수정 불가';

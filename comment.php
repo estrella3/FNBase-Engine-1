@@ -24,14 +24,14 @@ if(!empty($_POST['description'])){
   $desc = $_POST['description'];
   $conf = 1;
 }else{
-  $errormsg = "내용이 없고, ";
+  $errormsg = "내용이 비어있습니다. ";
   $rconf = 1;
 }
 if(!empty($_POST['id'])){
   $id = $_POST['id'];
   $conf = $conf + 1;
 }else{
-  $errormsg = "작성자 아이디가 없어요.&nbsp;";
+  $errormsg = "세션에 문제가 생겼거나 잘못된 경로입니다. ";
   $rconf = $rconf + 1;
 }
 
@@ -90,7 +90,7 @@ if($result === false){
   echo "<script>history.back()</script>";
 }
 }elseif($rconf == 2){
-  echo ' <a href="write.php">뒤로가기</a>';
+  echo ' <a href="/write.php">뒤로가기</a>';
 }else{
   echo $errormsg;
   echo '다시 확인해주세요.';

@@ -99,8 +99,7 @@ if($result === false){
   echo 'XSS 스크립트가 포함되어있거나, 데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
   error_log(mysqli_error($conn));
 } else {
-  setcookie('writed', 'yes', time() + 60);
-  setcookie('again', 'yes', time() + 70);
+  setcookie('writed', 'yes', time() + 50);
   if(!empty($_SESSION['userid'])){
   $query = "select * from _account where id='".$_SESSION['userid']."'";
   $result = $conn->query($query);
@@ -112,13 +111,17 @@ if($result === false){
     echo '포인트 적립 실패';
   }
   }
-  echo '<script>history.go(-2)</script>';
+  echo '<script>location.replace("./index.php?page=1&b='.$board.'")</script>';
 }
 }elseif($rconf == 4){
-  echo ' <a href="write.php">뒤로가기</a>';
+  echo ' <a href="/write.php">뒤로가기</a>';
 }else{
   echo $errormsg;
   echo '다시 확인해주세요.';
+}
+
+if($_COOKIE['writed'] == "yes"){
+  setcookie('again', 'yes', time() + 80);
 }
 
 if($_COOKIE['again'] == "yes"){

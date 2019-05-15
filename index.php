@@ -1,10 +1,11 @@
 <?php
 $ifindex = true;
-include 'up.php';
 $readpage = $_GET['page'];
 if(empty($_GET['b'])){
-$board = 'board';
+include 'recent.php';
+exit;
 }else{
+include 'up.php';
 $board = $_GET['b'];
 }
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
@@ -62,7 +63,7 @@ if($page < 1 || ($allPage && $page > $allPage)) {
     </script>
 <?php
 }
-$oneSection = 10;
+$oneSection = 5;
 $currentSection = ceil($page / $oneSection);
 $allSection = ceil($allPage / $oneSection);
 $firstPage = ($currentSection * $oneSection) - ($oneSection - 1);
@@ -73,25 +74,25 @@ if($currentSection == $allSection) {
 }
 $prevPage = (($currentSection - 1) * $oneSection);
 $nextPage = (($currentSection + 1) * $oneSection) - ($oneSection - 1);
-$paging = '<tr class="table-dark">';
+$paging = '<tr>';
 if($page != 1) {
-    $paging .= '<td class="page"><a href="./index.php?page=1">|←</a></td>';
+    $paging .= '<td><a href="/b/'.$board.'/1">|←</a></td>';
 }
 if($currentSection != 1) { 
-    $paging .= '<td class="page"><a href="./index.php?page=' . $prevPage . '">←</a></td>';
+    $paging .= '<td><a href="/b/'.$board.'/' . $prevPage . '">←</a></td>';
 }
 for($i = $firstPage; $i <= $lastPage; $i++) {
     if($i == $page) {
-        $paging .= '<td class="page">' . $i . '</td>';
+        $paging .= '<td>' . $i . '</td>';
     } else {
-        $paging .= '<td class="page"><a href="./index.php?page=' . $i . '">' . $i . '</a></td>';
+        $paging .= '<td><a href="/b/'.$board. '/' . $i . '">' . $i . '</a></td>';
     }
 }
 if($currentSection != $allSection) { 
-    $paging .= '<td class="page"><a href="./index.php?page=' . $nextPage . '">→</a></td>';
+    $paging .= '<td><a href="/b/'.$board.'/' . $nextPage . '">→</a></td>';
 }
 if($page != $allPage) { 
-    $paging .= '<td class="page"><a href="./index.php?page=' . $allPage . '">→|</a></td>';
+    $paging .= '<td><a href="/b/'.$board.'/' . $allPage . '">→|</a></td>';
 }
 $paging .= '</tr>';
 $currentLimit = ($onePage * $page) - $onePage;
@@ -103,9 +104,9 @@ $result = $db->query($sql);
 <article>
     <div style="padding-left:3px;padding-right:3px">
             <hr>
-                <form method="post" action="write.php">
-                <h4><?php echo '<a style="color:black" href="'.$board.'.fn">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
+                <form method="post" action="/write.php">
+                <h4><?php echo '<a style="color:black" href="/b/'.$board.'">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
+                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
                 <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
                 <input type="hidden" name="from" value="<?php echo $board ?>">
                 </form>
@@ -173,17 +174,12 @@ $result = $db->query($sql);
                     <tr>
                     <td>
                         <?php
-                        $num = 14;
+                        if($readpage == ''){
+                            $readpage = 1;
+                        }
                         if($row['view'] > 999){$row['view'] = '1000+';}
                         $con = $row['title'];
-                        $conlen = mb_strlen("$con", 'UTF-8');
-                        if($conlen >= $num){
-                            $dot = '..';
-                        }else{
-                            $dot = '';
-                        }
-                        $con = mb_substr($con, 0, $num, 'UTF-8');
-                        echo '<a class="links" href="./'; echo $board.'-'.$id.'.base?page='.$readpage.'">'; echo $con.'<span 
+                        echo '<a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'">'; echo $con.'<span 
                         style="color:gray">'.$dot.'</span>'; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                     </td>
@@ -210,7 +206,7 @@ $result = $db->query($sql);
                 </tr>
             </tbody>
         </table>
-        <table class="table" style="text-align: center">
+        <table class="table table-light" style="text-align: center">
         <?php echo $paging ?>
                         </table>
         </div>
