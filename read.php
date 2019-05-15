@@ -18,12 +18,12 @@ include 'up.php';
           echo '조회수 집계 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
         }
         $ednrm = '<form method="post"><input name="id" type="hidden" value="'.$id.'">
-        <input name="b" type="hidden" value="'.$board.'"><button type="submit" class="dropdown-item" formaction="./push.php">추천</button>
-        <button type="submit" class="dropdown-item" formaction="./push.php?mode=un">비추천</button>';
+        <input name="b" type="hidden" value="'.$board.'"><button type="submit" class="dropdown-item" formaction="/push.php">추천</button>
+        <button type="submit" class="dropdown-item" formaction="/push.php?mode=un">비추천</button>';
         if($aid == $_SESSION['userid']){
         $ednrm .= '<input name="v" type="hidden" value="viewer">
-        <button type="submit" formaction="./edit.php" class="dropdown-item">수정</button>
-        <button type="submit" formaction="./delete.php" class="dropdown-item">삭제</button></form>';
+        <button type="submit" formaction="/edit.php" class="dropdown-item">수정</button>
+        <button type="submit" formaction="/delete.php" class="dropdown-item">삭제</button></form>';
         }else{
         $ednrm .= '</form>';
         }
