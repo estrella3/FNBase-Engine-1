@@ -16,8 +16,6 @@ echo '<script>window.location.href = "./install/index.php";</script>';
     <meta name="description" content="<?php echo $fnSiteDesc;?>">
     <meta name="theme-color" content="<?php echo $fnSiteColor;?>">
     <title><?php echo $fnSiteTitle;?></title>
-    <link rel="stylesheet" href="assets/minified/themes/default.min.css" />
-<script src="assets/minified/sceditor.min.js"></script>
 <link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 <script
 			  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

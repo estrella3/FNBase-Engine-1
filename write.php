@@ -7,7 +7,6 @@ if($_COOKIE['dont'] == "yes"){
   echo "<script> alert('아직 글을 작성할 수 없습니다. 1분만 기다려주세요.'); history.back(); </script>";
 }else{
 include "up.php";
-
 if(isset($_SESSION['userid'])){
   $idNpw = '<input type="hidden" name="id" value="'.$_SESSION['userid'].'"><input type="hidden" name="pw" value="_logged"><input type="hidden" name="islogged" value="true">';
 }else{
@@ -20,7 +19,6 @@ if(isset($_SESSION['userid'])){
 		if(isset($getturn)){
 			$board = $getturn;
     }
-
     $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
     $result = mysqli_query($conn, $sql);
     
@@ -65,7 +63,6 @@ if(isset($_SESSION['userid'])){
         </form>
     <hr>
 </div><?php
-
     //차단 여부 확인
     $query = "select * from _account where id='".$_SESSION['userid']."'";
     $result = $conn->query($query);
@@ -111,6 +108,5 @@ echo '
     </form>
     </div>
 ';
-
 }
 include "down.php"; } ?>

@@ -93,7 +93,7 @@ include 'up.php';
            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> '.$ednrm.'</div> </div></div><div class="card-body">';
         $rowtitle = $row['title'];
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
-        echo '<form method="post" action="../edit.php"><b><a href="user.php?a='
+        echo '<form method="post" action="/edit.php"><b><a href="/user.php?a='
         .$row['name'].'">'.$row['name'].'</a></b><span style="color: gray; font-size: 7pt">('
         .$row['author_id'].')</span> / <span style="color: gray">'
         .$row['created']. '</span> <a class="badge badge-secondary" data-toggle="collapse" 
@@ -176,18 +176,18 @@ include 'up.php';
             echo '<tr style="width:90%"><td><hr><div class="media">
             <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
             <div class="media-body" '.$commentheadline.'>
-              <h5 class="mt-0"><a href="user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
+              <h5 class="mt-0"><a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
             echo '<p>'.$commentheadtext.$commentedited.$row['content'].'</p>';
             echo '<span style="color: gray">'.$row['created'].'</span>';
             if($_SESSION['userid'] == $row['id']){
-                echo ' <a class="badge badge-secondary text-white" href="comment_mod.php?a=edit&n='.$row['num'].'">수정</a>
-                <a class="badge badge-danger text-white" href="comment_mod.php?a=delete&n='.$row['num'].'">삭제</a>';
+                echo ' <a class="badge badge-secondary text-white" href="/comment_mod.php?a=edit&n='.$row['num'].'">수정</a>
+                <a class="badge badge-danger text-white" href="/comment_mod.php?a=delete&n='.$row['num'].'">삭제</a>';
             }
             $num = $row['num'];
             if(!empty($_SESSION['userck'])){
                     if($row['id'] !== $_SESSION['userid']){
-                        echo ' <a class="badge badge-success" href="comment_mod.php?a=push&n='.$row['num'].'">추천</a>
-                        <a class="badge badge-warning" href="comment_mod.php?a=blame&n='.$row['num'].'">반대</a>';
+                        echo ' <a class="badge badge-success" href="/comment_mod.php?a=push&n='.$row['num'].'">추천</a>
+                        <a class="badge badge-warning" href="/comment_mod.php?a=blame&n='.$row['num'].'">반대</a>';
                     }
             echo ' <button class="badge badge-light" data-toggle="collapse" href="#reply'.$num.'" role="button" aria-expanded="false" aria-controls="#reply'.$num.'">답변</button>';
             }
@@ -220,13 +220,12 @@ include 'up.php';
         echo '<br><br><div class="media">
         <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
         <div class="media-body">
-          <h5 class="mt-0"><a href="user.php?a='.$raw['name'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
+          <h5 class="mt-0"><a href="/user.php?a='.$raw['name'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
             '.$raw['content'].'
         </div>
         </div>';
         }
-        }echo '</div></div></td></tr>';
-        echo '<tr><td><hr></td></tr><p><br><br></p>';
+        }echo '</div></div></td></tr>';        echo '<tr><td><hr></td></tr><p><br><br></p>';
         if(!empty($_SESSION['userid'])){
         echo '<tr><td><form id="rwtcmt" method="post" action="/comment.php">
         <textarea id="cmttxt" class="border text-dark" style="width: 100%" name="description" placeholder="댓글 내용" required"></textarea>
