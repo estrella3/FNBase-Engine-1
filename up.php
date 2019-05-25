@@ -112,3 +112,28 @@ if(!empty($_SESSION['userid'])){
   <main style="background-color: transparent" role="main">
     <div style="height: 40px; width: 100%"></div>
 <div class="container">
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css'/>
+<script src='//code.jquery.com/jquery.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
+<?php
+$userck = $_SESSION['userck'];
+$sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userck' and `read` like 0";
+$result = mysqli_query($conn, $sql);
+if(1 <= mysqli_num_rows($result)){
+while($row = mysqli_fetch_array($result)){
+  $link = $row['link'];
+  $no = $row['no'];
+  echo "<script>
+	toastr.options = {
+        'positionClass': 'toast-bottom-right',
+        'closeButton': true,
+        'timeOut': false,
+        'onclick': function() {
+          location.replace('$link&no=$no')
+        }
+  }
+		toastr.success('".$row['msg']."','<h4>전해드려요!</h4>')
+</script>";
+}
+}
+?>

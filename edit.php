@@ -32,12 +32,17 @@ echo "<script>
         lang: 'ko-KR',
         focus: true,
 		shortcuts: false,
-			toolbar: [
-			['style', ['bold', 'italic', 'underline', 'strikethrough', 'color', 'fontsize', 'clear']],
-			['para', ['ul', 'ol', 'paragraph']],
-			['insert', ['video', 'link', 'table', 'hr']],
-			['misc', ['codeview', 'undo', 'redo']]
-		]
+        codeviewFilter: true,
+        codeviewIframeFilter: true,
+        toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color', 'fontsize', 'clear']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['insert', ['video', 'link', 'table', 'hr']],
+        ['misc', ['codeview', 'undo', 'redo']]
+        ],
+        codemirror: {
+            theme: 'monokai'
+            }
               });
     </script>";
 echo '<p align="right"><br><input class="btn btn-success" style="width: 100%" type="submit" value="작성 완료"></p></div>

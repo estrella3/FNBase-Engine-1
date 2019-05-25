@@ -1,5 +1,10 @@
 <?php
 include 'up.php';
+$no = $_GET['no'];
+if($no !== ''){
+$sql = "UPDATE `_ment` SET `read` = '1' WHERE `_ment`.`no` = $no;";
+$result = mysqli_query($conn, $sql);
+}
         $board = $_GET['b'];
         $id = $_GET['id'];
         echo $_GET['a'];
@@ -92,6 +97,7 @@ include 'up.php';
           data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">이 글을</button>
            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> '.$ednrm.'</div> </div></div><div class="card-body">';
         $rowtitle = $row['title'];
+        $rowarname = $row['name'];
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
         echo '<form method="post" action="/edit.php"><b><a href="/user.php?a='
         .$row['name'].'">'.$row['name'].'</a></b><span style="color: gray; font-size: 7pt">('
@@ -113,37 +119,7 @@ include 'up.php';
         echo '<br>'.$user_exp;
         echo "</div></div></form>";
         $cont = $row['description'];
-        $pattern = "/@[a-z,A-Z,가-힣,ㄱ-ㅎ,ㅏ-ㅣ,0-9]+/";
-        $ismatch = preg_match_all($pattern, $cont, $matches, PREG_SET_ORDER);
         echo '<div class="card-body border-white">'.nl2br($cont).'</div>';
-        $i = 0;
-        session_start();
-        if($ismatch > 0){
-            echo '<div class="alert alert-info" role="alert"><h6>이 글에서 언급된 이용자</h6>';
-        while($i < $ismatch){
-            $orr = var_export($matches[$i], true);
-            $orr = str_replace("array","",$orr); #배열 문자열로 변환
-            $orr = str_replace(" ","",$orr);
-            $orr = str_replace(">","",$orr);
-            $orr = str_replace("(",'',$orr);
-            $orr = preg_replace("/0/", "", $orr, 1);
-            $orr = str_replace("=","",$orr);
-            $orr = str_replace(",","",$orr);
-            $orr = str_replace(")","",$orr);
-            $orr = str_replace("@","",$orr);
-            $orr = str_replace("\n","",$orr);
-            $trs = str_replace("'","",$orr);
-            if($_SESSION['userck'] == $trs){
-                $asdf =  'btn btn-info';
-            }else{
-                $asdf = 'btn btn-outline-info';
-            }
-            echo "<button type='button' class='$asdf' onclick='asdf$i()'>@$trs</button>";
-            echo "<script>function asdf$i(){location.replace('user.php?a=$trs')}</script>&nbsp;";
-            $i += 1;
-        }
-        echo '</div>';
-    }
         $count = $row['comment'];
         $n++;
         }
@@ -176,7 +152,9 @@ include 'up.php';
             echo '<tr style="width:90%"><td><hr><div class="media">
             <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
             <div class="media-body" '.$commentheadline.'>
-              <h5 class="mt-0"><a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
+            ';
+            $rowname = $row['name'];
+            echo '<h5 class="mt-0"><a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
             echo '<p>'.$commentheadtext.$commentedited.$row['content'].'</p>';
             echo '<span style="color: gray">'.$row['created'].'</span>';
             if($_SESSION['userid'] == $row['id']){
@@ -198,6 +176,8 @@ include 'up.php';
             <input type="hidden" name="o" value="'.$num.'">
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
+            <input type="hidden" name="title" value="'.$rowtitle.'">
+            <input type="hidden" name="to" value="'.$rowname.'">
             </form></div>
             <script>
             $(function ()
@@ -234,6 +214,8 @@ include 'up.php';
         <input name="origin" type="hidden" value="'.$id.'">
         <input name="b" type="hidden" value="'.$board.'">
         <input type="hidden" name="ip" value="'.$uip.'">
+        <input type="hidden" name="title" value="'.$rowtitle.'">
+        <input type="hidden" name="user" value="'.$rowarname.'">
         </form></td></tr>
         <script>
 $(function ()

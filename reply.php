@@ -7,9 +7,9 @@ if(empty($_POST['o'])){
     echo '원 댓글 값이 존재하지 않습니다.';
     exit;
 }
-$m = FnFilter($_POST['m']);
-$d = FnFilter($_POST['d']);
-$o = FnFilter($_POST['o']);
+$m = FnFilter($_POST['m']); //글 번호
+$d = FnFilter($_POST['d']); //내용
+$o = FnFilter($_POST['o']); //상위 댓글 번호
 if($d == ''){
   echo '내용이 없습니다.';
   echo '<script>history.back()</script>';
@@ -23,8 +23,15 @@ $query = "select * from _account where id='".$_SESSION['userid']."'";
   $e = $rist['email'];
   $n = $rist['name'];
 
-$p = $_SERVER['REMOTE_ADDR'];
-$b = FnFilter($_POST['b']);
+$p = $_SERVER['REMOTE_ADDR']; //아이피
+$b = FnFilter($_POST['b']); //상위 게시판
+$t  = $_POST['title']; //원글 제목
+$z = $_POST['to']; //원 댓글 작성자
+
+$linktxt = $fnSite.'/b/'.$b.'/1/'.$m;
+$msgtxt = "[$z]님이 [$t]에서 다신 댓글에 [$n]님이 답변하셨습니다.";
+$sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$n', '$z', '0', '$msgtxt', '$linktxt', 'reply')";
+$result = mysqli_query($conn, $sql);
 
 $sql = "
   INSERT INTO `_reply`

@@ -87,6 +87,13 @@ if($result === false){
       echo '포인트 적립 실패';
     }
     }
+        $rt = $_POST['title'];
+        $ru = $_POST['user'];
+        $linktxt = $fnSite.'/b/'.$board.'/1/'.$origin;
+        $msgtxt = "[$rt]에 [$id]님이 댓글을 다셨습니다.";
+        $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$name', '$ru', '0', '$msgtxt', '$linktxt', 'comment')";
+        $result = mysqli_query($conn, $sql);
+
   echo "<script>history.back()</script>";
 }
 }elseif($rconf == 2){

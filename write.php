@@ -77,11 +77,17 @@ if(isset($_SESSION['userid'])){
     <form action="save.php" method="POST" id="wrtatc">
     <hr>
       <p><input type="text" style="outline: 0; width: 100%; border: none; background-color: transparent" name="title" placeholder="제목" required></p>
-    <hr>
+    <hr>    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.css">
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.css">
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/mode/xml/xml.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote-lite.js"></script>
-    <textarea id="summernote" name="description"></textarea>
+    <textarea id="summernote" name="description"></textarea><div style="width:100%;height:5px">&shy;</div>
+    <input class="form-control" name="mention" placeholder="알리고 싶은 사용자의 닉네임을 써주세요.">
+    <span style="font-size:0.7em;color:gray">알림은 단 한명만 가능합니다.. 빠른 시일 안으로 고치겠습니다..</span>
     ';
     echo "<script>
               $('#summernote').summernote({
@@ -90,13 +96,18 @@ if(isset($_SESSION['userid'])){
         height: 300,
         lang: 'ko-KR',
         focus: true,
-		shortcuts: false,
-			toolbar: [
-			['style', ['bold', 'italic', 'underline', 'strikethrough', 'color', 'fontsize', 'clear']],
-			['para', ['ul', 'ol', 'paragraph']],
-			['insert', ['video', 'link', 'table', 'hr']],
-			['misc', ['codeview', 'undo', 'redo']]
-		]
+        shortcuts: false,
+        codeviewFilter: true,
+        codeviewIframeFilter: true,
+        toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'strikethrough', 'color', 'fontsize', 'clear']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['insert', ['video', 'link', 'table', 'hr']],
+        ['misc', ['codeview', 'undo', 'redo']]
+        ],
+        codemirror: {
+            theme: 'monokai'
+            }
               });
     </script>
 ";
