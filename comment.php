@@ -93,8 +93,8 @@ if($result === false){
         $msgtxt = "[$rt]에 [$id]님이 댓글을 다셨습니다.";
         $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$name', '$ru', '0', '$msgtxt', '$linktxt', 'comment')";
         $result = mysqli_query($conn, $sql);
-
-  echo "<script>history.back()</script>";
+  $href = $_SERVER["HTTP_REFERER"];
+  echo "<script>window.location.replace('$href');</script>";
 }
 }elseif($rconf == 2){
   echo ' <a href="/write.php">뒤로가기</a>';
