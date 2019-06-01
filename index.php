@@ -1,3 +1,4 @@
+
 <?php
 $ifindex = true;
 $readpage = $_GET['page'];
@@ -102,6 +103,7 @@ $result = $db->query($sql);
 ?>
 <section class="float: left">
 <article>
+<div class="container">
     <div style="padding-left:3px;padding-right:3px">
             <hr>
                 <form method="post" action="/write.php">
