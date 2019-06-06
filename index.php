@@ -185,7 +185,7 @@ $result = $db->query($sql);
                         style="color:gray">'.$dot.'</span>'; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                     </td>
-                    <td><?php echo '<a href="user.php?a='.$row['name'].'">'.$row['name'].'</a>'; ?></td>
+                    <td><?php echo '<a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a>'; ?></td>
                     <td><?php 
                     if($row['stat'] == 0){
                         $c = 'light';
