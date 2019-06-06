@@ -182,10 +182,10 @@ $result = $db->query($sql);
                         }
                         if($row['view'] > 999){$row['view'] = '1000+';}
                         $con = $row['title'];
-                        echo '<a class="links" href="/b/'.$origin.'/'.$readpage.'/'.$id.'">'; echo $con.'<span 
+                        echo '<a class="links" href="/b/'.$origin.'/1/'.$id.'">'; echo $con.'<span 
                         style="color:gray">'.$dot.'</span>'; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
-                        <?php echo '<span class="badge badge-'.$badgecolor.'">'.$originboard.'</span>';?>
+                        <?php echo '<a href="/b/'.$origin.'" class="badge badge-'.$badgecolor.'">'.$originboard.'</a>';?>
                     </td>
                     <td><?php echo '<a href="user.php?a='.$row['name'].'">'.$row['name'].'</a>'; ?></td>
                     <td><?php 

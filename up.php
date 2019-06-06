@@ -127,7 +127,7 @@ while($row = mysqli_fetch_array($result)){
 	toastr.options = {
         'positionClass': 'toast-bottom-right',
         'closeButton': true,
-        'timeOut': false,
+        'timeOut': 3000,
         'onclick': function() {
           location.replace('$link&no=$no')
         }

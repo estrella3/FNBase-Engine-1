@@ -22,9 +22,50 @@ $result = mysqli_query($conn, $sql);
         if($result === false){
           echo '조회수 집계 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
         }
+        $reportmodal = '
+            <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reportModalLabel">게시글 신고</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-inline" method="post" action="/blame.php?a=b">
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">신고 사유</label>
+                            <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="repOpt">
+                            <option disabled selected>--선택해주세요.--</option>
+                            <option value="1">선정적이거나 과도한 폭력성을 띔</option>
+                            <option value="2">광고</option>
+                            <option value="3">극단적 성향의 게시글</option>
+                            <option value="4">친목 행위 조장</option>
+                            <option value="5">범죄 예고 등 반사회적 게시글</option>
+                            <option value="6">명예 훼손 등 국내법을 위반하는 글</option>
+                            <option value="7">기타 사유</option>
+                            </select>
+                        
+                            <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                            <input type="checkbox" class="custom-control-input" id="customControlInline">
+                            <label class="custom-control-label" for="customControlInline"
+                            onclick="document.getElementById(\'submitModal\').disabled = \'\';">신고에 대한 책임을 감수하겠습니다.</label>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-warning" id="submitModal" disabled>신고</button>
+                        <input type="hidden" name="from" value="'.$board.'">
+                        <input type="hidden" name="id" value="'.$id.'">
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        ';
         $ednrm = '<form method="post"><input name="id" type="hidden" value="'.$id.'">
         <input name="b" type="hidden" value="'.$board.'"><button type="submit" class="dropdown-item" formaction="/push.php">추천</button>
-        <button type="submit" class="dropdown-item" formaction="/push.php?mode=un">비추천</button>';
+        <button type="submit" class="dropdown-item" formaction="/push.php?mode=un">비추천</button>
+        <button type="button" class="dropdown-item" data-toggle="modal" data-target="#reportModal"">신고</button>';
         if($aid == $_SESSION['userid']){
         $ednrm .= '<input name="v" type="hidden" value="viewer">
         <button type="submit" formaction="/edit.php" class="dropdown-item">수정</button>
@@ -294,7 +335,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
         <div class="container">
                 <hr>
                     <form method="post" action="/write.php">
-                    <button type="submit" formaction="/blame.php" style="float: left" class="btn-sm btn-warning">이 게시글 신고</button>
+                    <button type="submit" formaction="/ment.php" style="float: left" class="btn-sm btn-info text-white">사용자 호출</button>
                     <input type="hidden" name="from" value="<?php echo $board ?>">
                     <input type="hidden" name="id" value="<?php echo $id ?>">
                     <input type="hidden" name="title" value="<?php echo $rowtitle ?>">
@@ -370,6 +411,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
         </div>
     </article>
 <?php
+echo $reportmodal;
 $is_board = TRUE;
 include 'down.php';
 ?>

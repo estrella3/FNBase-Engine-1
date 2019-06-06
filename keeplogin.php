@@ -41,7 +41,7 @@ $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBna
                 //비밀번호가 맞다면 세션 생성
                 if(password_verify($pw, $hash)){
                         if($_POST['autologin']){
-                                setcookie('keeplogin', 'FNBase.xyz', time() + 86400 * 31);
+                                setcookie('keeplogin', 'FNBE AUTO Log-in', time() + 86400 * 31);
                                 setcookie('keeplogin-id', "$id", time() + 86400 * 32);
                                 setcookie('keeplogin-password', "$pw", time() + 86400 * 32);
                         }
@@ -56,79 +56,67 @@ $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBna
                                 </script>
 <?php                                        
                                 }else{
-                                        $right = TRUE;
+                                        $login_success = 'yes';
                                         $go = 1;
                         }}
                         else{
-                                echo "session fail";
+                                echo "세션 생성 실패, 관리자에게 문의하세요.";
                         }
                 }
- 
-                else {
-                        $right = FALSE;
-                        $go = 2;
-                }
- 
         }else{
-                $right = 'empty';
-?>              
-<?php
+                $login_success = 'no';
+                $go = 2;
         }
 
-if($right == TRUE){
-        $sql = "
-  INSERT INTO `_log`
-    (`ip`,`id`,`right`,`type`,`at`)
-    VALUES(
-        '{$ip}',
-        '{$id}',
-        '1',
-        '1',
-        NOW()
-    )
-";
-$result = mysqli_query($conn, $sql);
-if($result === false){
-        echo '데이터베이스 연결 실패';
-}
-}elseif($right = FALSE){
-        $sql = "
-  INSERT INTO `_log`
-    (`ip`,`id`,`right`,`type`,`at`)
-    VALUES(
-        '{$ip}',
-        '{$id}',
-        '0',
-        '1',
-        NOW()
-    )
-";
-$result = mysqli_query($conn, $sql);
-if($result === false){
-        echo '데이터베이스 연결 실패';
-}
-}elseif($right = 'empty'){
-        echo '없는 아이디';
-}else{
-        echo '알 수 없는 동작 이상 발생';
-}
+        if($login_success === 'yes'){
+                $sql = "
+        INSERT INTO `_log`
+        (`ip`,`id`,`right`,`type`,`at`)
+        VALUES(
+                '{$ip}',
+                '{$id}',
+                '1',
+                '1',
+                NOW()
+        )
+        ";
+        $result = mysqli_query($conn, $sql);
+                if($result === false){
+                        echo '데이터베이스 연결 실패';
+                }
+        }elseif($login_success === 'no'){
+                $sql = "
+        INSERT INTO `_log`
+        (`ip`,`id`,`right`,`type`,`at`)
+        VALUES(
+                '{$ip}',
+                '{$id}',
+                '0',
+                '1',
+                NOW()
+        )
+        ";
+        $result = mysqli_query($conn, $sql);
+                if($result === false){
+                        echo '데이터베이스 연결 실패';
+                }
+        }else{
+                echo '<script>alert("존재하지 않는 아이디입니다.");</script>';
+        }
 
-if($go == 1){
-        echo '<script>
-        alert("로그인 되었습니다.");
-        history.go(-2);
-</script>';
-}
-if($go == 2){
-        echo '<script>
-        alert("아이디 혹은 비밀번호가 잘못되었습니다.");
-        history.back();
-</script>';
-}
-if($go == 3){
-        echo '<script>
-        alert("존재하지 않는 아이디입니다.");
-        history.back();
-</script>';
-}
+        if($go == 1){
+                echo '<script>
+                alert("로그인 되었습니다.");
+                history.go(-2);
+                </script>';
+        }elseif($go == 2){
+                echo '<script>
+                alert("아이디 혹은 비밀번호가 잘못되었습니다.");
+                history.back();
+        </script>';
+        }else{
+                echo '<script>
+                history.back();
+        </script>';
+        }
 ?>

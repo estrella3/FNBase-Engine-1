@@ -146,10 +146,14 @@ while($row = mysqli_fetch_array($result)){
   $atc_to = $row['to'];
 }
     $ment = Filt($_POST['mention']);
+    if($ment = ''){
+      echo '멘션 없음';
+    }else{
     $linktxt = $fnSite.'/b/'.$atc_to.'/1/'.$atc_no;
     $msgtxt = "[$uck]님이 [$ment]님을 [$jemok]에서 불렀어요.";
     $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$uck', '$ment', '0', '$msgtxt', '$linktxt', 'ment')";
     $result = mysqli_query($conn, $sql);
+    }
 if($go == 'yes'){
 echo '<script>location.replace("/b/'.$board.'/1/'.$atc_no.'")</script>';
 }
