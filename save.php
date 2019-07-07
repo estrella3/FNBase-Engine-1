@@ -27,6 +27,7 @@ $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBna
 <section>
 <div style="background-color: #fff">
 <?php
+
 if(!empty($_POST['title'])){
   $jemok = $_POST['title'];
   $conf = 1;
@@ -78,14 +79,45 @@ if(!isset($_POST['islogged'])){
 }
 
 if ($conf == 4){
+          if(!empty($_POST['issec'])){
+          $secno = $_POST['secopt'];
+          $issec = true;
+            if($secno == 0){
+              $issec = false;
+            }elseif($secno == 1){
+              $issectxt = $_SESSION['userck'];
+            }elseif($secno == 2){
+              $issectxt = $_POST['secnick'];
+            }
+          }else{
+            $issec = false;
+          }
   $jemok = Filt($jemok);
   $desc = Filt($desc);
   $author = Filt($author);
   $id = Filt($id);
   $date = date( 'Y-m-d H:i:s', time() );
-$sql = "
+  $issectxt = Filt($issectxt);
+  if($issec == false){
+      $sql = "
+      INSERT INTO `_article`
+        (`title`, `description`, `from`, `to`, `created`, `author_id`, `name`, `stat`, `view`, `UIP`)
+        VALUES(
+            '{$jemok}',
+            '{$desc}',
+            '{$board}',
+            '{$board}',
+            '{$date}',
+            '{$author}',
+            '{$id}',
+            '0',
+            '0',
+            '{$UIP}'
+        )
+    ";}elseif($issec == true){
+    $sql = "
   INSERT INTO `_article`
-    (`title`, `description`, `from`, `to`, `created`, `author_id`, `name`, `stat`, `view`, `UIP`)
+    (`title`, `description`, `from`, `to`, `created`, `author_id`, `name`, `stat`, `view`, `UIP`, `issec`, `issectxt`)
     VALUES(
         '{$jemok}',
         '{$desc}',
@@ -96,9 +128,11 @@ $sql = "
         '{$id}',
         '0',
         '0',
-        '{$UIP}'
+        '{$UIP}',
+        '{$secno}',
+        '{$issectxt}'
     )
-";
+";}
 $result = mysqli_query($conn, $sql);
 if($result === false){
   echo 'XSS 스크립트가 포함되어있거나, 데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
@@ -145,7 +179,7 @@ while($row = mysqli_fetch_array($result)){
   $atc_no = $row['id'];
   $atc_to = $row['to'];
 }
-    $ment = Filt($_POST['mention']);
+    /*$ment = Filt($_POST['mention']);
     if($ment = ''){
       echo '멘션 없음';
     }else{
@@ -153,7 +187,7 @@ while($row = mysqli_fetch_array($result)){
     $msgtxt = "[$uck]님이 [$ment]님을 [$jemok]에서 불렀어요.";
     $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$uck', '$ment', '0', '$msgtxt', '$linktxt', 'ment')";
     $result = mysqli_query($conn, $sql);
-    }
+    }*/
 if($go == 'yes'){
 echo '<script>location.replace("/b/'.$board.'/1/'.$atc_no.'")</script>';
 }

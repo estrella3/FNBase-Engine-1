@@ -63,6 +63,14 @@ $mode = jse($_GET['mode']);
 $query = jse($_GET['query']);
 $board = jse($_GET['board']);
 
+if($fnSite_Homepage == 'recent'){
+  if($fnSite_HomepageName == $board){
+    $fromboard = '';
+  }
+}else{
+  $fromboard = "`from` like '".$board."' AND";
+}
+
 $i = 1;
 echo '<h6>검색 결과입니다.</h6>';
 
@@ -74,7 +82,7 @@ echo '<table class="table table-striped"><thead>
       <th scope="col">작성자</th>
       <th scope="col">작성 시간</th>
     </tr></thead><tbody>';
-$sql = "SELECT * from `_article` WHERE `from` like '".$board."' AND `".$m."` like '%$query%'";
+$sql = "SELECT * from `_article` WHERE $fromboard `".$m."` like '%$query%'";
 $result = mysqli_query($conn, $sql);
 while ($row = mysqli_fetch_array($result)){
     echo '<tr><td><a href="'.$row['from'].'-'.$row['id'].'.base">'.$row['title'].'</a></td>';
@@ -94,7 +102,7 @@ echo '데이터베이스 연결 오류';
 echo '</tbody></table>';
 }elseif($mode == '2'){
 $m = 'description';
-$sql = "SELECT * from `_article` WHERE `from` like '$board' AND `$m` like '%$query%'";
+$sql = "SELECT * from `_article` WHERE $fromboard `$m` like '%$query%'";
 echo '<table class="table table-striped"><thead>
     <tr>
       <th scope="col">글 제목</th>
@@ -120,7 +128,7 @@ if(1 > mysqli_num_rows($result)){
 echo '</tbody></table>';
 }elseif($mode == '3'){
 $m = 'content';
-$sql = "SELECT * from `_comment` WHERE `$m` like '%$query%'";
+$sql = "SELECT * from `_comment` WHERE $fromboard `$m` like '%$query%'";
 echo '<table class="table table-striped"><thead>
     <tr>
       <th scope="col">원 글</th>
@@ -146,7 +154,7 @@ echo '데이터베이스 연결 오류';
 echo '</tbody></table>';
 }elseif($mode == '4'){
 $m = 'name';
-$sql = "SELECT * from `_article` WHERE `from` like '$board' AND `$m` like '%$query%'";
+$sql = "SELECT * from `_article` WHERE $fromboard `$m` like '%$query%'";
 echo '<table class="table table-striped"><thead>
     <tr>
       <th scope="col">글 제목</th>

@@ -61,6 +61,7 @@ if(!empty($_SESSION['userid'])){
 if($stat == 1){
   echo '<div class="jumbotron"><p class="display-4">당신은 차단당했습니다...<br>';
   echo '<a href="#">차단소명 하러가기</a></p></div>';
+  exit;
 }
                                 ?>
 </header>
@@ -72,7 +73,7 @@ if($stat == 1){
     <div class="collapse navbar-collapse" id="navbarsExample07">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">공설</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">공립</a>
           <div class="dropdown-menu">
           <a class="dropdown-item" href="/b/board">방명록</a>
             <div class="dropdown-divider"></div>
@@ -81,13 +82,16 @@ if($stat == 1){
             </div>
         </li>
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">사립</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">명문</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/b/fn2nd">가상국가 채널</a>
               <a class="dropdown-item" href="/b/wrtnv">창작소설 채널</a>
               <a class="dropdown-item" href="/b/alter">대안 채널</a>
               <a class="dropdown-item" href="/b/doge">지리 채널</a>
+              <a class="dropdown-item" href="/b/civil">문명국 시뮬 채널</a>
             </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/p/">사립</a>
         </li>
       </ul>
   </div>
@@ -115,25 +119,3 @@ if(!empty($_SESSION['userid'])){
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css'/>
 <script src='//code.jquery.com/jquery.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
-<?php
-$userck = $_SESSION['userck'];
-$sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userck' and `read` like 0";
-$result = mysqli_query($conn, $sql);
-if(1 <= mysqli_num_rows($result)){
-while($row = mysqli_fetch_array($result)){
-  $link = $row['link'];
-  $no = $row['no'];
-  echo "<script>
-	toastr.options = {
-        'positionClass': 'toast-bottom-right',
-        'closeButton': true,
-        'timeOut': 3000,
-        'onclick': function() {
-          location.replace('$link&no=$no')
-        }
-  }
-		toastr.success('".$row['msg']."','<h4>전해드려요!</h4>')
-</script>";
-}
-}
-?>

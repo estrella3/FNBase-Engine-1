@@ -1,13 +1,14 @@
 <?php
 include 'up.php';
+include 'function.php';
 $no = $_GET['no'];
 if($no !== ''){
 $sql = "UPDATE `_ment` SET `read` = '1' WHERE `_ment`.`no` = $no;";
 $result = mysqli_query($conn, $sql);
 }
-        $board = $_GET['b'];
-        $id = $_GET['id'];
-        echo $_GET['a'];
+        $board = Filt($_GET['b']);
+        $id = Filt($_GET['id']);
+        echo Filt($_GET['a']);
         $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}' and `to` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         $n = 1;
@@ -16,11 +17,16 @@ $result = mysqli_query($conn, $sql);
         $views = $raw['view'];
         }
         $views = $views + 1;
-
         $sql = "UPDATE `_article` set view = {$views} where id like '{$id}' and `to` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         if($result === false){
           echo '조회수 집계 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+        }
+        $sql = "SELECT * FROM `_article` WHERE `from` like '$board' AND `id` like '$id'";
+        $result = mysqli_query($conn, $sql);
+        if(mysqli_num_rows($result) !== 1){
+            echo '<script>alert("위치가 맞지 않는 글 입니다.")</script>';
+            exit;
         }
         $reportmodal = '
             <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -120,6 +126,25 @@ $result = mysqli_query($conn, $sql);
         $sql = "SELECT * FROM `_article` where id like '{$id}' and `to` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         while($row = mysqli_fetch_array($result)){
+            #열람제한기능
+            if($row['issec'] == 1){ #나만보기
+                if($row['name'] !== $_SESSION['userck']){
+                    echo '비밀글입니다.';
+                    include_once 'down.php';
+                    exit;
+                }
+            }elseif($row['issec'] == 2){ #특정사용자만 공개
+                $strrst = strpos($row['issectxt'], $_SESSION['userck']);
+                if($strrst === false){
+                    if($row['name'] !== $_SESSION['userck']){
+                    echo '열람이 허용되지 않았습니다.';
+                    include_once 'down.php';
+                    exit;
+                    }
+                }
+            }
+
+
         	if($row['stat'] == 0){
         					$g = '<span style="color: black">0</span>';
         	}elseif($row['stat'] < 1){
@@ -213,7 +238,7 @@ $result = mysqli_query($conn, $sql);
             echo '<div class="collapse" id="reply'.$num.'">
             <form action="/reply.php" id="wrtrpl'.$num.'" method="post">
             <textarea name="d" id="rpltxt'.$num.'" class="border text-dark" style="width:100%"></textarea>
-            <button type="submit" style="width: 100%" type="button" class="btn btn-success">답변 작성</button>
+            <button type="submit" style="width: 100%" class="btn btn-success">답변 작성</button>
             <input type="hidden" name="o" value="'.$num.'">
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
@@ -238,14 +263,140 @@ $result = mysqli_query($conn, $sql);
         while ($raw = mysqli_fetch_array($resuld)){
                 $user_email = $raw['email'];
                 $hash = md5( strtolower( trim( "$user_email" ) ) );
+                $rep_num = $raw['num'];
         echo '<br><br><div class="media">
         <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
         <div class="media-body">
-          <h5 class="mt-0"><a href="/user.php?a='.$raw['name'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
-            '.$raw['content'].'
-        </div>
+          <div id="fn_reply_'.$rep_num.'"><h5 class="mt-0">
+          <a href="/user.php?a='.$raw['name'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
+            <p>'.$raw['content'].'</p></div><span style="color:gray">'.$raw['created'].'</span>';
+            if($_SESSION['userid'] == $raw['id']){
+                echo ' <a class="badge badge-secondary text-white" href="/reply_mod.php?a=edit&n='.$raw['num'].'">수정</a>
+                <a class="badge badge-danger text-white" href="/reply_mod.php?a=delete&n='.$raw['num'].'">삭제</a>';
+            }
+            $num = $raw['num'];
+            if(!empty($_SESSION['userck'])){
+                    if($raw['id'] !== $_SESSION['userid']){
+                        echo ' <a class="badge badge-success" href="/reply_mod.php?a=push&n='.$raw['num'].'">추천</a>
+                        <a class="badge badge-warning" href="/reply_mod.php?a=blame&n='.$raw['num'].'">반대</a>';
+                    }
+            echo ' <button class="badge badge-light" data-toggle="collapse" href="#reply'.$num.'" role="button" aria-expanded="false" aria-controls="#reply'.$num.'">답변</button>';
+            }
+            $step = 1;
+            echo '<div class="collapse" id="reply'.$num.'">
+            <form action="/reply.php?step='.$step.'" id="wrtrpl2'.$num.'" method="post">
+            <textarea name="d" id="rpltxt2'.$num.'" class="border text-dark" style="width:100%"></textarea>
+            <button type="submit" style="width: 100%" class="btn btn-success">답변 작성</button>
+            <input type="hidden" name="o" value="'.$num.'">
+            <input type="hidden" name="m" value="'.$id.'">
+            <input type="hidden" name="b" value="'.$board.'">
+            <input type="hidden" name="title" value="'.$rowtitle.'">
+            <input type="hidden" name="to" value="'.$rowname.'">
+            </form></div>
+            <script>
+            $(function ()
+            {
+                $(document).on("keydown", "#rpltxt2'.$num.'", function(e)
+                {
+                    if ((e.keyCode == 10 || e.keyCode == 13) && e.ctrlKey)
+                    {
+                      $("#wrtrpl2'.$num.'").submit();
+                    }
+                });
+            });
+            </script>
+            ';
+                $sqt = "SELECT * FROM `_reply` WHERE resp = '$rep_num' AND step = 2";
+                $resuli = mysqli_query($conn, $sqt);
+                while ($riw = mysqli_fetch_array($resuli)){
+                    $user_emailt = $riw['email'];
+                    $hasht = md5( strtolower( trim( "$user_emailt" ) ) );
+                    $rep_num = $riw['num'];
+                    echo '<div class="media mt-3"><img src="https://secure.gravatar.com/avatar/'.$hasht.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
+                    <div class="media-body"><div id="fn_reply_'.$rep_num.'">
+                    <h6 class="mt-0"><a href="/user.php?a='.$riw['name'].'">'.$riw['name'].'
+                    </a><span style="color: gray;font-size:0.5em">('.$riw['id'].')</h6>'.'<button onclick="aaaa2()"
+                    class="badge badge-primary">&#9652;</button> '.$riw['content'].'</div></div>
+                    </div>
+                    <script>function aaaa2(){
+                        document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#c9ddff";
+                        setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#dee8f9";
+                         }, 2000)
+                         setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#eaf2ff";
+                         }, 2100)
+                         setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#f9fbff";
+                         }, 2250)
+                        setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "";
+                         }, 2500)
+                    }</script>
+                    ';
+                $sqt3 = "SELECT * FROM `_reply` WHERE resp = '$rep_num' AND step = 3";
+                $resuli3 = mysqli_query($conn, $sqt3);
+                while ($riw3 = mysqli_fetch_array($resuli3)){
+                    $user_emailt3 = $riw3['email'];
+                    $hasht3 = md5( strtolower( trim( "$user_emailt3" ) ) );
+                    $rep_num = $riw3['num'];
+                    echo '<div class="media mt-3">&nbsp; &nbsp;<img src="https://secure.gravatar.com/avatar/'.$hasht3.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
+                    <div class="media-body"><div id="fn_reply_'.$rep_num.'">
+                    <h6 class="mt-0"><a href="/user.php?a='.$riw3['name'].'">'.$riw3['name'].'
+                    </a><span style="color: gray;font-size:0.5em">('.$riw3['id'].')</h6>'.'<button onclick="aaaa3()"
+                    class="badge badge-primary">&#9652;</button> '.$riw3['content'].'</div></div>
+                    </div>
+                    <script>function aaaa3(){
+                        document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#c9ddff";
+                        setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#dee8f9";
+                         }, 2000)
+                         setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#eaf2ff";
+                         }, 2100)
+                         setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#f9fbff";
+                         }, 2250)
+                        setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "";
+                         }, 2500)
+                    }</script>
+                    ';
+                }
+                $sqt4 = "SELECT * FROM `_reply` WHERE resp = '$rep_num' AND step = 4";
+                $resuli4 = mysqli_query($conn, $sqt4);
+                while ($riw4 = mysqli_fetch_array($resuli4)){
+                    $user_emailt4 = $riw4['email'];
+                    $hasht4 = md5( strtolower( trim( "$user_emailt4" ) ) );
+                    $rep_num = $riw4['num'];
+                    echo '<div class="media mt-3"> &nbsp; &nbsp; &nbsp; &nbsp; 
+                    <img src="https://secure.gravatar.com/avatar/'.$hasht4.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
+                    <div class="media-body"><div id="fn_reply_'.$rep_num.'">
+                    <h6 class="mt-0"><a href="/user.php?a='.$riw4['name'].'">'.$riw4['name'].'
+                    </a><span style="color: gray;font-size:0.5em">('.$riw4['id'].')</h6>'.'<button onclick="aaaa4()"
+                    class="badge badge-primary">&#9652;</button> '.$riw4['content'].'</div></div>
+                    </div>
+                    <script>function aaaa4(){
+                        document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#c9ddff";
+                        setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#dee8f9";
+                         }, 2000)
+                         setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#eaf2ff";
+                         }, 2100)
+                         setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#f9fbff";
+                         }, 2250)
+                        setTimeout(function() { 
+                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "";
+                         }, 2500)
+                    }</script>
+                    ';
+                }
+            }
+        echo '</div>
         </div>';
-        }
+            }
         }echo '</div></div></td></tr>';        echo '<tr><td><hr></td></tr><p><br><br></p>';
         if(!empty($_SESSION['userid'])){
         echo '<tr><td><form id="rwtcmt" method="post" action="/comment.php">
@@ -274,7 +425,6 @@ $(function ()
         mysqli_close($conn, $sql);
 echo '</table></div></div>';
 $db = $conn;
-
 if(isset($_GET['page'])) {
     $page = $_GET['page'];
 }else{
@@ -384,8 +534,15 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                         if($readpage == ''){
                             $readpage = 1;
                         }
+                        if($row['issec'] == 2){
+                            $islock = '<span class="badge badge-secondary">기밀</span> ';
+                        }elseif($row['issec'] == 1){
+                            $islock = '<span class="badge badge-dark">비밀</span> ';
+                        }else{
+                            $islock = '';
+                        }
                         if($row['view'] > 999){$row['view'] = '1000+';}
-                        echo '<a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'">'; echo $row['title']; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
+                        echo '<a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'">'; echo $islock.$row['title']; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                     </td>
                     <td><?php echo $row['name']; ?></td>

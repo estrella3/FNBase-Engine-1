@@ -1,14 +1,14 @@
-
 <?php
 $ifindex = true;
 $readpage = $_GET['page'];
-if(empty($_GET['b'])){
-include 'recent.php';
-exit;
-}else{
 include 'up.php';
-$board = $_GET['b'];
+if($fnSite_Homepage == 'recent'){
+    if(empty($_GET['b'])){
+    include 'recent.php';
+    exit;
+    }
 }
+$board = $_GET['b'];
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
 $result = mysqli_query($conn, $sql);
 
@@ -181,7 +181,14 @@ $result = $db->query($sql);
                         }
                         if($row['view'] > 999){$row['view'] = '1000+';}
                         $con = $row['title'];
-                        echo '<a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'">'; echo $con.'<span 
+                        if($row['issec'] == 2){
+                            $islock = '<span class="badge badge-secondary">기밀</span> ';
+                        }elseif($row['issec'] == 1){
+                            $islock = '<span class="badge badge-dark">비밀</span> ';
+                        }else{
+                            $islock = '';
+                        }
+                        echo '<a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'">'; echo $islock.$con.'<span 
                         style="color:gray">'.$dot.'</span>'; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                     </td>

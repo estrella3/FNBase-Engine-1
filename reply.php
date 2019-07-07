@@ -7,6 +7,7 @@ if(empty($_POST['o'])){
     echo '원 댓글 값이 존재하지 않습니다.';
     exit;
 }
+
 $m = FnFilter($_POST['m']); //글 번호
 $d = FnFilter($_POST['d']); //내용
 $o = FnFilter($_POST['o']); //상위 댓글 번호
@@ -33,9 +34,17 @@ $msgtxt = "[$z]님이 [$t]에서 다신 댓글에 [$n]님이 답변하셨습니�
 $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$n', '$z', '0', '$msgtxt', '$linktxt', 'reply')";
 $result = mysqli_query($conn, $sql);
 
+if(empty($_GET['step'])){
+  $step = 1;
+  $nal = 'original';
+}else{
+  $step = $_GET['step'] + 1;
+  $nal = 'resp';
+}
+
 $sql = "
   INSERT INTO `_reply`
-    (`id`, `name`, `original`, `content`, `created`, `ip`, `step`, `email`)
+    (`id`, `name`, `$nal`, `content`, `created`, `ip`, `step`, `email`)
     VALUES(
         '{$i}',
         '{$n}',
@@ -43,7 +52,7 @@ $sql = "
         '{$d}',
         NOW(),
         '{$p}',
-        '1',
+        '{$step}',
         '{$e}'
     )
 ";
