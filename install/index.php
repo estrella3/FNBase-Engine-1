@@ -35,7 +35,7 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 <td>
   <?php
   if($a == false){
-    if(is_file('../settiㄴㄴng.php')){
+    if(is_file('../setting.php')){
       echo '정상적으로 설치된 것으로 보입니다.
       <h3>FNBase Engine 안내</h3><hr>';
       include '../setting.php';
@@ -89,4 +89,5 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 © 2018-2019 FNBase Engine Team. All rights reserved.
 </td></tr>
 </table>
+<!-- PHP의 정보 페이지를 참고하였습니다. -->
 </html>
