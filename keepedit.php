@@ -26,6 +26,15 @@ $t = Filt($_POST['title']);
 $n = Filt($_POST['description']);
 
 $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+        
+$session = $_SESSION['userid'];
+$sql = "SELECT * FROM `_article` WHERE `author_id` LIKE '$session' and `from` like '$b' and `id` like '$id'";
+$result = mysqli_query($conn, $sql);
+$count = mysqli_num_rows($result);
+if($count === FALSE){
+    exit;
+}
+
 $sql = "UPDATE `_article` set title = '$t', edited = 1, description = '$n' where `id` like '$id' and `from` like '$b'";
 $result = mysqli_query($conn, $sql);
 if($result === false){
