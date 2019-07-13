@@ -14,4 +14,9 @@ RewriteRule ^b/([^/]*)/([^/]*)/([^/]*)$ /read.php?b=$1&id=$3&page=$2 [L]
 
 <IfModule mod_php5.c>
   php_value upload_max_filesize 3M
-</IfModule>
+</IfModule>	
+Order allow,deny
+Allow from all
+Deny from 195.154.*.*
+Deny from 62.210.*.*
+Deny from 37.115.*.*

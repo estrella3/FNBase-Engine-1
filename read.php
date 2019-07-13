@@ -1,11 +1,6 @@
 <?php
 include 'up.php';
 include 'function.php';
-$no = $_GET['no'];
-if($no !== ''){
-$sql = "UPDATE `_ment` SET `read` = '1' WHERE `_ment`.`no` = $no;";
-$result = mysqli_query($conn, $sql);
-}
         $board = Filt($_GET['b']);
         $id = Filt($_GET['id']);
         echo Filt($_GET['a']);
@@ -128,12 +123,14 @@ $result = mysqli_query($conn, $sql);
         while($row = mysqli_fetch_array($result)){
             #열람제한기능
             if($row['issec'] == 1){ #나만보기
+                $isp = false;
                 if($row['name'] !== $_SESSION['userck']){
                     echo '비밀글입니다.';
                     include_once 'down.php';
                     exit;
                 }
             }elseif($row['issec'] == 2){ #특정사용자만 공개
+                $isp = false;
                 $strrst = strpos($row['issectxt'], $_SESSION['userck']);
                 if($strrst === false){
                     if($row['name'] !== $_SESSION['userck']){
@@ -142,6 +139,8 @@ $result = mysqli_query($conn, $sql);
                     exit;
                     }
                 }
+            }else{
+                $isp = true;
             }
 
 
@@ -206,9 +205,13 @@ $result = mysqli_query($conn, $sql);
             }elseif($row['blame'] > 6){
                 $commentheadline = 'style="background-color:#ffcccb"';
                 $commentheadtext = '<span class="badge badge-warning">반대 : '.$row['blame'].'명</span> ';
+            }elseif($row['ment'] == 1){
+                $commentheadline = 'style="background-color:#E5FCFD;color:gray;border: dashed 1px royalblue"';
+                $commentment = '님을 호출하셨습니다.';
             }else{
                 $commentheadline = '';
                 $commentheadtext = '';
+                $commentment = '';
             }
             if($row['edited'] == 1){
                 $commentedited = '<sup><b><mark>*수정됨</mark></b></sup> ';
@@ -221,7 +224,7 @@ $result = mysqli_query($conn, $sql);
             ';
             $rowname = $row['name'];
             echo '<h5 class="mt-0"><a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
-            echo '<p>'.$commentheadtext.$commentedited.$row['content'].'</p>';
+            echo '<p>'.$commentheadtext.$commentedited.$row['content'].$commentment.'</p>';
             echo '<span style="color: gray">'.$row['created'].'</span>';
             if($_SESSION['userid'] == $row['id']){
                 echo ' <a class="badge badge-secondary text-white" href="/comment_mod.php?a=edit&n='.$row['num'].'">수정</a>
@@ -243,8 +246,8 @@ $result = mysqli_query($conn, $sql);
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
             <input type="hidden" name="title" value="'.$rowtitle.'">
-            <input type="hidden" name="to" value="'.$rowname.'">
-            </form></div>
+            <input type="hidden" name="to" value="'.$rowname.'">';
+            echo '</form></div>
             <script>
             $(function ()
             {
@@ -282,9 +285,8 @@ $result = mysqli_query($conn, $sql);
                     }
             echo ' <button class="badge badge-light" data-toggle="collapse" href="#reply'.$num.'" role="button" aria-expanded="false" aria-controls="#reply'.$num.'">답변</button>';
             }
-            $step = 1;
             echo '<div class="collapse" id="reply'.$num.'">
-            <form action="/reply.php?step='.$step.'" id="wrtrpl2'.$num.'" method="post">
+            <form action="/reply.php?step=1" id="wrtrpl2'.$num.'" method="post">
             <textarea name="d" id="rpltxt2'.$num.'" class="border text-dark" style="width:100%"></textarea>
             <button type="submit" style="width: 100%" class="btn btn-success">답변 작성</button>
             <input type="hidden" name="o" value="'.$num.'">
@@ -315,84 +317,9 @@ $result = mysqli_query($conn, $sql);
                     echo '<div class="media mt-3"><img src="https://secure.gravatar.com/avatar/'.$hasht.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
                     <div class="media-body"><div id="fn_reply_'.$rep_num.'">
                     <h6 class="mt-0"><a href="/user.php?a='.$riw['name'].'">'.$riw['name'].'
-                    </a><span style="color: gray;font-size:0.5em">('.$riw['id'].')</h6>'.'<button onclick="aaaa2()"
-                    class="badge badge-primary">&#9652;</button> '.$riw['content'].'</div></div>
+                    </a><span style="color: gray;font-size:0.5em">('.$riw['id'].')</h6>'.''.$riw['content'].'</div></div>
                     </div>
-                    <script>function aaaa2(){
-                        document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#c9ddff";
-                        setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#dee8f9";
-                         }, 2000)
-                         setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#eaf2ff";
-                         }, 2100)
-                         setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "background-color:#f9fbff";
-                         }, 2250)
-                        setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw['resp'].'").style.cssText = "";
-                         }, 2500)
-                    }</script>
                     ';
-                $sqt3 = "SELECT * FROM `_reply` WHERE resp = '$rep_num' AND step = 3";
-                $resuli3 = mysqli_query($conn, $sqt3);
-                while ($riw3 = mysqli_fetch_array($resuli3)){
-                    $user_emailt3 = $riw3['email'];
-                    $hasht3 = md5( strtolower( trim( "$user_emailt3" ) ) );
-                    $rep_num = $riw3['num'];
-                    echo '<div class="media mt-3">&nbsp; &nbsp;<img src="https://secure.gravatar.com/avatar/'.$hasht3.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
-                    <div class="media-body"><div id="fn_reply_'.$rep_num.'">
-                    <h6 class="mt-0"><a href="/user.php?a='.$riw3['name'].'">'.$riw3['name'].'
-                    </a><span style="color: gray;font-size:0.5em">('.$riw3['id'].')</h6>'.'<button onclick="aaaa3()"
-                    class="badge badge-primary">&#9652;</button> '.$riw3['content'].'</div></div>
-                    </div>
-                    <script>function aaaa3(){
-                        document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#c9ddff";
-                        setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#dee8f9";
-                         }, 2000)
-                         setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#eaf2ff";
-                         }, 2100)
-                         setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "background-color:#f9fbff";
-                         }, 2250)
-                        setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw3['resp'].'").style.cssText = "";
-                         }, 2500)
-                    }</script>
-                    ';
-                }
-                $sqt4 = "SELECT * FROM `_reply` WHERE resp = '$rep_num' AND step = 4";
-                $resuli4 = mysqli_query($conn, $sqt4);
-                while ($riw4 = mysqli_fetch_array($resuli4)){
-                    $user_emailt4 = $riw4['email'];
-                    $hasht4 = md5( strtolower( trim( "$user_emailt4" ) ) );
-                    $rep_num = $riw4['num'];
-                    echo '<div class="media mt-3"> &nbsp; &nbsp; &nbsp; &nbsp; 
-                    <img src="https://secure.gravatar.com/avatar/'.$hasht4.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
-                    <div class="media-body"><div id="fn_reply_'.$rep_num.'">
-                    <h6 class="mt-0"><a href="/user.php?a='.$riw4['name'].'">'.$riw4['name'].'
-                    </a><span style="color: gray;font-size:0.5em">('.$riw4['id'].')</h6>'.'<button onclick="aaaa4()"
-                    class="badge badge-primary">&#9652;</button> '.$riw4['content'].'</div></div>
-                    </div>
-                    <script>function aaaa4(){
-                        document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#c9ddff";
-                        setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#dee8f9";
-                         }, 2000)
-                         setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#eaf2ff";
-                         }, 2100)
-                         setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "background-color:#f9fbff";
-                         }, 2250)
-                        setTimeout(function() { 
-                            document.getElementById("fn_reply_'.$riw4['resp'].'").style.cssText = "";
-                         }, 2500)
-                    }</script>
-                    ';
-                }
             }
         echo '</div>
         </div>';
@@ -407,8 +334,11 @@ $result = mysqli_query($conn, $sql);
         <input name="b" type="hidden" value="'.$board.'">
         <input type="hidden" name="ip" value="'.$uip.'">
         <input type="hidden" name="title" value="'.$rowtitle.'">
-        <input type="hidden" name="user" value="'.$rowarname.'">
-        </form></td></tr>
+        <input type="hidden" name="user" value="'.$rowarname.'">';
+        if($isp === false){
+            echo '<input type="hidden" name="s" value="true">';
+        }
+        echo '</form></td></tr>
         <script>
 $(function ()
 {
@@ -485,7 +415,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
         <div class="container">
                 <hr>
                     <form method="post" action="/write.php">
-                    <button type="submit" formaction="/ment.php" style="float: left" class="btn-sm btn-info text-white">사용자 호출</button>
+                    <button type="button" data-toggle="modal" data-target="#mentModal" style="float: left" class="btn-sm btn-info text-white">사용자 호출</button>
                     <input type="hidden" name="from" value="<?php echo $board ?>">
                     <input type="hidden" name="id" value="<?php echo $id ?>">
                     <input type="hidden" name="title" value="<?php echo $rowtitle ?>">
@@ -494,6 +424,29 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                     </h4>
                 <hr>
             </div>
+                            <div class="modal fade" id="mentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">사용자 멘션</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+<div class="modal-body">
+<form class="form-inline" method="post" action="/ment.php">
+<label class="my-1 mr-2">멘션할 닉네임 &nbsp; <input name="mentNickname" type="text" class="form-control-sm"></label>
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-info">전송</button>
+<input type="hidden" name="from" value="<?=$board?>">
+<input type="hidden" name="id" value="<?=$id?>">
+<input type="hidden" name="title" value="<?=$rowtitle?>">
+</form>
+</div>
+</div>
+</div>
+</div>
             <div class="container">
             <table class="table">
                 <thead>

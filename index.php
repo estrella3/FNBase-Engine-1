@@ -1,13 +1,14 @@
 <?php
 $ifindex = true;
 $readpage = $_GET['page'];
-include 'up.php';
+include 'setting.php';
 if($fnSite_Homepage == 'recent'){
     if(empty($_GET['b'])){
     include 'recent.php';
     exit;
     }
 }
+include 'up.php';
 $board = $_GET['b'];
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
 $result = mysqli_query($conn, $sql);

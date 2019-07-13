@@ -23,6 +23,15 @@ echo '<form action="/search.php" method="get"><select class="form-control-sm" na
 </div>
 </footer>
 <?php
+#멘션 처리하는 부분
+$no = $_GET['no'];
+if($no !== ''){
+$sql = "UPDATE `_ment` SET `read` = '1' WHERE `_ment`.`no` = $no;";
+$result = mysqli_query($conn, $sql);
+}
+
+#멘션 보여주는 부분
+if(!empty($_SESSION['userid'])){
 $userck = $_SESSION['userck'];
 $sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userck' and `read` like 0";
 $result = mysqli_query($conn, $sql);
@@ -41,6 +50,7 @@ while($row = mysqli_fetch_array($result)){
   }
 		toastr.success('".$row['msg']."','<h4>전해드려요!</h4>')
 </script>";
+}
 }
 }
 ?>

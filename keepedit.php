@@ -26,7 +26,7 @@ $t = Filt($_POST['title']);
 $n = Filt($_POST['description']);
 
 $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
-        
+
 $session = $_SESSION['userid'];
 $sql = "SELECT * FROM `_article` WHERE `author_id` LIKE '$session' and `from` like '$b' and `id` like '$id'";
 $result = mysqli_query($conn, $sql);

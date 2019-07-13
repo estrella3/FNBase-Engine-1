@@ -1,6 +1,5 @@
 <?php
-$readpage = $_GET['page'];
-$board = 'rct';
+include 'up.php';
 $sql = "SELECT * FROM `_board` where `id` like 'rct'";
 $result = mysqli_query($conn, $sql);
 while($row = mysqli_fetch_array($result)){

@@ -52,13 +52,19 @@ if(!isset($_POST['islogged'])){
   $name = $_SESSION['userid'];
 }
 
+if($_POST['s'] == 'true'){ #비밀글
+  $s = 1;
+}else{
+  $s = 0;
+}
+
 if ($conf == 2){
 $board = $_POST['b'];
 $origin = $_POST['origin'];
 
 $sql = "
   INSERT INTO `_comment`
-    (board, original, id, name, content, stat, created, blame, reply)
+    (board, original, id, name, content, stat, created, blame, secret, reply)
     VALUES(
         '{$board}',
         '{$origin}',
@@ -68,6 +74,7 @@ $sql = "
         '0',
         NOW(),
         '0',
+        '{$s}',
         '0'
     )
 ";
@@ -87,14 +94,20 @@ if($result === false){
       echo '포인트 적립 실패';
     }
     }
-        $rt = $_POST['title'];
+        $rt = $_POST['title']; #멘션 만드는 부분
         $ru = $_POST['user'];
+        if(empty($ru)){
+          echo '오류 발생!';
+          exit;
+        }else{
+          if($_SESSION['userck'] !== $ru){
         $linktxt = $fnSite.'/b/'.$board.'/1/'.$origin;
         $msgtxt = "[$rt]에 [$id]님이 댓글을 다셨습니다.";
         $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$name', '$ru', '0', '$msgtxt', '$linktxt', 'comment')";
-        $result = mysqli_query($conn, $sql);
+        $result = mysqli_query($conn, $sql);}
   $href = $_SERVER["HTTP_REFERER"];
   echo "<script>window.location.replace('$href');</script>";
+        }
 }
 }elseif($rconf == 2){
   echo ' <a href="/write.php">뒤로가기</a>';

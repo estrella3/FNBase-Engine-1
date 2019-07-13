@@ -22,17 +22,18 @@ $query = "select * from _account where id='".$_SESSION['userid']."'";
   $rist=mysqli_fetch_assoc($res);
   $i = $rist['id'];
   $e = $rist['email'];
-  $n = $rist['name'];
+  $n = $rist['name']; //답글 작성자 닉네임
 
 $p = $_SERVER['REMOTE_ADDR']; //아이피
 $b = FnFilter($_POST['b']); //상위 게시판
 $t  = $_POST['title']; //원글 제목
 $z = $_POST['to']; //원 댓글 작성자
 
+  if($_SESSION['userck'] !== $z){
 $linktxt = $fnSite.'/b/'.$b.'/1/'.$m;
 $msgtxt = "[$z]님이 [$t]에서 다신 댓글에 [$n]님이 답변하셨습니다.";
 $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$n', '$z', '0', '$msgtxt', '$linktxt', 'reply')";
-$result = mysqli_query($conn, $sql);
+$result = mysqli_query($conn, $sql);}
 
 if(empty($_GET['step'])){
   $step = 1;

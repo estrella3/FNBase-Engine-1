@@ -68,7 +68,7 @@ echo '<h5>댓글</h5>';
         while ($row = mysqli_fetch_array($result)){
             $user_own = $row['cnt'];
         }
-    $sql = "SELECT * from `_comment` WHERE `id` like '$user_id' order by num desc";
+    $sql = "SELECT * from `_comment` WHERE `id` like '$user_id' and `secret` like '0' order by num desc";
     $result = mysqli_query($conn, $sql);
     $i = 1;
     while ($row = mysqli_fetch_array($result)){
