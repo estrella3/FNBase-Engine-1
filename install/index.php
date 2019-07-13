@@ -29,7 +29,7 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 <body><div class="center">
 <table>
 <tr class="h"><td>
-<a href="https://fnbase.xyz"><img src="/install/FNBE.png" style="height: 50px; width: auto"></a><h1 class="p">FNBE Version 0.7.07</h1>
+<a href="https://fnbase.xyz"><img src="/install/FNBE.png" style="height: 50px; width: auto"></a><h1 class="p">FNBE Version <?=$fnVersion?></h1>
 </td></tr>
 </table>
 <td>
