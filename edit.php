@@ -1,6 +1,5 @@
 <?php
-include "./up.php";
-session_start();
+require "up.php";
 $id =  $_POST['id'];
 $b = $_POST['b'];
 $session = $_SESSION['userid'];
@@ -54,5 +53,5 @@ echo '<p align="right"><br><input class="btn btn-success" style="width: 100%" ty
 }}else{
     echo '본인 확인 불가';
 }
-include "down.php";
+require "down.php";
 ?>

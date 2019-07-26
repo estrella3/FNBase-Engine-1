@@ -1,5 +1,5 @@
 <?php
-include 'up.php'; include 'function.php';
+require 'up.php';
 $b = Filt($_POST['from']);
 $id = Filt($_POST['id']);
 $repOpt = Filt($_POST['repOpt']);
@@ -7,10 +7,8 @@ $userid = $_SESSION['userid'];
 $uip = $_SERVER['REMOTE_ADDR'];
 if(empty($_SESSION['userid'])){
 	echo '<script>alert("로그인 후 이용 바랍니다.");history.go(-1)</script>';
+	exit;
 }else{
-  if(empty($_GET['a'])){
-  echo '잘못된 접근입니다.';
-  }
   if(empty($_POST['id'])){
   $sql = "SELECT * FROM `_report` ORDER BY `num` DESC";
   $result = mysqli_query($conn, $sql);
@@ -50,5 +48,5 @@ if(empty($_SESSION['userid'])){
     }
   }
 }
-include 'down.php';
+require 'down.php';
 ?>

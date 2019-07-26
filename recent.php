@@ -1,5 +1,5 @@
 <?php
-include 'up.php';
+require 'up.php';
 $sql = "SELECT * FROM `_board` where `id` like 'rct'";
 $result = mysqli_query($conn, $sql);
 while($row = mysqli_fetch_array($result)){
@@ -20,9 +20,6 @@ while($row = mysqli_fetch_array($result)){
         $boardstat = '<span class="badge badge-light">사설 '.$fnSiteBoardName.'</span>';
     }elseif($boardstat == 8){
         $boardstat = '<span class="badge badge-warning">비활성</span>';
-        $nowrite = true;
-    }elseif($boardstat == 9){
-        $boardstat = '<span class="badge badge-danger">차단</span>';
         $nowrite = true;
     }
 }
@@ -89,8 +86,13 @@ $result = $db->query($sql);
     <div style="padding-left:3px;padding-right:3px">
             <hr>
                 <form method="post" action="/write.php">
-                <h4><?php echo $boardname.' 	글 목록'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 관리인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
+                <h4><?php echo $boardname.' 	글 목록'; echo '<button type="button" class="btn-sm btn-warning" style="float: right">구독 설정</button>';
+                                $sql1 = "SELECT * FROM `_account` WHERE `name` LIKE '$owner'";
+                                $result1 = mysqli_query($conn, $sql1);
+                                while($row1 = mysqli_fetch_array($result1)){
+                                    $owner_id = $row1['id'];
+                                }?>
+                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 관리인 : <a href="/user.php?a=<?=$owner_id?>">@<?php echo $owner;?></a></span><br>
                 <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
                 <input type="hidden" name="from" value="<?php echo $board ?>">
                 </form>
@@ -174,6 +176,10 @@ $result = $db->query($sql);
                             $badgecolor = 'warning';
                         }elseif($originstat == '9'){
                             $badgecolor = 'danger';
+                        }elseif($originstat == '2'){
+                            $badgecolor = 'info';
+                        }elseif($originstat == '3'){
+                            $badgecolor = 'secondary';
                         }
                         if($readpage == ''){
                             $readpage = 1;
@@ -192,7 +198,7 @@ $result = $db->query($sql);
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                         <?php echo '<a href="/b/'.$origin.'" class="badge badge-'.$badgecolor.'">'.$originboard.'</a>';?>
                     </td>
-                    <td><?php echo '<a href="user.php?a='.$row['name'].'">'.$row['name'].'</a>'; ?></td>
+                    <td><?php echo '<a href="user.php?a='.$row['author_id'].'">'.$row['name'].'</a>'; ?></td>
                     <td><?php 
                     if($row['stat'] == 0){
                         $c = 'light';

@@ -1,6 +1,5 @@
 <?php
-include 'setting.php';
-include 'ip_ban.php';
+require 'function.php';
 if($_COOKIE['keeplogin'] == 'FNBase.xyz'){
   $id = 'value="'.$_COOKIE['keeplogin-id'].'"';
   $pw = 'value="'.$_COOKIE['keeplogin-password'].'"';
@@ -105,11 +104,7 @@ if($_GET['log'] == 'out'){
   border-top-right-radius: 0;
 }
     </style>
-    <script>
-      function ExpLog(){
-        document.getElementById('explog').innerHTML = '개인정보가 유출될 수 있으니, PC방이나 학교, 관공서 등에서 사용하지 마세요.';
-      }
-    </script>
+
   </head>
   <body class="text-center">
     <form class="form-signin" method='post' action='keeplogin.php'>

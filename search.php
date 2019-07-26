@@ -1,5 +1,5 @@
 <?php
-include 'up.php';
+require 'up.php';
 
 function jse($val) {
 // remove all non-printable characters. CR(0a) and LF(0b) and TAB(9) are allowed 

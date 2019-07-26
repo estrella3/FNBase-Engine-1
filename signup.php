@@ -1,5 +1,5 @@
 <?php
-include "up.php";
+require "up.php";
 ?>
 <script>
 var next = '[<a class="links" href="./id.php">다음 단계로</a>]';

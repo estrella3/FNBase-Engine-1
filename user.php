@@ -1,18 +1,20 @@
 <?php
-include 'up.php';
-include 'function.php';
+require 'up.php';
 $user = $_GET['a'];
 $user = FnFilter($user);
-echo '<h3>'.$user.'님의 활동 내역</h3>';
 
-
-$sql = "SELECT * from `_account` WHERE `name` like '".$user."'";
+$sql = "SELECT * from `_account` WHERE `id` like '".$user."'";
 $result = mysqli_query($conn, $sql);
 if(1 > mysqli_num_rows($result)){
-     echo '<script>alert("존재하지 않는 사용자입니다."); history.go(-1)</script>';
+    echo '<script>alert("존재하지 않는 사용자입니다."); history.go(-1)</script>';
+    exit;
+}
+while($row = mysqli_fetch_array($result)){
+    $name = $row['name'];
 }
 
-
+echo '<h3>'.$name.'<small class="text-muted">('.$user.')</small>님의 활동 내역</h3>';
+$user = $name;
 echo '<h5>최근 게시글</h5>';
         echo '<table class="table table-striped"><thead>
             <tr>

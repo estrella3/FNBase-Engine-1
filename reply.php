@@ -1,7 +1,9 @@
 <?php
-include 'setting.php';
-include 'function.php';
-session_start();
+require 'function.php';
+if(empty($_SESSION['userid'])){
+  echo '로그인이 필요합니다.';
+  exit;
+}
 $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
 if(empty($_POST['o'])){
     echo '원 댓글 값이 존재하지 않습니다.';

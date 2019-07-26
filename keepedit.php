@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php include 'setting.php';include 'function.php';?>
+<?php include 'function.php';?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="<?=$fnSiteFab?>" type="image/x-icon">
   <meta name="description" content="<?=$fnSiteDesc?>">
   <title><?=$fnSiteName?></title>
-  <link rel="stylesheet" href="layout.css">
   <?=$fnSite_google?>
 </head>
 <body>
@@ -24,8 +23,6 @@ $b = $_POST['b'];
 
 $t = Filt($_POST['title']);
 $n = Filt($_POST['description']);
-
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
 
 $session = $_SESSION['userid'];
 $sql = "SELECT * FROM `_article` WHERE `author_id` LIKE '$session' and `from` like '$b' and `id` like '$id'";
@@ -46,9 +43,5 @@ if($result === false){
 ?>
 </div>
 </section>
-<div id="yeobaek"></div>
-<footer>
-        <p class="fnbottom"><?=$fnSite?></p>
-</footer>
   </body>
 </html>

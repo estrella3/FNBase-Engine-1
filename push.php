@@ -1,5 +1,5 @@
 <?php
-include 'setting.php';
+require 'function.php';
 $id = $_POST['id'];
 $b = $_POST['b'];
 $ip = $_SERVER['REMOTE_ADDR'];
@@ -10,8 +10,6 @@ if($mode == 'un'){
 }else{
     $number = 1;
 }
-
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
 
 if(!isset($id)){
     echo "잘못된 경로";

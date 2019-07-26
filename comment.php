@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html>
-<?php include 'setting.php'; include 'function.php'; FnCommentTemp();?>
+<?php require 'function.php';?>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="<?=$fnSiteFab?>" type="image/x-icon">
   <meta name="description" content="<?=$fnSiteDesc?>">
   <title><?=$fnSiteTitle?></title>
-  <link rel="stylesheet" href="layout.css">
   <?=$fnSite_google?>
 </head>
 <body>
-<?php    
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+<?php
 ?>
-<nav>
-        <p class="fntop">댓글 저장중...<br><br /></p>
-</nav>
-<section>
-<div style="background-color: #fff">
 <?php
 if(!empty($_POST['description'])){
   $desc = $_POST['description'];
@@ -130,28 +123,5 @@ if($result === false){
 }
 
 ?>
-</div>
-</section>
-<div id="yeobaek"></div>
-<footer>
-        <p class="fnbottom">Contact : admin@fnbase.xyz</p>
-</footer>
-  <section id="scripts">
-<script>
-
-
-var agent = navigator.userAgent.toLowerCase();
-
-function menu_click() {
-	alert("준비중입니다.");
-}
-
-if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ) {
-
-alert("이 웹사이트는 일부 구형 브라우저에서는 오류가 발생할 수 있습니다. 최신 버전 Chrome이나 Firefox를 사용하세요.");
-
-}
-</script>
-</section>
   </body>
 </html>

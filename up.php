@@ -1,10 +1,11 @@
 <?php
+#불러오기
 $is_file = file_exists('./setting.php');
 if($is_file == TRUE){
-include 'setting.php';
-include 'ip_ban.php';
+require 'function.php';
 }else{
 echo '<script>window.location.href = "./install/index.php";</script>';
+exit;
 }
 ?>
 <!doctype html>
@@ -36,31 +37,24 @@ echo '<script>window.location.href = "./install/index.php";</script>';
           @media (max-width: 800px) { .body .right-sidebar{display: none;}}
           .body .right-sidebar{float:right;width:20rem;padding:1rem 1rem 1rem 0}
     </style>
-
-    <link href="navbar.css" rel="stylesheet">
   </head>
   <body style="background-color: <?php echo $fnSiteSubColor;?>">
 <!-- 사전 정의 -->
 <header style="display: none">
   <!-- 구글 사이트 관리 -->
 <?php echo $fnSite_google; ?>
- <!-- PHP DB 연결 및 세션 시작 -->
                                 <?php
-session_start();
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+
 //    PHP 차단 여부 체크
 if(!empty($_SESSION['userid'])){
   $sql = "SELECT * FROM `_account` WHERE `id` LIKE '".$_SESSION['userid']."'";
   $result = mysqli_query($conn, $sql);
-  while($raw = mysqli_fetch_array($result)){
-  $stat = $raw['ban'];
+    while($raw = mysqli_fetch_array($result)){
+    $ban = $raw['ban'];
+    }
   }
-  }else{
-  $stat = '0';
-  }
-if($stat == 1){
-  echo '<div class="jumbotron"><p class="display-4">당신은 차단당했습니다...<br>';
-  echo '<a href="#">차단소명 하러가기</a></p></div>';
+if($ban == 1){
+  echo '<div class="jumbotron"><p class="display-4">당신의 계정은 차단당했습니다...<br></div>';
   exit;
 }
                                 ?>
@@ -73,7 +67,7 @@ if($stat == 1){
     <div class="collapse navbar-collapse" id="navbarsExample07">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">공립</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">공설</a>
           <div class="dropdown-menu">
           <a class="dropdown-item" href="/b/board">방명록</a>
             <div class="dropdown-divider"></div>
@@ -82,16 +76,14 @@ if($stat == 1){
             </div>
         </li>
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">명문</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">인기</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/b/wrtnv">창작소설 채널</a>
-              <a class="dropdown-item" href="/b/alter">대안 채널</a>
-              <a class="dropdown-item" href="/b/doge">지리 채널</a>
+              <a class="dropdown-item" href="/b/fn2nd">가상국가 채널</a>
               <a class="dropdown-item" href="/b/civil">문명국 시뮬 채널</a>
             </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="/p/">사립</a>
+          <a class="nav-link text-white" href="/p/">전체</a>
         </li>
       </ul>
   </div>
@@ -115,6 +107,7 @@ if(!empty($_SESSION['userid'])){
 </nav>
   <main style="background-color: transparent" role="main">
     <div style="height: 40px; width: 100%"></div>
+<span style="float:left" class="badge"><!-- 공지 --></span>
 <div class="container">
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css'/>
 <script src='//code.jquery.com/jquery.min.js'></script>

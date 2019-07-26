@@ -1,14 +1,14 @@
 <?php
 $ifindex = true;
 $readpage = $_GET['page'];
-include 'setting.php';
+include_once 'setting.php';
 if($fnSite_Homepage == 'recent'){
     if(empty($_GET['b'])){
     include 'recent.php';
     exit;
     }
 }
-include 'up.php';
+require 'up.php';
 $board = $_GET['b'];
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
 $result = mysqli_query($conn, $sql);
@@ -19,23 +19,31 @@ while($row = mysqli_fetch_array($result)){
     $boardname = $row['name'].' '.$row['suffix'];
     $boardsuffix = $row['suffix'];
     $owner = $row['owner'];
+    $keeper = $row['keeper'];
+    $volun = $row['volunteer'];
     $boardstat = $row['stat'];
     $boardnum = $row['num'];
     $notice = $row['notice'];
+
     if(!empty($row['text'])){
         $boardtext = '<span style="color: gray; font-size: 0.5em; text-decoration: none">'.$row['text'].'</span><br>';
     }else{
         $boardtext = '';
     }
     if($boardstat == 1){
-        $boardstat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
+        $boardcat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
     }elseif($boardstat == 0){
-        $boardstat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
+        $boardcat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
     }elseif($boardstat == 8){
-        $boardstat = '<span class="badge badge-warning">비활성</span>';
+        $boardcat = '<span class="badge badge-warning">비활성</span>';
         $nowrite = true;
     }elseif($boardstat == 9){
-        $boardstat = '<span class="badge badge-danger">차단됨</span>';
+        $boardcat = '<span class="badge badge-danger">차단됨</span>';
+        $nowrite = true;
+    }elseif($boardstat == 2){
+        $boardcat = '<span class="badge badge-info">제휴</span>';
+    }elseif($boardstat == 3){
+        $boardcat = '<span class="badge badge-secondary">도움말</span>';
         $nowrite = true;
     }
 }
@@ -44,6 +52,55 @@ while($row = mysqli_fetch_array($result)){
     include_once 'down.php';
     exit;
 }
+
+$kpr = strpos($keeper, $_SESSION['userid']);
+        if($kpr === true){
+            $sql = "SELECT * FROM `_userRights` WHERE `type` like '3'";
+            $result = mysqli_query($conn, $sql);
+            while($row = mysqli_fetch_array($result)){
+                if($row['editBoardInfo'] == 1){
+                    $editBoard = true;
+                }
+                if($row['kickAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['deleteAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['makeBoardNotice'] == 1){
+                    $makeNotice = true;
+                }
+                $isOwner = false;
+            }
+        }
+        $vlt = strpos($volun, $_SESSION['userid']);
+        if($vlt === true){
+            $sql = "SELECT * FROM `_userRights` WHERE `type` like '2'";
+            $result = mysqli_query($conn, $sql);
+            while($row = mysqli_fetch_array($result)){
+                if($row['editBoardInfo'] == 1){
+                    $editBoard = true;
+                }
+                if($row['kickAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['deleteAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['makeBoardNotice'] == 1){
+                    $makeNotice = true;
+                }
+                $isOwner = false;
+            }
+        }
+        if($owner === $_SESSION['userid']){
+            $makeNotice = true;
+            $canKick = true;
+            $canDelete = true;
+            $editBoard = true;
+            $isOwner = true;
+        }
+
 $db = $conn;
 
 if(isset($_GET['page'])) {
@@ -108,9 +165,22 @@ $result = $db->query($sql);
     <div style="padding-left:3px;padding-right:3px">
             <hr>
                 <form method="post" action="/write.php">
-                <h4><?php echo '<a style="color:black" href="/b/'.$board.'">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
-                <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
+                <h4><?php echo '<a style="color:black" href="/b/'.$board.'">'.$boardname.'</a>';
+                if(!$nowrite === true){
+                    echo '<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>
+                    <span style="float:right">&nbsp;</span>';}
+                    if($editBoard == true){
+                echo '<a href="'.$_SERVER['REQUEST_URI'].'/admin">'.'<button type="button" class="btn-sm btn-danger" style="float: right"
+                >채널 설정</button></a>';}
+                $sql1 = "SELECT * FROM `_account` WHERE `name` LIKE '$owner'";
+                $result1 = mysqli_query($conn, $sql1);
+                while($row1 = mysqli_fetch_array($result1)){
+                    $owner_id = $row1['id'];
+                }
+                ?>
+                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?php echo $owner_id;
+                ?>">@<?php echo $owner;?></a></span><br>
+                <?php echo '<span class="h6">'.$boardcat.'</span>&nbsp;'; echo $boardtext;?></h4>
                 <input type="hidden" name="from" value="<?php echo $board ?>">
                 </form>
         </div>
@@ -193,7 +263,7 @@ $result = $db->query($sql);
                         style="color:gray">'.$dot.'</span>'; echo ' &nbsp; <span class="badge badge-secondary">'.$row['comment'].'</span>'; ?></a><br>
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                     </td>
-                    <td><?php echo '<a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a>'; ?></td>
+                    <td><?php echo '<a href="/user.php?a='.$row['author_id'].'">'.$row['name'].'</a>'; ?></td>
                     <td><?php 
                     if($row['stat'] == 0){
                         $c = 'light';

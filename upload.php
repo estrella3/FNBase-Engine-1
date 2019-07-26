@@ -1,6 +1,6 @@
 <?php
 $date = date("sYuw");
-include 'up.php';
+require 'up.php';
 if(empty($_POST['mode'])){
 echo '<form enctype="multipart/form-data" action="upload.php" method="post">
 	<input type="file" name="myfile">

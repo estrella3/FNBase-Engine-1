@@ -1,6 +1,5 @@
 <?php
-include 'up.php';
-include 'function.php';
+require 'up.php';
         $board = Filt($_GET['b']);
         $id = Filt($_GET['id']);
         echo Filt($_GET['a']);
@@ -35,8 +34,9 @@ include 'function.php';
                     </div>
                     <div class="modal-body">
                         <form class="form-inline" method="post" action="/blame.php?a=b">
-                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref">신고 사유</label>
-                            <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="repOpt">
+                            <label class="my-1 mr-2" for="inlineFormCustomSelectPref1">신고 사유</label>
+                            <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref1" name="repOpt"
+                            onchange="document.getElementById(\'repCheck\').style.display = \'\';">
                             <option disabled selected>--선택해주세요.--</option>
                             <option value="1">선정적이거나 과도한 폭력성을 띔</option>
                             <option value="2">광고</option>
@@ -47,9 +47,9 @@ include 'function.php';
                             <option value="7">기타 사유</option>
                             </select>
                         
-                            <div class="custom-control custom-checkbox my-1 mr-sm-2">
-                            <input type="checkbox" class="custom-control-input" id="customControlInline">
-                            <label class="custom-control-label" for="customControlInline"
+                            <div class="custom-control custom-checkbox my-1 mr-sm-2" id="repCheck" style="display:none">
+                            <input type="checkbox" class="custom-control-input" id="customControlInline1">
+                            <label class="custom-control-label" for="customControlInline1"
                             onclick="document.getElementById(\'submitModal\').disabled = \'\';">신고에 대한 책임을 감수하겠습니다.</label>
                             </div>
                     </div>
@@ -83,6 +83,8 @@ include 'function.php';
             $boardname = $row['name'].' '.$row['suffix'];
             $boardsuffix = $row['suffix'];
             $owner = $row['owner'];
+            $keeper = $row['keeper'];
+            $volun = $row['volunteer'];
             $boardstat = $row['stat'];
             $boardnum = $row['num'];
             $notice = $row['notice'];
@@ -92,14 +94,19 @@ include 'function.php';
                 $boardtext = '';
             }
             if($boardstat == 1){
-                $boardstat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
+                $boardcat = '<span class="badge badge-primary">공식 '.$boardsuffix.'</span>';
             }elseif($boardstat == 0){
-                $boardstat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
+                $boardcat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
             }elseif($boardstat == 8){
-                $boardstat = '<span class="badge badge-warning">비활성</span>';
+                $boardcat = '<span class="badge badge-warning">비활성</span>';
                 $nowrite = true;
             }elseif($boardstat == 9){
-                $boardstat = '<span class="badge badge-danger">차단됨</span>';
+                $boardcat = '<span class="badge badge-danger">차단됨</span>';
+                $nowrite = true;
+            }elseif($boardstat == 2){
+                $boardcat = '<span class="badge badge-info">제휴</span>';
+            }elseif($boardstat == 3){
+                $boardcat = '<span class="badge badge-secondary">도움말</span>';
                 $nowrite = true;
             }
         }
@@ -108,12 +115,68 @@ include 'function.php';
             include_once 'down.php';
             exit;
         }
+        $kpr = strpos($keeper, $_SESSION['userid']);
+        if($kpr === true){
+            $sql = "SELECT * FROM `_userRights` WHERE `type` like '3'";
+            $result = mysqli_query($conn, $sql);
+            while($row = mysqli_fetch_array($result)){
+                if($row['editBoardInfo'] == 1){
+                    $editBoard = true;
+                }
+                if($row['kickAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['deleteAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['makeBoardNotice'] == 1){
+                    $makeNotice = true;
+                }
+                $isOwner = false;
+            }
+        }
+        $vlt = strpos($volun, $_SESSION['userid']);
+        if($vlt === true){
+            $sql = "SELECT * FROM `_userRights` WHERE `type` like '2'";
+            $result = mysqli_query($conn, $sql);
+            while($row = mysqli_fetch_array($result)){
+                if($row['editBoardInfo'] == 1){
+                    $editBoard = true;
+                }
+                if($row['kickAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['deleteAnother'] == 1){
+                    $canKick = true;
+                }
+                if($row['makeBoardNotice'] == 1){
+                    $makeNotice = true;
+                }
+                $isOwner = false;
+            }
+        }
+        if($owner === $_SESSION['userid']){
+            $makeNotice = true;
+            $canKick = true;
+            $canDelete = true;
+            $editBoard = true;
+            $isOwner = true;
+        }
         ?><div style="padding-left:3px;padding-right:3px">
         <hr>
             <form method="post" action="/write.php">
-            <h4><?php echo '<a style="color:black" href="/b/'.$board1.'">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
-            <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
+            <h4><?php echo '<a style="color:black" href="/b/'.$board1.'">'.$boardname.'</a>'; if(!$nowrite === true){echo
+                '<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button><span style="float:right">&nbsp;</span>';}
+                if($editBoard == true){
+                    echo '<a href="../admin"><button type="button" class="btn-sm btn-danger" style="float: right">채널 설정</button></a>';}
+                    $sql1 = "SELECT * FROM `_account` WHERE `name` LIKE '$owner'";
+                    $result1 = mysqli_query($conn, $sql1);
+                    while($row1 = mysqli_fetch_array($result1)){
+                        $owner_id = $row1['id'];
+                    }
+                    ?>
+            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?=$owner_id?>">@<?php echo $owner;?></a></span><br>
+            <?php echo '<span class="h6">'.$boardcat.'</span>&nbsp;'; echo $boardtext;?></h4>
             <input type="hidden" name="from" value="<?php echo $board1 ?>">
             </form>
         <hr>
@@ -165,7 +228,7 @@ include 'function.php';
         $rowarname = $row['name'];
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
         echo '<form method="post" action="/edit.php"><b><a href="/user.php?a='
-        .$row['name'].'">'.$row['name'].'</a></b><span style="color: gray; font-size: 7pt">('
+        .$row['author_id'].'">'.$row['name'].'</a></b><span style="color: gray; font-size: 7pt">('
         .$row['author_id'].')</span> / <span style="color: gray">'
         .$row['created']. '</span> <a class="badge badge-secondary" data-toggle="collapse" 
         href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">상세정보</a>
@@ -189,7 +252,59 @@ include 'function.php';
         $n++;
         }
         echo "</div>";
-        echo '<table width="100%">';
+        if($makeNotice == TRUE){ #추가해야할부분 2019 07 26 15:58
+            echo '<form method="post" action="/owner_tool.php?mode=pin"><table class="table"><tr><td>
+            <input type="hidden" name="from" value="'.$board.'">
+            <input type="hidden" name="id" value="'.$id.'">';
+            echo '<button type="submit" class="badge badge-primary text-white" style="float:right">공지로 지정</button>';
+                if($canDelete == TRUE){
+                    echo '<button type="submit" formaction="/owner_tool.php?mode=del" class="badge badge-dark text-white" style="float:left">게시글 삭제</button>';
+                }
+                if($canKick == TRUE){
+                    echo '<button type="button" class="badge badge-danger text-white" style="float:left"
+                    data-toggle="modal" data-target="#kickModal">작성자 추방</button>';
+                    echo '
+                    <div class="modal fade" id="kickModal" tabindex="-1" role="dialog" aria-labelledby="kickModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="kickModalLabel">작성자 추방</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <label class="my-1 mr-2" for="inlineFormCustomSelectPref">추방 기간</label>
+                                <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="kicOpt"
+                                onchange="document.getElementById(\'kickCheck\').style.display = \'\';">
+                                <option disabled selected>--선택해주세요.--</option>
+                                <option value="1">1시간</option>
+                                <option value="2">1일</option>
+                                <option value="3">1주</option>
+                                <option value="4">1개월</option>
+                                <option value="5">6개월</option>
+                                <option value="6">1년</option>
+                                <option value="7">무기한</option>
+                                </select>
+
+                                <div class="custom-control custom-checkbox my-1 mr-sm-2" id="kickCheck" style="display:none">
+                                <input type="checkbox" class="custom-control-input" id="customControlInline">
+                                <label class="custom-control-label" for="customControlInline"
+                                onclick="document.getElementById(\'submitkickModal\').disabled = \'\';">제재에 대한 책임을 감수하겠습니다.</label>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" formaction="/owner_tool.php?mode=kick" class="btn btn-warning" id="submitkickModal" disabled>추방</button>
+
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                    ';
+                }
+            echo '</td></tr></table></form>';
+        }
+        echo '<table style="width:100%">';
         $sql = "SELECT * FROM `_comment` WHERE board = '".$board."' AND original = '{$id}'";
         $result = mysqli_query($conn, $sql);
         while ($row = mysqli_fetch_array($result)){
@@ -223,7 +338,7 @@ include 'function.php';
             <div class="media-body" '.$commentheadline.'>
             ';
             $rowname = $row['name'];
-            echo '<h5 class="mt-0"><a href="/user.php?a='.$row['name'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
+            echo '<h5 class="mt-0"><a href="/user.php?a='.$row['id'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
             echo '<p>'.$commentheadtext.$commentedited.$row['content'].$commentment.'</p>';
             echo '<span style="color: gray">'.$row['created'].'</span>';
             if($_SESSION['userid'] == $row['id']){
@@ -271,7 +386,7 @@ include 'function.php';
         <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
         <div class="media-body">
           <div id="fn_reply_'.$rep_num.'"><h5 class="mt-0">
-          <a href="/user.php?a='.$raw['name'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
+          <a href="/user.php?a='.$raw['id'].'">'.$raw['name'].'</a><span style="color: gray;font-size:0.5em">('.$raw['id'].')</h5>
             <p>'.$raw['content'].'</p></div><span style="color:gray">'.$raw['created'].'</span>';
             if($_SESSION['userid'] == $raw['id']){
                 echo ' <a class="badge badge-secondary text-white" href="/reply_mod.php?a=edit&n='.$raw['num'].'">수정</a>
@@ -316,7 +431,7 @@ include 'function.php';
                     $rep_num = $riw['num'];
                     echo '<div class="media mt-3"><img src="https://secure.gravatar.com/avatar/'.$hasht.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
                     <div class="media-body"><div id="fn_reply_'.$rep_num.'">
-                    <h6 class="mt-0"><a href="/user.php?a='.$riw['name'].'">'.$riw['name'].'
+                    <h6 class="mt-0"><a href="/user.php?a='.$riw['id'].'">'.$riw['name'].'
                     </a><span style="color: gray;font-size:0.5em">('.$riw['id'].')</h6>'.''.$riw['content'].'</div></div>
                     </div>
                     ';

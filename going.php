@@ -1,5 +1,5 @@
 <?php
-include "up.php";
+require "up.php";
 $id = $_POST['id'];
 ?>
 <div style="height: 50px; width: 100%">
@@ -22,5 +22,5 @@ $id = $_POST['id'];
         </div>
 </div>
 <?php
-        include "down.php";
+        require "down.php";
 ?>

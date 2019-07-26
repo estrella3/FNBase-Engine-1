@@ -1,6 +1,5 @@
 <?php
-include 'setting.php';
-        $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+include 'function.php';
         $id = $_POST['id'];
         $pw = $_POST['pw'];
         $email = $_POST['email'];

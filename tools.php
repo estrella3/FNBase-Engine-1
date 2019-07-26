@@ -1,6 +1,5 @@
 <?php
-include 'up.php';
-include 'function.php';
+require 'up.php';
 if(empty($_SESSION['userck'])){
     echo '<script>alert("로그인 후 이용 바랍니다.")</script>';
     $user = '_anon';

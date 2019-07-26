@@ -6,7 +6,7 @@ if($_COOKIE['dont'] == "yes"){
 }elseif($_COOKIE['writed'] == "yes"){
   echo "<script> alert('아직 글을 작성할 수 없습니다. 1분만 기다려주세요.'); history.back(); </script>";
 }else{
-include "up.php";
+require "up.php";
 if(isset($_SESSION['userid'])){
   $idNpw = '<input type="hidden" name="id" value="'.$_SESSION['userid'].'"><input type="hidden" name="pw" value="_logged"><input type="hidden" name="islogged" value="true">';
 }else{
@@ -47,6 +47,11 @@ if(isset($_SESSION['userid'])){
         }elseif($boardstat == 9){
             $boardstat = '<span class="badge badge-danger">차단됨</span>';
             $nowrite = true;
+        }elseif($boardstat == 2){
+          $boardstat = '<span class="badge badge-info">제휴</span>';
+        }elseif($boardstat == 3){
+          $boardstat = '<span class="badge badge-secondary">도움말</span>';
+          $nowrite = true;
         }
     }
         if(1 > mysqli_num_rows($result)){

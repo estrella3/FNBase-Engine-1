@@ -1,6 +1,5 @@
 <?php
-include 'up.php';
-include 'function.php';
+require 'up.php';
 $ip = $_SERVER['REMOTE_ADDR'];
 $a = FnFilter($_GET['a']);
 $id = FnFilter($_GET['n']);

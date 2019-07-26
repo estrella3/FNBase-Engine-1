@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<?php include 'setting.php'; include 'function.php';?>
+<?php require 'function.php';?>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -19,7 +19,6 @@ $board = "board";
 			$board = $getturn;
     }
     
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
 ?>
 <nav>
         <p class="fntop">글 저장중...<br><br /></p>

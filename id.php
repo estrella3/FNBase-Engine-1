@@ -1,5 +1,5 @@
 <?php
-include "up.php";
+require "up.php";
 ?>
 <p>&shy;</p>
 </div>
@@ -16,5 +16,5 @@ include "up.php";
         </div>
 
 <?php
-        include "down.php";
+        require "down.php";
 ?>

@@ -1,12 +1,10 @@
 <?php
-include 'setting.php';
+require 'function.php';
 if(empty($_POST['id'])){
         echo '잘못된 접근';
         exit;
 }
 $ip = $_SERVER['REMOTE_ADDR'];
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
-        session_start();
  
         $connect = $conn;
         function idpw($id){
@@ -101,7 +99,7 @@ $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBna
                         echo '데이터베이스 연결 실패';
                 }
         }else{
-                echo '<script>alert("존재하지 않는 아이디입니다.");</script>';
+                echo '<script>alert("아이디 혹은 비밀번호가 잘못되었습니다.");</script>';
         }
 
         if($go == 1){

@@ -9,14 +9,8 @@ RewriteRule ^([^/]*)-([^/]*).base$ /read.php?b=$1&id=$2& [L]
 
 RewriteRule ^b/([^/]*)$ /index.php?b=$1 [L]
 RewriteRule ^r/([^/]*)$ /recent.php?page=$1 [L]
-RewriteRule ^b/([^/]*)/([^/]*)$ /index.php?b=$1&page=$2 [L]
+RewriteRule ^b/([^/]*)/admin$ /admin.php?b=$1 [L]
+RewriteRule ^b/([^/]*)/([1-9]+)$ /index.php?b=$1&page=$2 [L]
 RewriteRule ^b/([^/]*)/([^/]*)/([^/]*)$ /read.php?b=$1&id=$3&page=$2 [L]
 
-<IfModule mod_php5.c>
-  php_value upload_max_filesize 3M
-</IfModule>	
-Order allow,deny
-Allow from all
-Deny from 195.154.*.*
-Deny from 62.210.*.*
-Deny from 37.115.*.*
+RewriteRule ^p/$ /private.php [L]

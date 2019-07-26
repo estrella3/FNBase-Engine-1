@@ -1,8 +1,5 @@
 <?php
-include 'setting.php';
-include 'function.php';
-session_start();
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+require 'function.php';
 if(!empty($_SESSION['userck'])){
     $p = $_SERVER['REMOTE_ADDR']; //아이피
     $b = FnFilter($_POST['from']); //상위 게시판
@@ -10,13 +7,18 @@ if(!empty($_SESSION['userck'])){
     $t = $_POST['title']; //원글 제목
     $n = $_SESSION['userck'];  //부른 사람
     $a = FnFilter($_POST['mentNickname']); //부를 사람
+        $sql = "SELECT * FROM `_account` WHERE `name` LIKE '$a'";
+        $result = mysqli_query($conn, $sql);
+        while($row = mysqli_fetch_array($result)){
+            $a_id = $row['id'];
+        }
 
             if($_SESSION['userck'] !== $a){
             $linktxt = $fnSite.'/b/'.$b.'/1/'.$m;
             $msgtxt = "[$n]님이 [$t] 게시글에 [$a]님을 호출하셨습니다.";
             $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$n', '$a', '0', '$msgtxt', '$linktxt', 'ment')";
             $result = mysqli_query($conn, $sql);
-            $a = '<a href="/user.php?a='.$a.'">'.$a.'</a>';
+            $a = '<a href="/user.php?a='.$a_id.'">'.$a.'</a>';
             $id = $_SESSION['userid'];
             $sql = "
         INSERT INTO `_comment`

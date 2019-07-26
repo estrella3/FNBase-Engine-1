@@ -1,6 +1,5 @@
 <?php
-include "up.php";
-include 'function.php';
+require "up.php";
 $id = $_POST['id'];
 $sql = "SELECT * FROM _account WHERE `id` LIKE '$id'";
 $result = mysqli_query($conn, $sql);
@@ -25,5 +24,5 @@ echo '<div style="height: 200px; width: 100%">
 <p>&shy;</p>
 </div></div></div>';
 }
-        include "down.php";
+        require "down.php";
 ?>

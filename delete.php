@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <?php
-include 'up.php';
-session_start();
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+require 'up.php';
 $id =  $_POST['id'];
 $b = $_POST['b'];
 $session = $_SESSION['userid'];
@@ -34,7 +32,7 @@ echo '<div class="container"><form action="delete.php" method="post">
 <section>
 <?php
 
-include "down.php";
+require "down.php";
 }}else{
     echo '본인 검증 오류';
 }
