@@ -3,12 +3,32 @@ require 'function.php';
 $id = $_POST['id'];
 $b = $_POST['b'];
 $ip = $_SERVER['REMOTE_ADDR'];
-$mode = $_GET['mode'];
+$mode = Filt($_GET['mode']);
 
 if($mode == 'un'){
     $number = -1;
 }else{
     $number = 1;
+}
+
+if($mode == 'go'){
+    $sql = "SELECT * FROM `_article` WHERE `id` like '$id';";
+    $result = mysqli_query($conn, $sql);
+    while($row = mysqli_fetch_array($result)){
+        $author = $row['author_id'];
+        $stat = $row['stat'];
+    }
+    if($stat > 7){
+        if(mysqli_num_rows($result) == 1){
+            $sql = "UPDATE `_article` SET `to`='recommend' WHERE `id` like '$id'";
+            $result = mysqli_query($conn, $sql);
+             if($result === FALSE){
+                 echo '<script>alert("게시글이 이미 이동되었거나 데이터베이스 연결 오류입니다. -- goHead");history.back()</script>';
+             }else{
+                 echo '<script>alert("추천 글로 선정되셨습니다.");history.go(-2)</script>';
+             }
+        }
+    }
 }
 
 if(!isset($id)){

@@ -1,53 +1,38 @@
 <?php
 require 'function.php';
-if(!empty($_SESSION['userck'])){
+if(empty($_POST['mode'])){
+if(!empty($_SESSION['userid'])){
     $p = $_SERVER['REMOTE_ADDR']; //아이피
     $b = FnFilter($_POST['from']); //상위 게시판
     $m = FnFilter($_POST['id']); //글 번호
     $t = $_POST['title']; //원글 제목
-    $i = $_SESSION['userid'];  //부른 사람
-    $n = $_SESSION['userck'];
-    $a = FnFilter($_POST['mentID']); //부를 사람
+    $n = $_SESSION['userid'];  //부른 사람
+    $a = FnFilter($_POST['a']); //부를 사람
         $sql = "SELECT * FROM `_account` WHERE `id` LIKE '$a'";
         $result = mysqli_query($conn, $sql);
-        if($result === FALSE){
-            echo '<script>alert("없는 사용자입니다.");history.back()</script>';
-            exit;
-        }
         while($row = mysqli_fetch_array($result)){
-            $a_nick = $row['id'];
+            $a_ck = $row['name'];
         }
-    $r = FnFilter($_POST['mentReason']);
+    $r = FnFilter($_POST['knockReason']);
 
-    $sql = "SELECT * from `_ment` WHERE `name` = '$i' ORDER BY `time` DESC limit 1"; #주의! name = id임
-    $result = mysqli_query($conn, $sql);
-    date_default_timezone_set('Asia/Seoul');
-    if($result === FALSE){
-        $CaValue = 0;
-    }
-    while($row = mysqli_fetch_array($result)){
-        $time = strtotime($row['time']);
-        $CaValue = strtotime(date("Y-m-d H:i:s")) - $time;
-    }
-    if($CaValue < 60){
-        $Value = 60 - $CaValue;
-        echo '<script>alert("'.$CaValue.'초 뒤에 다시 시도해주세요."); history.back()</script>';
+    if(empty($t)){
         exit;
     }
-            if($i !== $a){
+
+            if($_SESSION['userid'] !== $a){
             $linktxt = $fnSite.'/b/'.$b.'/1/'.$m;
-            $msgtxt = "[$n]님이 [$t] 게시글에 [$a_nick]님을 호출하셨습니다.";
-            $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$i', '$a', '0', '$msgtxt', '$linktxt', 'ment')";
+            $msgtxt = "[$n]님이 [$t] 게시글을 보고싶어합니다.";
+            $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$n', '$a', '0', '$msgtxt', '$linktxt', 'knock')";
             $result = mysqli_query($conn, $sql);
-            $a = '<a href="/user.php?a='.$a.'">'.$a_nick.'</a>';
-            
+            $a = '<a href="/user.php?a='.$a.'">'.$a_ck.'</a>';
+            $id = $_SESSION['userid'];
             $sql = "
         INSERT INTO `_comment`
             (board, original, id, name, content, remarks, stat, created, blame, secret, reply, ment)
             VALUES(
                 '{$b}',
                 '{$m}',
-                '{$i}',
+                '{$id}',
                 '{$n}',
                 '{$a}',
                 '{$r}',
@@ -56,7 +41,7 @@ if(!empty($_SESSION['userck'])){
                 '0',
                 '1',
                 '0',
-                '1'
+                '2'
             )
         ";
         $result = mysqli_query($conn, $sql);
@@ -76,12 +61,34 @@ if(!empty($_SESSION['userck'])){
         if($result === false){
         echo '데이터베이스 연결 오류';
         }
-}else{
-    echo '<script>alert("자기 자신을 호출할 수 없습니다!")</script>';
 }
-    echo '<script>history.go(-1)</script>';
+    echo '<script>history.go(-2)</script>';
 }else{
     echo '<script>alert("로그인이 필요합니다.");history.back()</script>';
     exit;
+}
+}elseif($_POST['mode'] === 'accept'){
+    $f = $_POST['from'];
+    $i = $_POST['id'];
+    $h = FnFilter($_POST['by']);
+    $n = FnFilter($_POST['num']);
+    
+    $sql = "SELECT * FROM `_article` WHERE `id` = {$i} and `from` = '{$f}';";
+    $result = mysqli_query($conn, $sql);
+        while($row = mysqli_fetch_array($result)){
+            $v = $row['issectxt'];
+        }
+    $v = $v.', '.$h;
+    $sql = "UPDATE `_article` SET `issectxt` = '$v', `issec` = '2' WHERE `id` = '$i' and `to` = '$f';";
+    $result = mysqli_query($conn, $sql);
+    if($result === false){
+    echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+    error_log(mysqli_error($conn));
+    }else{
+        $sql = "UPDATE `_comment` SET `ment` = '3' WHERE `num` = '$n';";
+        $result = mysqli_query($conn, $sql);
+        echo '<script>history.back()</script>';
+        exit;
+    }
 }
 ?>

@@ -73,13 +73,38 @@ if($ban == 1){
             <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/b/maint">운영실</a>
               <a class="dropdown-item" href="/b/social">사회 담론</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/b/recommend">추천 글 목록</a>
+              <a class="dropdown-item" href="/b/trash">휴지통</a>
             </div>
         </li>
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">인기</a>
+          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">구독</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/b/fn2nd">가상국가 채널</a>
-              <a class="dropdown-item" href="/b/civil">문명국 시뮬 채널</a>
+              <?php
+                #구독 처리 코드가 들어갈 자리
+                $u_id = $_SESSION['userid'];
+                $sql = "SELECT * from `_userSetting` WHERE `id` like '$u_id'";
+                $result = mysqli_query($conn, $sql);
+                while($row = mysqli_fetch_array($result)){
+                    $subList = $row['subList'];
+                }
+                if(empty($subList)){
+                  echo '<small><span class="text-muted">구독중인 게시판이 없습니다.</span></small>';
+                }
+                $arr = explode(",", $subList);
+                foreach ($arr as $value) 
+                {
+                  $b = substr($value, 1, -1);
+                    $sql = "SELECT * FROM `_board` WHERE `id` like '$b'";
+                    $result = mysqli_query($conn, $sql);
+                    while($row = mysqli_fetch_array($result)){
+                      $n = $row['name'];
+                      $s = ' '.$row['suffix'];
+                    }
+                  echo '<a class="dropdown-item" href="/b/'.$b.'">'.$n.$s.'</a>';
+                }
+              ?>
             </div>
         </li>
         <li class="nav-item">

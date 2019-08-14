@@ -5,6 +5,23 @@ $id = Filt($_POST['id']);
 $repOpt = Filt($_POST['repOpt']);
 $userid = $_SESSION['userid'];
 $uip = $_SERVER['REMOTE_ADDR'];
+
+$sql = "SELECT * from `_report` WHERE `ip` = '$uip' ORDER BY `time` DESC limit 1";
+$result = mysqli_query($conn, $sql);
+date_default_timezone_set('Asia/Seoul');
+if($result === FALSE){
+    $CaValue = 61;
+}
+while($row = mysqli_fetch_array($result)){
+    $time = strtotime($row['time']);
+    $CaValue = strtotime(date("Y-m-d H:i:s")) - $time;
+}
+if($CaValue < 60){
+    $Value = 60 - $CaValue;
+    echo '<script>alert("'.$Value.'초 뒤에 다시 시도해주세요."); history.back()</script>';
+    exit;
+}
+
 if(empty($_SESSION['userid'])){
 	echo '<script>alert("로그인 후 이용 바랍니다.");history.go(-1)</script>';
 	exit;

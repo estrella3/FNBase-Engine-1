@@ -1,5 +1,23 @@
 <?php
 require "up.php";
+
+$u_id = $_SESSION['userid'];
+$sql = "SELECT * from `_edit` WHERE `author_id` = '$u_id' ORDER BY `time` DESC limit 1";
+$result = mysqli_query($conn, $sql);
+date_default_timezone_set('Asia/Seoul');
+if($result === FALSE){
+    $CaValue = 61;
+}
+while($row = mysqli_fetch_array($result)){
+    $time = strtotime($row['time']);
+    $CaValue = strtotime(date("Y-m-d H:i:s")) - $time;
+}
+if($CaValue < 30){
+    $Value = 30 - $CaValue;
+    echo '<script>alert("'.$Value.'초 뒤에 다시 시도해주세요."); history.back()</script>';
+    exit;
+}
+
 $id =  $_POST['id'];
 $b = $_POST['b'];
 $session = $_SESSION['userid'];

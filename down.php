@@ -31,28 +31,38 @@ $result = mysqli_query($conn, $sql);
 }
 
 #멘션 보여주는 부분
-if(!empty($_SESSION['userid'])){
-$userck = $_SESSION['userck'];
-$sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userck' and `read` like 0";
+
+$sql = "SELECT * from `_userSetting` WHERE `id` like '".$user."'";
 $result = mysqli_query($conn, $sql);
-if(1 <= mysqli_num_rows($result)){
 while($row = mysqli_fetch_array($result)){
-  $link = $row['link'];
-  $no = $row['no'];
-  echo "<script>
-	toastr.options = {
-        'positionClass': 'toast-bottom-right',
-        'closeButton': true,
-        'timeOut': 3000,
-        'onclick': function() {
-          location.replace('$link&no=$no')
-        }
-  }
-		toastr.success('".$row['msg']."','<h4>전해드려요!</h4>')
-</script>";
+      $showAlerts = $row['showAlerts'];
 }
+if($showAlerts == '1'){
+      if(!empty($_SESSION['userid'])){
+                  $userck = $_SESSION['userck'];
+                  $sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userck' and `read` like 0";
+                  $result = mysqli_query($conn, $sql);
+            if(1 <= mysqli_num_rows($result)){
+                  while($row = mysqli_fetch_array($result)){
+                  $link = $row['link'];
+                  $no = $row['no'];
+                  echo "<script>
+                        toastr.options = {
+                        'positionClass': 'toast-bottom-right',
+                        'closeButton': true,
+                        'timeOut': 3000,
+                        'onclick': function() {
+                        location.replace('$link&no=$no')
+                        }
+                  }
+                        toastr.success('".$row['msg']."','<h4>전해드려요!</h4>')
+            </script>";
+                  }
+            }
+      }
 }
-}
+
+
 ?>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>

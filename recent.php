@@ -19,7 +19,7 @@ while($row = mysqli_fetch_array($result)){
     }elseif($boardstat == 0){
         $boardstat = '<span class="badge badge-light">사설 '.$fnSiteBoardName.'</span>';
     }elseif($boardstat == 8){
-        $boardstat = '<span class="badge badge-warning">비활성</span>';
+        $boardstat = '<span class="badge badge-warning">특수</span>';
         $nowrite = true;
     }
 }
@@ -78,21 +78,21 @@ if($page != $allPage) {
 $paging .= '</tr>';
 $currentLimit = ($onePage * $page) - $onePage;
 $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
-$sql = 'select * from `_article` order by id desc' . $sqlLimit;
-$result = $db->query($sql);
+
 ?>
 <article>
     <div class="container">
     <div style="padding-left:3px;padding-right:3px">
             <hr>
                 <form method="post" action="/write.php">
-                <h4><?php echo $boardname.' 	글 목록'; echo '<button type="button" class="btn-sm btn-warning" style="float: right">구독 설정</button>';
-                                $sql1 = "SELECT * FROM `_account` WHERE `name` LIKE '$owner'";
+                <h4><?php echo $boardname.' 글 목록'; echo '<a href="/subscribe.php">
+                <button type="button" class="btn-sm btn-warning" style="float: right">구독 글 보기</button></a>';
+                                $sql1 = "SELECT * FROM `_account` WHERE `id` LIKE '$owner'";
                                 $result1 = mysqli_query($conn, $sql1);
                                 while($row1 = mysqli_fetch_array($result1)){
-                                    $owner_id = $row1['id'];
+                                    $owner_n = $row1['name'];
                                 }?>
-                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 관리인 : <a href="/user.php?a=<?=$owner_id?>">@<?php echo $owner;?></a></span><br>
+                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 관리인 : <a href="/user.php?a=<?=$owner?>">@<?php echo $owner_n;?></a></span><br>
                 <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
                 <input type="hidden" name="from" value="<?php echo $board ?>">
                 </form>
@@ -135,6 +135,59 @@ $result = $db->query($sql);
         <td>'.$owner.'</td>
         <td>&nbsp;</td>
         </tr>';}
+
+        $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'top' ORDER BY `num` desc LIMIT 20"; #상단 공지
+        $result_ = $db->query($sql_);
+        while($row_ = $result_->fetch_assoc())
+        {   
+            
+            $a_id = $row_['article_id'];
+            $sql = "select * from `_article` WHERE `id` LIKE $a_id";
+            $result = $db->query($sql);
+            while($row = $result->fetch_assoc())
+            {
+            $from = $row['to'];
+            $datetime = explode(' ', $row['created']);
+            $date = $datetime[0];
+            $time = $datetime[1];
+            $id = $row['id'];
+            $time = explode(':', $time);
+            $date = explode('-', $date);
+            $date[1] = $date[1].'월 ';
+            $date[2] = $date[2].'일 '; 
+            $d = $date[1].$date[2];
+            if($time[0] <= 11)
+                    $time0 = "오전 ".$time[0].'시 ';
+            if($time[0] >= 12)
+                    $time0 = "오후 ".$time[0].'시 ';
+            if($date == Date('Y-m-d'))
+                        echo $time[1];
+                        $time1 = $time[1];
+                        $time2 = $time[2];
+                    $s = "$time0 $time1 분 $time2 초";
+            if($date !== Date('Y-m-d'))
+                    $create = $d.$s;
+
+        if($readpage == ''){
+            $readpage = 1;
+        }
+        if($row['view'] > 999){$row['view'] = '1000+';}
+        $title = '<strong>'.$row['title'].'</strong>';
+        if($row['issec'] == 2){
+            $islock = '<span class="badge badge-secondary">기밀</span> ';
+        }elseif($row['issec'] == 1){
+            $islock = '<span class="badge badge-dark">비밀</span> ';
+        }else{
+            $islock = '';
+        }
+        echo '<tr><td><a class="links" href="/b/'.$from.'/'.$readpage.'/'.$id.'"> <span class="badge badge-light">공지</span> ';
+        echo $islock.$title.'<span style="color:gray">'.$dot.'</span></a><br>'; 
+        echo '<span style="color: gray; font-size: 8pt">'.$create.'</span><span style="color: gray; font-size: 7pt"> 조회수 </span>';
+        echo '<span style="color: green; font-size: 7pt">'.$row['view'].'</span>';
+        echo '</td><td><a href="/user.php?a='.$row['author_id'].'">'.$row['name'].'</a></td><td></td></tr>'; }}
+
+                        $sql = "SELECT * from `_article` where `to` not in('trash') order by id desc ".$sqlLimit;
+                        $result = $db->query($sql);
                         while($row = $result->fetch_assoc())
                         {
                             $datetime = explode(' ', $row['created']);
@@ -228,7 +281,59 @@ $result = $db->query($sql);
     </div>
 </article>
 <hr>
-<?php mysqli_close($conn);
+<?php 
+            $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'bottom' ORDER BY `num` desc LIMIT 20"; #상단 공지
+            $result_ = $db->query($sql_);
+            echo '<div class="container"><table class="table table-striped"><tbody>';
+            while($row_ = $result_->fetch_assoc())
+            {   
+                
+                $a_id = $row_['article_id'];
+                $sql = "select * from `_article` WHERE `id` LIKE $a_id";
+                $result = $db->query($sql);
+                while($row = $result->fetch_assoc())
+                {
+                $from = $row['to'];
+                $datetime = explode(' ', $row['created']);
+                $date = $datetime[0];
+                $time = $datetime[1];
+                $id = $row['id'];
+                $time = explode(':', $time);
+                $date = explode('-', $date);
+                $date[1] = $date[1].'월 ';
+                $date[2] = $date[2].'일 '; 
+                $d = $date[1].$date[2];
+                if($time[0] <= 11)
+                        $time0 = "오전 ".$time[0].'시 ';
+                if($time[0] >= 12)
+                        $time0 = "오후 ".$time[0].'시 ';
+                if($date == Date('Y-m-d'))
+                            echo $time[1];
+                            $time1 = $time[1];
+                            $time2 = $time[2];
+                        $s = "$time0 $time1 분 $time2 초";
+                if($date !== Date('Y-m-d'))
+                        $create = $d.$s;
+
+            if($readpage == ''){
+                $readpage = 1;
+            }
+            if($row['view'] > 999){$row['view'] = '1000+';}
+            $title = '<strong>'.$row['title'].'</strong>';
+            if($row['issec'] == 2){
+                $islock = '<span class="badge badge-secondary">기밀</span> ';
+            }elseif($row['issec'] == 1){
+                $islock = '<span class="badge badge-dark">비밀</span> ';
+            }else{
+                $islock = '';
+            }
+            echo '<tr><td><a class="links" href="/b/'.$from.'/'.$readpage.'/'.$id.'"> <span class="badge badge-light">공지</span> ';
+            echo $islock.$title.'<span style="color:gray">'.$dot.'</span></a><br>'; 
+            echo '<span style="color: gray; font-size: 8pt">'.$create.'</span><span style="color: gray; font-size: 7pt"> 조회수 </span>';
+            echo '<span style="color: green; font-size: 7pt">'.$row['view'].'</span>';
+            echo '</td><td><a href="/user.php?a='.$row['author_id'].'">'.$row['name'].'</a></td><td></td></tr>'; }}
+            echo '</tbody></table></div>';
+
 $is_board = TRUE;
 include 'down.php';
 ?>

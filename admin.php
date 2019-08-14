@@ -30,7 +30,7 @@ while($row = mysqli_fetch_array($result)){
     }elseif($boardstat == 0){
         $boardcat = '<span class="badge badge-light">사설</span>';
     }elseif($boardstat == 8){
-        $boardcat = '<span class="badge badge-warning">비활성</span>';
+        $boardcat = '<span class="badge badge-warning">특수</span>';
         $nowrite = true;
     }elseif($boardstat == 9){
         $boardcat = '<span class="badge badge-danger">차단됨</span>';

@@ -1,10 +1,27 @@
 <?php
 require 'function.php';
+
+$u_id = $_SESSION['userid'];
+$sql = "SELECT * from `_edit` WHERE `id` = '$u_id' ORDER BY `created` DESC limit 1";
+$result = mysqli_query($conn, $sql);
+date_default_timezone_set('Asia/Seoul');
+if($result === FALSE){
+    $CaValue = 61;
+}
+while($row = mysqli_fetch_array($result)){
+    $time = strtotime($row['created']);
+    $CaValue = strtotime(date("Y-m-d H:i:s")) - $time;
+}
+if($CaValue < 30){
+    $Value = 30 - $CaValue;
+    echo '<script>alert("'.$Value.'초 뒤에 다시 시도해주세요."); history.back()</script>';
+    exit;
+}
+
 if(empty($_SESSION['userid'])){
   echo '로그인이 필요합니다.';
   exit;
 }
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
 if(empty($_POST['o'])){
     echo '원 댓글 값이 존재하지 않습니다.';
     exit;

@@ -1,11 +1,4 @@
 <?php
-if($_COOKIE['dont'] == "yes"){
-  setcookie('writed', 'yes', time() + 200);
-  echo "<script> alert('연속으로 글을 작성하였습니다. 글 작성이 3분간 제한됩니다.'); history.back(); </script>";
-  die();
-}elseif($_COOKIE['writed'] == "yes"){
-  echo "<script> alert('아직 글을 작성할 수 없습니다. 1분만 기다려주세요.'); history.back(); </script>";
-}else{
 require "up.php";
 if(isset($_SESSION['userid'])){
   $idNpw = '<input type="hidden" name="id" value="'.$_SESSION['userid'].'"><input type="hidden" name="pw" value="_logged"><input type="hidden" name="islogged" value="true">';
@@ -16,16 +9,29 @@ if(isset($_SESSION['userid'])){
   echo "JavaScript를 허용해주세요.";
   exit;
 }
-    $getturn = $_POST['from'];
-		if(isset($getturn)){
-			$board = $getturn;
-    }
+
+$u_id = $_SESSION['userid'];
+$sql = "SELECT * from `_article` WHERE `author_id` = '$u_id' ORDER BY `created` DESC limit 1"; #주의! name = id임
+$result = mysqli_query($conn, $sql);
+date_default_timezone_set('Asia/Seoul');
+if($result === FALSE){
+    $CaValue = 61;
+}
+while($row = mysqli_fetch_array($result)){
+    $time = strtotime($row['created']);
+    $CaValue = strtotime(date("Y-m-d H:i:s")) - $time;
+}
+if($CaValue < 60){
+    $Value = 60 - $CaValue;
+    echo '<script>alert("'.$Value.'초 뒤에 다시 시도해주세요."); history.back()</script>';
+    exit;
+}
+
+    $board = FnFilter($_POST['from']);
     $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
     $result = mysqli_query($conn, $sql);
     
     while($row = mysqli_fetch_array($result)){
-    
-        $board1 = $row['id'];
         $boardname = $row['name'].' '.$row['suffix'];
         $boardsuffix = $row['suffix'];
         $owner = $row['owner'];
@@ -42,7 +48,7 @@ if(isset($_SESSION['userid'])){
         }elseif($boardstat == 0){
             $boardstat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
         }elseif($boardstat == 8){
-            $boardstat = '<span class="badge badge-warning">비활성</span>';
+            $boardstat = '<span class="badge badge-warning">특수</span>';
             $nowrite = true;
         }elseif($boardstat == 9){
             $boardstat = '<span class="badge badge-danger">차단됨</span>';
@@ -54,6 +60,53 @@ if(isset($_SESSION['userid'])){
           $nowrite = true;
         }
     }
+    $kpr = strpos($keeper, $_SESSION['userid']);
+    if($kpr === true){
+    $sql = "SELECT * FROM `_userRights` WHERE `type` like '3'";
+    $result = mysqli_query($conn, $sql);
+    while($row = mysqli_fetch_array($result)){
+        if($row['editBoardInfo'] == 1){
+            $editBoard = true;
+        }
+        if($row['kickAnother'] == 1){
+            $canKick = true;
+        }
+        if($row['deleteAnother'] == 1){
+            $canKick = true;
+        }
+        if($row['makeBoardNotice'] == 1){
+            $makeNotice = true;
+        }
+        $isOwner = false;
+    }
+    }
+    $vlt = strpos($volun, $_SESSION['userid']);
+    if($vlt === true){
+    $sql = "SELECT * FROM `_userRights` WHERE `type` like '2'";
+    $result = mysqli_query($conn, $sql);
+    while($row = mysqli_fetch_array($result)){
+        if($row['editBoardInfo'] == 1){
+            $editBoard = true;
+        }
+        if($row['kickAnother'] == 1){
+            $canKick = true;
+        }
+        if($row['deleteAnother'] == 1){
+            $canKick = true;
+        }
+        if($row['makeBoardNotice'] == 1){
+            $makeNotice = true;
+        }
+        $isOwner = false;
+    }
+    }
+    if($owner === $_SESSION['userid']){
+    $makeNotice = true;
+    $canKick = true;
+    $canDelete = true;
+    $editBoard = true;
+    $isOwner = true;
+    }
         if(1 > mysqli_num_rows($result)){
         echo '<script>alert("없는 게시판입니다.")</script>';
         include_once 'down.php';
@@ -61,12 +114,21 @@ if(isset($_SESSION['userid'])){
     }
     ?><div style="padding-left:3px;padding-right:3px">
     <hr>
-        <form method="post" action="write.php">
-        <h4><?php echo '<a style="color:black" href="'.$board1.'.fn">'.$boardname.'</a>'; if(!$nowrite === true){echo'<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button>';}?>
-        <span style="color: gray; font-size: 0.5em; text-decoration: none">| 주인 : <a href="/user.php?a=<?php echo $owner;?>">@<?php echo $owner;?></a></span><br>
-        <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
-        <input type="hidden" name="from" value="<?php echo $board1 ?>">
-        </form>
+    <form method="post" action="/write.php">
+            <h4><?php echo '<a style="color:black" href="/b/'.$board.'">'.$boardname.'</a>'; if(!$nowrite === true){echo
+                '<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button><span style="float:right">&nbsp;</span>';}
+                if($editBoard == true){
+                    echo '<a href="/b/'.$board.'/admin"><button type="button" class="btn-sm btn-danger" style="float: right">채널 설정</button></a>';}
+                    $sql1 = "SELECT * FROM `_account` WHERE `id` LIKE '$owner'";
+                    $result1 = mysqli_query($conn, $sql1);
+                    while($row1 = mysqli_fetch_array($result1)){
+                        $owner_n = $row1['name'];
+                    }
+                    ?>
+            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?=$owner?>">@<?php echo $owner_n;?></a></span><br>
+            <?php echo '<span class="h6">'.$boardstat.'</span>&nbsp;'; echo $boardtext;?></h4>
+            <input type="hidden" name="from" value="<?php echo $board ?>">
+            </form>
     <hr>
 </div><?php
     //차단 여부 확인
@@ -136,4 +198,4 @@ echo '
     </div>
 ';
 }
-include "down.php"; } ?>
+require "down.php";?>

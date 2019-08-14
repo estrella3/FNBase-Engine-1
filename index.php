@@ -10,6 +10,7 @@ if($fnSite_Homepage == 'recent'){
 }
 require 'up.php';
 $board = $_GET['b'];
+
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
 $result = mysqli_query($conn, $sql);
 
@@ -24,9 +25,10 @@ while($row = mysqli_fetch_array($result)){
     $boardstat = $row['stat'];
     $boardnum = $row['num'];
     $notice = $row['notice'];
+    $boardsub = $row['sub'];
 
     if(!empty($row['text'])){
-        $boardtext = '<span style="color: gray; font-size: 0.5em; text-decoration: none">'.$row['text'].'</span><br>';
+        $boardtext = '<span style="color: gray; font-size: 0.5em; text-decoration: none">'.$row['text'].'</span>';
     }else{
         $boardtext = '';
     }
@@ -35,7 +37,7 @@ while($row = mysqli_fetch_array($result)){
     }elseif($boardstat == 0){
         $boardcat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
     }elseif($boardstat == 8){
-        $boardcat = '<span class="badge badge-warning">비활성</span>';
+        $boardcat = '<span class="badge badge-warning">특수</span>';
         $nowrite = true;
     }elseif($boardstat == 9){
         $boardcat = '<span class="badge badge-danger">차단됨</span>';
@@ -53,8 +55,9 @@ while($row = mysqli_fetch_array($result)){
     exit;
 }
 
-$kpr = strpos($keeper, $_SESSION['userid']);
-        if($kpr === true){
+$u_id = $_SESSION['userid'];
+        $kpr = preg_match("/^$u_id$/", $keeper, $kpr_res);
+        if(!empty($kpr_res)){
             $sql = "SELECT * FROM `_userRights` WHERE `type` like '3'";
             $result = mysqli_query($conn, $sql);
             while($row = mysqli_fetch_array($result)){
@@ -73,8 +76,8 @@ $kpr = strpos($keeper, $_SESSION['userid']);
                 $isOwner = false;
             }
         }
-        $vlt = strpos($volun, $_SESSION['userid']);
-        if($vlt === true){
+        $vlt = preg_match("/^$u_id$/", $volun, $vlt_res);
+        if(!empty($vlt_res)){
             $sql = "SELECT * FROM `_userRights` WHERE `type` like '2'";
             $result = mysqli_query($conn, $sql);
             while($row = mysqli_fetch_array($result)){
@@ -102,6 +105,16 @@ $kpr = strpos($keeper, $_SESSION['userid']);
         }
 
 $db = $conn;
+
+        $sql = "SELECT * FROM `_userSetting` WHERE `id` like = '$u_id'";
+        $result = mysqli_query($conn, $sql);
+        while($row = mysqli_fetch_array($result)){
+            $subList = $row['subList'];
+        }
+        $result = preg_match("/\'$board\'/", $subList);
+        if(!empty($result)) {
+            $isSub = TRUE;
+        }
 
 if(isset($_GET['page'])) {
     $page = $_GET['page'];
@@ -156,8 +169,7 @@ if($page != $allPage) {
 $paging .= '</tr>';
 $currentLimit = ($onePage * $page) - $onePage;
 $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
-$sql = 'select * from `_article` WHERE `to` LIKE "'.$board.'" order by id desc' . $sqlLimit;
-$result = $db->query($sql);
+
 ?>
 <section class="float: left">
 <article>
@@ -172,15 +184,26 @@ $result = $db->query($sql);
                     if($editBoard == true){
                 echo '<a href="'.$_SERVER['REQUEST_URI'].'/admin">'.'<button type="button" class="btn-sm btn-danger" style="float: right"
                 >채널 설정</button></a>';}
-                $sql1 = "SELECT * FROM `_account` WHERE `name` LIKE '$owner'";
+                        if($isSub == TRUE){
+                            echo '<span style="float:right">&nbsp;</span><span class="h5"><button class="badge badge-info" type="submit" 
+                            formaction="/subscribe.php?mode=un-sub" style="float:right">구독취소 <span class="badge badge-primary">'.$boardsub.'</span></button></span>';
+                        }elseif(empty($_SESSION['userid'])){
+                            echo '<span style="float:right">&nbsp;</span><span class="h5"><button class="badge badge-info" type="button" 
+                            style="float:right">구독자 수<span class="badge badge-primary">'.$boardsub.'</span></button></span>';
+                        }else{
+                            echo '<span style="float:right">&nbsp;</span><span class="h5"><button class="badge badge-info" type="submit" 
+                            formaction="/subscribe.php?mode=sub" style="float:right">구독하기 <span class="badge badge-primary">'.$boardsub.'</span></button></span>';
+                        }
+
+                $sql1 = "SELECT * FROM `_account` WHERE `id` LIKE '$owner'";
                 $result1 = mysqli_query($conn, $sql1);
                 while($row1 = mysqli_fetch_array($result1)){
-                    $owner_id = $row1['id'];
+                    $owner_n = $row1['name'];
                 }
                 ?>
-                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?php echo $owner_id;
-                ?>">@<?php echo $owner;?></a></span><br>
-                <?php echo '<span class="h6">'.$boardcat.'</span>&nbsp;'; echo $boardtext;?></h4>
+                <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?php echo $owner;
+                ?>">@<?php echo $owner_n;?></a></span><br>
+                <?php echo '<span class="h6">'.$boardcat.'</span>&nbsp;'; echo $boardtext;?><br></h4>
                 <input type="hidden" name="from" value="<?php echo $board ?>">
                 </form>
         </div>
@@ -218,9 +241,60 @@ $result = $db->query($sql);
                         </div>
                         </div>
                 </td>
-                <td>'.$owner.'</td>
+                <td>'.$owner_n.'</td>
                 <td>&nbsp;</td>
                 </tr>';}
+
+                $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'top' ORDER BY `num` desc LIMIT 20"; #상단 공지
+                $result_ = $db->query($sql_);
+                while($row_ = $result_->fetch_assoc())
+                {
+                    $a_id = $row_['article_id'];
+                    $sql = "select * from `_article` WHERE `id` LIKE $a_id";
+                    $result = $db->query($sql);
+                    while($row = $result->fetch_assoc())
+                    {
+                    $datetime = explode(' ', $row['created']);
+                    $date = $datetime[0];
+                    $time = $datetime[1];
+                    $id = $row['id'];
+                    $time = explode(':', $time);
+                    $date = explode('-', $date);
+                    $date[1] = $date[1].'월 ';
+                    $date[2] = $date[2].'일 '; 
+                    $d = $date[1].$date[2];
+                    if($time[0] <= 11)
+                            $time0 = "오전 ".$time[0].'시 ';
+                    if($time[0] >= 12)
+                            $time0 = "오후 ".$time[0].'시 ';
+                    if($date == Date('Y-m-d'))
+                                echo $time[1];
+                                $time1 = $time[1];
+                                $time2 = $time[2];
+                            $s = "$time0 $time1 분 $time2 초";
+                    if($date !== Date('Y-m-d'))
+                            $create = $d.$s;
+        
+                if($readpage == ''){
+                    $readpage = 1;
+                }
+                if($row['view'] > 999){$row['view'] = '1000+';}
+                $title = '<strong>'.$row['title'].'</strong>';
+                if($row['issec'] == 2){
+                    $islock = '<span class="badge badge-secondary">기밀</span> ';
+                }elseif($row['issec'] == 1){
+                    $islock = '<span class="badge badge-dark">비밀</span> ';
+                }else{
+                    $islock = '';
+                }
+                echo '<tr><td><a class="links" href="/b/'.$board.'/'.$readpage.'/'.$id.'"> <span class="badge badge-light">공지</span> ';
+                echo $islock.$title.'<span style="color:gray">'.$dot.'</span></a><br>'; 
+                echo '<span style="color: gray; font-size: 8pt">'.$create.'</span><span style="color: gray; font-size: 7pt"> 조회수 </span>';
+                echo '<span style="color: green; font-size: 7pt">'.$row['view'].'</span>';
+                echo '</td><td><a href="/user.php?a='.$row['author_id'].'">'.$row['name'].'</a></td><td></td></tr>'; }}
+
+                        $sql = 'select * from `_article` WHERE `to` LIKE "'.$board.'" order by id desc' . $sqlLimit; #글 최신순
+                        $result = $db->query($sql);
                         while($row = $result->fetch_assoc())
                         {
                             $datetime = explode(' ', $row['created']);
@@ -295,7 +369,7 @@ $result = $db->query($sql);
 </div>
                 </div>
 <hr>
-<?php mysqli_close($conn);
+<?php
 $is_board = TRUE;
 include 'down.php';
 ?>

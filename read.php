@@ -3,15 +3,19 @@ require 'up.php';
         $board = Filt($_GET['b']);
         $id = Filt($_GET['id']);
         echo Filt($_GET['a']);
-        $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}' and `to` LIKE '".$board."'";
+        $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}'";
         $result = mysqli_query($conn, $sql);
         $n = 1;
         while($raw = mysqli_fetch_array($result)){
+        if($board == 'recommend' or 'trash'){
+        	$board = $raw['from'];
+        }
         $aid = $raw['author_id'];
         $views = $raw['view'];
+        $push = $raw['stat'];
         }
         $views = $views + 1;
-        $sql = "UPDATE `_article` set view = {$views} where id like '{$id}' and `to` LIKE '".$board."'";
+        $sql = "UPDATE `_article` set view = {$views} where id like '{$id}' and `from` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         if($result === false){
           echo '조회수 집계 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
@@ -70,7 +74,25 @@ require 'up.php';
         if($aid == $_SESSION['userid']){
         $ednrm .= '<input name="v" type="hidden" value="viewer">
         <button type="submit" formaction="/edit.php" class="dropdown-item">수정</button>
-        <button type="submit" formaction="/delete.php" class="dropdown-item">삭제</button></form>';
+        <button type="submit" formaction="/delete.php" class="dropdown-item">삭제</button>';
+            if($push > 7){
+                $ednrm .= '<button type="submit" formaction="/push.php?mode=go" id="goHead" onmousemove="aaaa()" class="dropdown-item">추천글로!</button>';
+                echo '<script>function aaaa(){
+                    document.getElementById("goHead").style.cssText = "color:red";
+                    setTimeout(function() { 
+                        document.getElementById("goHead").style.cssText = "color:orange";
+                     }, 100)
+                     setTimeout(function() { 
+                        document.getElementById("goHead").style.cssText = "color:yellow";
+                     }, 200)
+                     setTimeout(function() { 
+                        document.getElementById("goHead").style.cssText = "color:green";
+                     }, 300)
+                    setTimeout(function() { 
+                        document.getElementById("goHead").style.cssText = "color:blue";
+                     }, 400)}</script>';
+            }
+        $ednrm .= '</form>';
         }else{
         $ednrm .= '</form>';
         }
@@ -98,7 +120,7 @@ require 'up.php';
             }elseif($boardstat == 0){
                 $boardcat = '<span class="badge badge-light">사설 '.$boardsuffix.'</span>';
             }elseif($boardstat == 8){
-                $boardcat = '<span class="badge badge-warning">비활성</span>';
+                $boardcat = '<span class="badge badge-warning">특수</span>';
                 $nowrite = true;
             }elseif($boardstat == 9){
                 $boardcat = '<span class="badge badge-danger">차단됨</span>';
@@ -115,8 +137,10 @@ require 'up.php';
             include_once 'down.php';
             exit;
         }
-        $kpr = strpos($keeper, $_SESSION['userid']);
-        if($kpr === true){
+        $u_id = $_SESSION['userid'];
+        if(!empty($u_id)){
+        $kpr = preg_match("/^$u_id$/", $keeper, $kpr_res);
+        if(!empty($kpr_res)){
             $sql = "SELECT * FROM `_userRights` WHERE `type` like '3'";
             $result = mysqli_query($conn, $sql);
             while($row = mysqli_fetch_array($result)){
@@ -135,8 +159,8 @@ require 'up.php';
                 $isOwner = false;
             }
         }
-        $vlt = strpos($volun, $_SESSION['userid']);
-        if($vlt === true){
+        $vlt = preg_match("/^$u_id$/", $volun, $vlt_res);
+        if(!empty($vlt_res)){
             $sql = "SELECT * FROM `_userRights` WHERE `type` like '2'";
             $result = mysqli_query($conn, $sql);
             while($row = mysqli_fetch_array($result)){
@@ -162,33 +186,56 @@ require 'up.php';
             $editBoard = true;
             $isOwner = true;
         }
-        ?><div style="padding-left:3px;padding-right:3px">
-        <hr>
+        if($makeNotice === TRUE){
+            $sql = "SELECT * FROM `_pinned` WHERE `board_id` like '$board' and `article_id` like '$id'";
+            $result = mysqli_query($conn, $sql);
+            if(mysqli_num_rows($result) == 1){
+                $isPinned = TRUE;
+            }else{
+                $isPinned = FALSE;
+            }
+        }
+    }
+        ?><div style="padding-left:3px;padding-right:3px"><hr>
             <form method="post" action="/write.php">
             <h4><?php echo '<a style="color:black" href="/b/'.$board1.'">'.$boardname.'</a>'; if(!$nowrite === true){echo
                 '<button type="submit" class="btn-sm btn-success" style="float: right">글쓰기</button><span style="float:right">&nbsp;</span>';}
                 if($editBoard == true){
                     echo '<a href="../admin"><button type="button" class="btn-sm btn-danger" style="float: right">채널 설정</button></a>';}
-                    $sql1 = "SELECT * FROM `_account` WHERE `name` LIKE '$owner'";
+                    $sql1 = "SELECT * FROM `_account` WHERE `id` LIKE '$owner'";
                     $result1 = mysqli_query($conn, $sql1);
                     while($row1 = mysqli_fetch_array($result1)){
-                        $owner_id = $row1['id'];
+                        $owner_n = $row1['name'];
                     }
                     ?>
-            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?=$owner_id?>">@<?php echo $owner;?></a></span><br>
+            <span style="color: gray; font-size: 0.5em; text-decoration: none">| 소유주 : <a href="/user.php?a=<?=$owner?>">@<?php echo $owner_n;?></a></span><br>
             <?php echo '<span class="h6">'.$boardcat.'</span>&nbsp;'; echo $boardtext;?></h4>
             <input type="hidden" name="from" value="<?php echo $board1 ?>">
             </form>
         <hr>
     </div><?php
-        $sql = "SELECT * FROM `_article` where id like '{$id}' and `to` LIKE '".$board."'";
+        $sql = "SELECT * FROM `_article` where id like '{$id}' and `from` LIKE '".$board."'";
         $result = mysqli_query($conn, $sql);
         while($row = mysqli_fetch_array($result)){
+            $a_id = $row['author_id'];
+            $title = $row['title'];
             #열람제한기능
             if($row['issec'] == 1){ #나만보기
                 $isp = false;
-                if($row['name'] !== $_SESSION['userck']){
-                    echo '비밀글입니다.';
+                if($row['author_id'] !== $_SESSION['userid']){
+                    echo '<div style="text-align:center"><h5>비밀글입니다.</h5>';
+                        if(!empty($_SESSION['userid'])){
+                            echo '열람 허가를 요청하시겠습니까?<br>';
+                            echo '<form method="post" action="/knock.php">
+                            <input type="hidden" name="from" value="'.$board.'">
+                            <input type="hidden" name="id" value="'.$id.'">
+                            <input type="hidden" name="a" value="'.$a_id.'">
+                            <input type="hidden" name="title" value="'.$title.'">
+                            <textarea name="knockReason" class="form-control-sm" placeholder="열람 신청 사유"></textarea>
+                            <button type="submit" class="btn btn-primary">신청</button>
+                            </form>';
+                        }
+                    echo '</div>';
                     include_once 'down.php';
                     exit;
                 }
@@ -196,8 +243,20 @@ require 'up.php';
                 $isp = false;
                 $strrst = strpos($row['issectxt'], $_SESSION['userck']);
                 if($strrst === false){
-                    if($row['name'] !== $_SESSION['userck']){
-                    echo '열람이 허용되지 않았습니다.';
+                    if($row['author_id'] !== $_SESSION['userid']){
+                    echo '<div style="text-align:center"><h5>열람이 허용되지 않았습니다.</h5>';
+                        if(!empty($_SESSION['userid'])){
+                            echo '열람 허가를 요청하시겠습니까?<br>';
+                            echo '<form method="post" action="/knock.php">
+                            <input type="hidden" name="from" value="'.$board.'">
+                            <input type="hidden" name="id" value="'.$id.'">
+                            <input type="hidden" name="a" value="'.$a_id.'">
+                            <input type="hidden" name="title" value="'.$title.'">
+                            <textarea name="knockReason" class="form-control-sm" placeholder="열람 신청 사유"></textarea>
+                            <button type="submit" class="btn btn-primary">신청</button>
+                            </form>';
+                        }
+                    echo '</div>';
                     include_once 'down.php';
                     exit;
                     }
@@ -252,29 +311,38 @@ require 'up.php';
         $n++;
         }
         echo "</div>";
-        if($makeNotice == TRUE){ #추가해야할부분 2019 07 26 15:58
+        if($makeNotice === TRUE){
             echo '<form method="post" action="/owner_tool.php?mode=pin"><table class="table"><tr><td>
             <input type="hidden" name="from" value="'.$board.'">
             <input type="hidden" name="id" value="'.$id.'">';
-            echo '<button type="submit" class="badge badge-primary text-white" style="float:right">공지로 지정</button>';
+            if($isPinned === FALSE){
+                echo '<button type="submit" class="badge badge-primary text-white" style="float:right">공지로 지정</button>';
+            }elseif($isPinned === TRUE){
+                echo '<button type="submit" formaction="/owner_tool.php?mode=cancel" class="badge badge-primary text-white" style="float:right">공지 내리기</button>';
+            }
+            
                 if($canDelete == TRUE){
-                    echo '<button type="submit" formaction="/owner_tool.php?mode=del" class="badge badge-dark text-white" style="float:left">게시글 삭제</button>';
+                    if($board !== 'trash'){
+                        echo '<button type="submit" formaction="/owner_tool.php?mode=blind" class="badge badge-dark text-white" style="float:left">게시글 비공개</button>';
+                    }else{
+                        echo '<button type="submit" formaction="/owner_tool.php?mode=restore" class="badge badge-dark text-white" style="float:left">게시글 복원</button>';
+                    }
                 }
                 if($canKick == TRUE){
                     echo '<button type="button" class="badge badge-danger text-white" style="float:left"
-                    data-toggle="modal" data-target="#kickModal">작성자 추방</button>';
+                    data-toggle="modal" data-target="#kickModal">작성자 차단</button>';
                     echo '
                     <div class="modal fade" id="kickModal" tabindex="-1" role="dialog" aria-labelledby="kickModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="kickModalLabel">작성자 추방</h5>
+                            <h5 class="modal-title" id="kickModalLabel">작성자 차단</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                                <label class="my-1 mr-2" for="inlineFormCustomSelectPref">추방 기간</label>
+                                <label class="my-1 mr-2" for="inlineFormCustomSelectPref">차단 기간</label>
                                 <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="kicOpt"
                                 onchange="document.getElementById(\'kickCheck\').style.display = \'\';">
                                 <option disabled selected>--선택해주세요.--</option>
@@ -294,7 +362,7 @@ require 'up.php';
                                 </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" formaction="/owner_tool.php?mode=kick" class="btn btn-warning" id="submitkickModal" disabled>추방</button>
+                            <button type="submit" formaction="/owner_tool.php?mode=kick" class="btn btn-warning" id="submitkickModal" disabled>차단</button>
 
                         </div>
                         </div>
@@ -314,6 +382,7 @@ require 'up.php';
                 $user_email = $raw['email'];
             }
             $hash = md5( strtolower( trim( "$user_email" ) ) );
+                $accept = '<button class="btn btn-sm btn-light" style="display:inline">허가</button>';
             if($row['stat'] > 6){
                 $commentheadline = 'style="background-color:lightgreen"';
                 $commentheadtext = '<span class="badge badge-primary">추천 : '.$row['stat'].'명</span> ';
@@ -323,6 +392,21 @@ require 'up.php';
             }elseif($row['ment'] == 1){
                 $commentheadline = 'style="background-color:#E5FCFD;color:gray;border: dashed 1px royalblue"';
                 $commentment = '님을 호출하셨습니다.';
+                $commentment .= '<br>"<span style="color:black;">'.$row['remarks'].'</span>"';
+            }elseif($row['ment'] == 2){
+                $commentheadline = 'style="background-color:#fde6e5;color:gray;border: dashed 1px royalblue"';
+                $commentment = '<form method="post" action="/knock.php">
+                <input type="hidden" name="from" value="'.$board.'">
+                <input type="hidden" name="id" value="'.$id.'">
+                <input type="hidden" name="by" value="'.$row['id'].'">
+                <input type="hidden" name="mode" value="accept">
+                <input type="hidden" name="num" value="'.$row['num'].'">
+                님이 이 글을 보고싶어합니다. '.$accept.'</form>';
+                $commentment .= '<br>"<span style="color:black">'.$row['remarks'].'</span>"';
+            }elseif($row['ment'] == 3){
+                $commentheadline = 'style="background-color:#fde6e5;color:gray;border: dashed 1px royalblue"';
+                $commentment = '게시글 열람 허가됨';
+                $commentment .= '<br>"<span style="color:black">'.$row['remarks'].'</span>"';
             }else{
                 $commentheadline = '';
                 $commentheadtext = '';
@@ -467,7 +551,6 @@ $(function ()
 });
 </script>';
         }
-        mysqli_close($conn, $sql);
 echo '</table></div></div>';
 $db = $conn;
 if(isset($_GET['page'])) {
@@ -475,7 +558,7 @@ if(isset($_GET['page'])) {
 }else{
     $page = 1;
 }
-$sql = 'select count(*) as cnt from `_article` WHERE `to` LIKE "'.$board.'" order by id desc';
+$sql = 'select count(*) as cnt from `_article` WHERE `from` LIKE "'.$board.'" order by id desc';
 $result = $db->query($sql);
 $row = $result->fetch_assoc();
 $allPost = $row['cnt'];
@@ -523,7 +606,7 @@ if($page != $allPage) {
 $paging .= '</tr>';
 $currentLimit = ($onePage * $page) - $onePage;
 $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
-    $sql = 'select * from `_article` WHERE `to` LIKE "'.$board.'" order by id desc' . $sqlLimit;
+    $sql = 'select * from `_article` WHERE `from` LIKE "'.$board.'" order by id desc' . $sqlLimit;
     $result = $db->query($sql);
     ?>
     <article>
@@ -543,25 +626,28 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">사용자 멘션</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">사용자 호출</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-<div class="modal-body">
-<form class="form-inline" method="post" action="/ment.php">
-<label class="my-1 mr-2">멘션할 닉네임 &nbsp; <input name="mentNickname" type="text" class="form-control-sm"></label>
-</div>
-<div class="modal-footer">
-<button type="submit" class="btn btn-info">전송</button>
-<input type="hidden" name="from" value="<?=$board?>">
-<input type="hidden" name="id" value="<?=$id?>">
-<input type="hidden" name="title" value="<?=$rowtitle?>">
-</form>
-</div>
-</div>
-</div>
-</div>
+                            <div class="modal-body">
+                            <form class="form-inline" method="post" action="/ment.php"><table class="table">
+                            <label><tr><td>호출할 아이디</td><td><input name="mentID" type="text" style="width:100%" class="form-control-sm" 
+                            placeholder="아이디를 입력해주세요." required></td></tr></label>
+                            <label><tr><td>부른 이유</td><td><textarea name="mentReason" class="form-control-sm" style="width:100%;height:5em" 
+                            placeholder="반드시 입력해주세요." required></textarea></td></label></table>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="submit" class="btn btn-info">전송</button>
+                            <input type="hidden" name="from" value="<?=$board?>">
+                            <input type="hidden" name="id" value="<?=$id?>">
+                            <input type="hidden" name="title" value="<?=$rowtitle?>">
+                            </form>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
             <div class="container">
             <table class="table">
                 <thead>
@@ -638,5 +724,5 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
 <?php
 echo $reportmodal;
 $is_board = TRUE;
-include 'down.php';
+require 'down.php';
 ?>

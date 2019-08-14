@@ -32,6 +32,13 @@ if($count === FALSE){
     exit;
 }
 
+$uid = $_SESSION['userid'];
+$sql = "INSERT INTO `_edit` (`author_id`) VALUES ('$uid')";
+$result = mysqli_query($conn, $sql);
+if($result === false){
+  echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+}
+
 $sql = "UPDATE `_article` set title = '$t', edited = 1, description = '$n' where `id` like '$id' and `from` like '$b'";
 $result = mysqli_query($conn, $sql);
 if($result === false){
