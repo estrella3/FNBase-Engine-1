@@ -11,10 +11,10 @@ if(isset($_SESSION['userid'])){
 }
 
 $u_id = $_SESSION['userid'];
-$sql = "SELECT * from `_article` WHERE `author_id` = '$u_id' ORDER BY `created` DESC limit 1"; #주의! name = id임
+$sql = "SELECT * from `_article` WHERE `author_id` = '$u_id' ORDER BY `created` DESC limit 1";
 $result = mysqli_query($conn, $sql);
 date_default_timezone_set('Asia/Seoul');
-if($result === FALSE){
+if(mysqli_num_rows($result) < 1){
     $CaValue = 61;
 }
 while($row = mysqli_fetch_array($result)){
@@ -149,9 +149,9 @@ if($CaValue < 60){
     <label for="topSecret"><input type="checkbox" name="issec" id="topSecret" onclick="document.getElementById(\'secexp\').style = \'\';">열람 제한 기능</label>
     <div id="secexp" style="display:none"><p style="color:gray>지정한 사람 이외에는 글을 볼 수 없게 합니다.</p>
     <label for="0"><input type="radio" name="secopt" id="0" value="0" required checked />전체 공개</label>
-    <label for="1"><input type="radio" name="secopt" id="1" value="1" required />나만 보기</label>
-    <label for="2"><input type="radio" name="secopt" id="2" value="2" onclick="document.getElementById(\'secnick\').style = \'\';" required />사용자 지정</label>
-    <input type="text" style="display:none" name="secnick" id="secnick"><span style="color:gray">닉네임을 쉼표(,)로 구분해주세요.</span>
+    <label for="1"><input type="radio" name="secopt" id="1" value="1" onclick="document.getElementById(\'secline\').style = \'display:none\';" required />나만 보기</label>
+    <label for="2"><input type="radio" name="secopt" id="2" value="2" onclick="document.getElementById(\'secline\').style = \'\';" required />사용자 지정</label>
+    <div id="secline" style="display:none"><input type="text" name="secnick" ><span style="color:gray">아이디를 쉼표(,)로 구분해주세요.</span></div>
     </div>
     </div>
     </div>

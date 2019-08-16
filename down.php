@@ -32,15 +32,10 @@ $result = mysqli_query($conn, $sql);
 
 #멘션 보여주는 부분
 
-$sql = "SELECT * from `_userSetting` WHERE `id` like '".$user."'";
-$result = mysqli_query($conn, $sql);
-while($row = mysqli_fetch_array($result)){
-      $showAlerts = $row['showAlerts'];
-}
 if($showAlerts == '1'){
       if(!empty($_SESSION['userid'])){
-                  $userck = $_SESSION['userck'];
-                  $sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userck' and `read` like 0";
+                  $userid = $_SESSION['userid'];
+                  $sql = "SELECT * FROM `_ment` WHERE `to` LIKE '$userid' and `read` like 0";
                   $result = mysqli_query($conn, $sql);
             if(1 <= mysqli_num_rows($result)){
                   while($row = mysqli_fetch_array($result)){

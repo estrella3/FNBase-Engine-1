@@ -41,8 +41,8 @@ if(!isset($_POST['islogged'])){
 }else{
   session_start();
   $pw = $_SESSION['userpw'];
-  $id = $_SESSION['userck'];
-  $name = $_SESSION['userid'];
+  $name = $_SESSION['userck'];
+  $id = $_SESSION['userid'];
 }
 
 if($_POST['s'] == 'true'){ #비밀글
@@ -61,8 +61,8 @@ $sql = "
     VALUES(
         '{$board}',
         '{$origin}',
-        '{$name}',
         '{$id}',
+        '{$name}',
         '{$desc}',
         '0',
         NOW(),
@@ -93,10 +93,10 @@ if($result === false){
           echo '오류 발생!';
           exit;
         }else{
-          if($_SESSION['userck'] !== $ru){
+          if($_SESSION['userid'] !== $ru){
         $linktxt = $fnSite.'/b/'.$board.'/1/'.$origin;
-        $msgtxt = "[$rt]에 [$id]님이 댓글을 다셨습니다.";
-        $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$name', '$ru', '0', '$msgtxt', '$linktxt', 'comment')";
+        $msgtxt = "[$rt]에 [$name]님이 댓글을 다셨습니다.";
+        $sql = "INSERT INTO `_ment` (`name`, `to`, `read`, `msg`, `link`, `type`) VALUES ('$id', '$ru', '0', '$msgtxt', '$linktxt', 'comment')";
         $result = mysqli_query($conn, $sql);}
   $href = $_SERVER["HTTP_REFERER"];
   echo "<script>window.location.replace('$href');</script>";

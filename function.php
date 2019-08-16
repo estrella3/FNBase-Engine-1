@@ -50,4 +50,12 @@ function Filt($arg){
           return $val; 
       }
 #입력된 글 처리 부분 끝
+
+#유저 세팅 불러오기
+$u_id = $_SESSION['userid'];
+$sql = "SELECT * from `_userSetting` WHERE `id` like '$u_id'";
+$result = mysqli_query($conn, $sql);
+while($row = mysqli_fetch_array($result)){
+      $showAlerts = $row['showAlerts'];
+}
 ?>

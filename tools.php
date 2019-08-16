@@ -50,28 +50,49 @@ function activeForm() {
 <span id="form" style="display:none">
     <form method="post" action="tools.php?form=submit">';
     echo '<table class="table table-striped"><tr>';
-    echo '<td>아이디/닉네임</td><td><input disabled class="form-control" value="'.$user.'"> / <input name="nickname" class="form-control" disabled value="'.$user_nickname.'"></td>';
+    echo '<td>아이디</td><td><input disabled class="form-control" value="'.$user.'"></td></tr>
+    <tr><td>닉네임</td><td><input name="nickname" class="form-control" value="'.$user_nickname.'">
+    <input name="original" type="hidden" value="'.$user_nickname.'">
+    <small>\'_\'을 제외한 특수 문자는 허용하지 않습니다. 닉네임은 겹쳐도 무방합니다.</small></td></tr>';
     echo '</tr>';
     echo '<tr>';
     if($user_intro == ''){
-        $user_intro = '<span style="color:gray">없음</span>';
+        $user_intro = '';
+        $if_user_intro_empty = 'placeholder="아직 소개문구가 없습니다."';
     }
-    echo '<td>본인 소개</td><td><textarea name="intro" class="form-control">'.$user_intro.'</textarea></td>';
+    echo '<td>본인 소개</td><td><textarea name="intro" class="form-control"'.$if_user_intro_empty.'>'.$user_intro.'</textarea></td>';
     echo '</tr>';
-    echo '<tr>';
-    echo '<td>가입한 이메일 주소</td><td><input name="email" class="form-control" disabled value="'.$user_email.'"></td>';
-    echo '</tr><tr><td><button type="submit" class="btn btn-secondary">수정 완료</button></td></tr></span></table>';
+    echo '<tr><td><button type="submit" class="btn btn-secondary">수정 완료</button></td></tr></span></table>';
 echo '</form></span>';
 if($_GET['form'] == 'submit'){
     echo '저장중...';
-    $user_intro = FnFilter($user_intro);
-    $intro = $_POST['intro'];
-        $sql = "UPDATE `_account` set introduce = '{$intro}' where `id` like '{$user}'";
-        $result = mysqli_query($conn, $sql);
-        if($result === false){
-        echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
-        } else {
-        echo "<script>alert('수정 완료!'); history.go(-2)</script>";
+    $intro = Filt($_POST['intro']);
+    $nick = $_POST['nickname'];
+        if($_POST['original'] == $nick){
+            $sql = "UPDATE `_account` set introduce = '{$intro}' where `id` like '{$user}'";
+            $result = mysqli_query($conn, $sql);
+            if($result === false){
+            echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+            exit;
+            } else {
+            echo "<script>alert('수정 완료!'); history.go(-2)</script>";
+            exit;
+            }
+        }else{
+            $re = '/[^가-힣, ㄱ-ㅣ a-z, A-Z, à-ź, À-Ź, 0-9, _, ]/m';
+            $nick = preg_replace($re, '', $nick);
+
+            $sql = "UPDATE `_account` set introduce = '{$intro}', name = '{$nick}' where `id` like '{$user}'";
+            $result = mysqli_query($conn, $sql);
+            if($result === false){
+            echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+            exit;
+            } else {
+            session_unset();
+            session_destroy();
+            echo "<script>alert('닉네임 변경 완료! 반영을 위해 다시 로그인 해주세요.'); location.replace('/login.php')</script>";
+            exit;
+            }
         }
 }
 
@@ -82,10 +103,6 @@ if(1 > mysqli_num_rows($result)){
     $result = mysqli_query($conn, $sql);
     $sql = "SELECT * from `_userSetting` WHERE `id` like '".$user."'";
     $result = mysqli_query($conn, $sql);
-}
-
-while($row = mysqli_fetch_array($result)){
-    $showAlerts = $row['showAlerts'];
 }
 
 echo '<h5>개인 설정</h5>';

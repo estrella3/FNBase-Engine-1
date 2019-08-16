@@ -121,12 +121,12 @@ if(!empty($_SESSION['userid'])){
         <div class="modal-content"><div class="modal-body"><button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <button class="btn btn-outline-dark" style="width: 6em"><a style="color: gray" href="/user.php?a='.$_SESSION['userck'].'"><span class="text-dark">회원 정보</span></a></button>
-      <button class="btn btn-outline-primary" style="width: 6em"><a style="color: gray" href="/tools.php"><span class="text-primary">계정 활용</span></a></button>
-        <button class="btn btn-outline-danger" style="width: 6em"><a href="/login.php?log=out"><span class="text-danger">로그아웃</span></a></button>
+      <a style="color: gray" href="/user.php?a='.$_SESSION['userid'].'"><button class="btn btn-outline-dark" style="width: 6em"><span class="text-dark">회원 정보</span></button></a>
+      <a style="color: gray" href="/tools.php"><button class="btn btn-outline-primary" style="width: 6em"><span class="text-primary">계정 활용</span></button></a>
+      <a href="/login.php?log=out"><button class="btn btn-outline-danger" style="width: 6em"><span class="text-danger">로그아웃</span></button></a>
         </div></div></div></div>';
 }else{
-      echo '<a class="btn btn-outline-primary" style="background-color: #fff" href="/login.php">로그인</a>';
+      echo '<a class="btn btn-outline-secondary" style="background-color: #fff" href="/login.php">로그인</a>';
 }
 ?>
 </nav>

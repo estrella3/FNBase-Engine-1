@@ -284,7 +284,7 @@ require 'up.php';
           data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">이 글을</button>
            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> '.$ednrm.'</div> </div></div><div class="card-body">';
         $rowtitle = $row['title'];
-        $rowarname = $row['name'];
+        $rowarid = $row['author_id'];
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
         echo '<form method="post" action="/edit.php"><b><a href="/user.php?a='
         .$row['author_id'].'">'.$row['name'].'</a></b><span style="color: gray; font-size: 7pt">('
@@ -445,7 +445,7 @@ require 'up.php';
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
             <input type="hidden" name="title" value="'.$rowtitle.'">
-            <input type="hidden" name="to" value="'.$rowname.'">';
+            <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowarid.'">';
             echo '</form></div>
             <script>
             $(function ()
@@ -492,7 +492,7 @@ require 'up.php';
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
             <input type="hidden" name="title" value="'.$rowtitle.'">
-            <input type="hidden" name="to" value="'.$rowname.'">
+            <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowarid.'">
             </form></div>
             <script>
             $(function ()
@@ -533,7 +533,7 @@ require 'up.php';
         <input name="b" type="hidden" value="'.$board.'">
         <input type="hidden" name="ip" value="'.$uip.'">
         <input type="hidden" name="title" value="'.$rowtitle.'">
-        <input type="hidden" name="user" value="'.$rowarname.'">';
+        <input type="hidden" name="user" value="'.$rowarid.'">';
         if($isp === false){
             echo '<input type="hidden" name="s" value="true">';
         }

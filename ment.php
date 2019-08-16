@@ -19,10 +19,10 @@ if(!empty($_SESSION['userck'])){
         }
     $r = FnFilter($_POST['mentReason']);
 
-    $sql = "SELECT * from `_ment` WHERE `name` = '$i' ORDER BY `time` DESC limit 1"; #주의! name = id임
+    $sql = "SELECT * from `_ment` WHERE `name` = '$i' ORDER BY `time` DESC limit 1";
     $result = mysqli_query($conn, $sql);
     date_default_timezone_set('Asia/Seoul');
-    if($result === FALSE){
+    if(mysqli_num_rows($result) < 1){
         $CaValue = 0;
     }
     while($row = mysqli_fetch_array($result)){
