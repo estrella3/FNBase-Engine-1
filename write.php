@@ -10,10 +10,8 @@ if(isset($_SESSION['userid'])){
   exit;
 }
 
-$u_id = $_SESSION['userid'];
 $sql = "SELECT * from `_article` WHERE `author_id` = '$u_id' ORDER BY `created` DESC limit 1";
 $result = mysqli_query($conn, $sql);
-date_default_timezone_set('Asia/Seoul');
 if(mysqli_num_rows($result) < 1){
     $CaValue = 61;
 }

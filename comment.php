@@ -13,6 +13,21 @@
 <?php
 ?>
 <?php
+$sql = "SELECT * from `_comment` WHERE `id` = '$u_id' ORDER BY `created` DESC limit 1";
+$result = mysqli_query($conn, $sql);
+if(mysqli_num_rows($result) < 1){
+    $CaValue = 11;
+}
+while($row = mysqli_fetch_array($result)){
+    $time = strtotime($row['created']);
+    $CaValue = strtotime(date("Y-m-d H:i:s")) - $time;
+}
+if($CaValue < 10){
+    $Value = 10 - $CaValue;
+    echo '<script>alert("'.$Value.'초 뒤에 다시 시도해주세요."); history.back()</script>';
+    exit;
+}
+
 if(!empty($_POST['description'])){
   $desc = $_POST['description'];
   $conf = 1;
