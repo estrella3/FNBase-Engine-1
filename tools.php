@@ -79,7 +79,7 @@ if($_GET['form'] == 'submit'){
             exit;
             }
         }else{
-            $re = '/[^가-힣, ㄱ-ㅣ a-z, A-Z, à-ź, À-Ź, 0-9, _, ]/m';
+            $re = '/[^가-힣, ㄱ-ㅣ, a-z, A-Z, à-ź, À-Ź, 0-9, _, ]/m';
             $nick = preg_replace($re, '', $nick);
 
             $sql = "UPDATE `_account` set introduce = '{$intro}', name = '{$nick}' where `id` like '{$user}'";
