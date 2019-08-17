@@ -217,33 +217,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
             </thead>
             <tbody>
             <tr>
-            <?php if(!$nowrite === true){ echo '<tr>
-                <td>
-                        <a class="links" href="?" data-toggle="modal" data-target="#example" aria-controls="example">'.$boardname.' 이용 안내</a><br>
-                        <div class="modal fade" id="example" tabindex="-1" role="dialog" aria-labelledby="example" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">'.$boardname.' 의 사용 규칙</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                '.nl2br($notice).'
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                                </div>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                </td>
-                <td>'.$owner_n.'</td>
-                <td>&nbsp;</td>
-                </tr>';}
+            <?php
 
                 $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'top' ORDER BY `num` desc LIMIT 20"; #상단 공지
                 $result_ = $db->query($sql_);

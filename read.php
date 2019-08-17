@@ -274,7 +274,14 @@ require 'up.php';
         		$g = '<span style="color: blue">'.$row['stat'].'</span>';
             }
             if($row['edited'] == 1){
-                $commentedited = '<sup><b><mark>*수정됨</mark></b></sup> ';
+                    $sqla = "SELECT * FROM `_edit` WHERE `id` like '$id' ORDER BY `count` DESC LIMIT 1";
+                    $resulta = mysqli_query($conn, $sqla);
+                    while ($rowa = mysqli_fetch_array($resulta)){
+                        $editT = $rowa['time'];
+                        $editP = $rowa['author_id'];
+                    }
+                $commentedited = '<button type="button" data-toggle="tooltip" data-placement="top" title="'.$editT.'<br>'.$editP.'" data-html="true"
+                class="badge badge-primary">*수정됨</button> ';
             }else{
                 $commentedited = '';
             }
@@ -422,6 +429,7 @@ require 'up.php';
             <div class="media-body" '.$commentheadline.'>
             ';
             $rowname = $row['name'];
+            $rowcmid = $row['id'];
             echo '<h5 class="mt-0"><a href="/user.php?a='.$row['id'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
             echo '<p>'.$commentheadtext.$commentedited.$row['content'].$commentment.'</p>';
             echo '<span style="color: gray">'.$row['created'].'</span>';
@@ -445,7 +453,7 @@ require 'up.php';
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
             <input type="hidden" name="title" value="'.$rowtitle.'">
-            <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowarid.'">';
+            <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowcmid.'">';
             echo '</form></div>
             <script>
             $(function ()
@@ -466,6 +474,7 @@ require 'up.php';
                 $user_email = $raw['email'];
                 $hash = md5( strtolower( trim( "$user_email" ) ) );
                 $rep_num = $raw['num'];
+                $rowcmid = $raw['id'];
         echo '<br><br><div class="media">
         <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
         <div class="media-body">
@@ -492,7 +501,7 @@ require 'up.php';
             <input type="hidden" name="m" value="'.$id.'">
             <input type="hidden" name="b" value="'.$board.'">
             <input type="hidden" name="title" value="'.$rowtitle.'">
-            <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowarid.'">
+            <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowcmid.'">
             </form></div>
             <script>
             $(function ()
@@ -659,7 +668,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                 </thead>
                 <tbody>
                         <?php
-    
+                            $o_id = Filt($_GET['id']);
                             while($row = $result->fetch_assoc())
                             {
                                 $datetime = explode(' ', $row['created']);
@@ -683,8 +692,13 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                                 if($date !== Date('Y-m-d'))
                                         $create = $d.$s;
                         ?>
-                    <tr><td>
                     <?php
+                        if($o_id == $id){
+                            $row['title'] = '<b>'.$row['title'].'</b>';
+                            echo '<tr class="table-primary"><td>';
+                        }else{
+                            echo '<tr><td>';
+                        }
                         if($readpage == ''){
                             $readpage = 1;
                         }

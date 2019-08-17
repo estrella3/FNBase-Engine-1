@@ -85,8 +85,9 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
     <div style="padding-left:3px;padding-right:3px">
             <hr>
                 <form method="post" action="/write.php">
-                <h4><?php echo $boardname.' 글 목록'; echo '<a href="/subscribe.php">
-                <button type="button" class="btn-sm btn-warning" style="float: right">구독 글 보기</button></a>';
+                <h4><?php echo $boardname.' 글 목록'; 
+                if($is_logged === TRUE){echo '<a href="/subscribe.php">
+                <button type="button" class="btn-sm btn-warning" style="float: right">구독 글 보기</button></a>';}
                                 $sql1 = "SELECT * FROM `_account` WHERE `id` LIKE '$owner'";
                                 $result1 = mysqli_query($conn, $sql1);
                                 while($row1 = mysqli_fetch_array($result1)){

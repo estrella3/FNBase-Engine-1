@@ -33,7 +33,7 @@ if($count === FALSE){
 }
 
 $uid = $_SESSION['userid'];
-$sql = "INSERT INTO `_edit` (`author_id`) VALUES ('$uid')";
+$sql = "INSERT INTO `_edit` (`author_id`, `id`) VALUES ('$uid', '$id')";
 $result = mysqli_query($conn, $sql);
 if($result === false){
   echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';

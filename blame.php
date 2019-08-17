@@ -6,10 +6,11 @@ $repOpt = Filt($_POST['repOpt']);
 $userid = $_SESSION['userid'];
 $uip = $_SERVER['REMOTE_ADDR'];
 
+
 $sql = "SELECT * from `_report` WHERE `ip` = '$uip' ORDER BY `time` DESC limit 1";
 $result = mysqli_query($conn, $sql);
 date_default_timezone_set('Asia/Seoul');
-if($result === FALSE){
+if(mysqli_num_rows($result) < 1){
     $CaValue = 61;
 }
 while($row = mysqli_fetch_array($result)){
@@ -27,8 +28,21 @@ if(empty($_SESSION['userid'])){
 	exit;
 }else{
   if(empty($_POST['id'])){
-  $sql = "SELECT * FROM `_report` ORDER BY `num` DESC";
+  echo '<h4>신고 내역</h4>';
+  echo '<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">신고 사유</th>
+      <th scope="col">글 제목</th>
+      <th scope="col">신고자<th>
+    </tr>
+  </thead>
+  <tbody>';
+  $sql = "SELECT * FROM `_report` ORDER BY `num` DESC LIMIT 50";
   $result = mysqli_query($conn, $sql);
+  if(mysqli_num_rows($result) < 1){
+    echo '<tr><td></td><td>신고된 글이 없습니다.</td><td></td></tr></tbody></table>';
+  }else{
     while ($row = mysqli_fetch_array($result)){
         if($row['reason'] == 1){
           $reason = '선정성·폭력성';
@@ -51,10 +65,19 @@ if(empty($_SESSION['userid'])){
         if($row['reason'] == 7){
           $reason = '기타 사유';
         }
-        echo '<table class="table"><tr><td>'.$row['num'].'</td>';
-        echo '<td><a href="'.$row['board'].'-'.$row['id'].'.base">'.$reason.'</a></td>';
-        echo '<td>'.$row['time'].'</td><td>'.$row['userid'].'</td></tr></table>';
+        $id = $row['id'];
+            $sqla = "SELECT * FROM `_article` WHERE `id` like '$id'";
+            $resulta = mysqli_query($conn, $sqla);
+              while ($rowa = mysqli_fetch_array($resulta)){
+                $title = $rowa['title'];
+                $a_id = $rowa['author_id'];
+            }
+        echo '<tr><td>'.$reason.'</td>';
+        echo '<td><a href="/b/'.$row['board'].'/1/'.$row['id'].'">'.$title.'</a><small>(<a href="'.$a_id.'">'.$a_id.'</a>)</small></td>';
+        echo '<td><a href="/user.php?a='.$row['userid'].'">'.$row['userid'].'</a><small>('.$row['time'].')</small></td></tr>';
     }
+    echo '</tbody></table>';
+  }
   }else{
     $sql = "INSERT INTO `_report` (`reason`, `board`, `id`, `time`, `ip`, `userid`) VALUES ('$repOpt', '$b', '$id', NOW(), '$uip', '$userid');";
     $result = mysqli_query($conn, $sql);

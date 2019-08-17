@@ -5,6 +5,21 @@ $from = Filt($_GET['b']);
 
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$from'";
 $result = mysqli_query($conn, $sql);
+    if($_GET['form'] == 'submit'){
+        $from = Filt($_POST['b']);
+        echo '저장중...';
+        $Ex = Filt($_POST['exp']);
+        $hT = Filt($_POST['hashTag']);
+                $sqla = "UPDATE `_board` set `text` = '$Ex', `hashtag` = '$hT' where `id` like '$from'";
+                $resulta = mysqli_query($conn, $sqla);
+                if($resulta === false){
+                echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+                exit;
+                }else{
+                echo "<script>alert('수정 완료!'); history.go(-2)</script>";
+                exit;
+                }
+    }
 
 while($row = mysqli_fetch_array($result)){
 
@@ -82,27 +97,22 @@ while($row = mysqli_fetch_array($result)){
 <h3><?=$boardcat.' '.$boardname.' '.$boardsuf?> 관리 페이지</h3>
 
 <h5>정보 수정</h5>
-    <form>
+    <form method="post" action="/admin.php?form=submit">
     <div class="form-group">
         <label for="name"><?=$boardsuffix?> 이름</label>
         <input type="name" class="form-control" placeholder="<?=$boardname?>" disabled>
-        <small class="form-text text-muted">아직 수정이 불가능합니다.</small>
+        <small class="form-text text-muted">이름은 수정이 불가능합니다.</small>
     </div>
     <div class="form-group">
         <label for="name"><?=$boardsuffix?> 설명</label>
-        <textarea type="name" class="form-control" disabled><?=$boardtext?></textarea>
-        <small class="form-text text-muted">아직 수정이 불가능합니다.</small>
+        <textarea name="exp" class="form-control"><?=$boardtext?></textarea>
     </div>
     <div class="form-group">
         <label for="name"><?=$boardsuffix?> 해시태그</label>
-        <input type="name" class="form-control" placeholder="<?=$boardtag?>" disabled>
-        <small class="form-text text-muted">아직 수정이 불가능합니다.</small>
+        <input name="hashTag" class="form-control" placeholder="<?=$boardname.' '.$boardsuffix?>의 특성을 표현할 태그를 적어주세요. "
+         value="<?=$boardtag?>">
     </div>
-    <div class="form-group">
-        <label for="name"><?=$boardsuffix?> 공지사항</label>
-        <textarea class="form-control" disabled><?=$notice?></textarea>
-        <small class="form-text text-muted">아직 수정이 불가능합니다.</small>
-    </div>
+    <input type="hidden" name="b" value="<?=$from?>">
     <button type="submit" class="btn btn-primary" style="float:right">저장</button>
     </form>
 

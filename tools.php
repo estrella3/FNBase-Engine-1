@@ -44,7 +44,11 @@ echo '';
 echo '<script>
 function activeForm() {
     var a = document.getElementById("form");
-    a.style = "";
+    if(a.style.display=="none"){
+        a.style.display = "";
+    }else{
+        a.style.display = "none";
+    }
 }
 </script>
 <span id="form" style="display:none">

@@ -7,6 +7,11 @@ require 'function.php';
 echo '<script>window.location.href = "./install/index.php";</script>';
 exit;
 }
+if(empty($_SESSION['userid'])){
+  $is_logged = FALSE;
+}else{
+  $is_logged = TRUE;
+}
 ?>
 <!doctype html>
 <html lang="ko">
@@ -74,14 +79,17 @@ if($ban == 1){
               <a class="dropdown-item" href="/b/maint">운영실</a>
               <a class="dropdown-item" href="/b/social">사회 담론</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/b/recommend">추천 글 목록</a>
               <a class="dropdown-item" href="/b/trash">휴지통</a>
+              <a class="dropdown-item" href="/b/recommend">추천 글 목록</a>
+              <a class="dropdown-item" href="/r">신고된 글 목록</a>
             </div>
         </li>
-        <li class="nav-item dropdown">
+        <?php
+    if($is_logged === TRUE){
+        echo '<li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">구독</a>
-            <div class="dropdown-menu">
-              <?php
+            <div class="dropdown-menu">';
+              
                 #구독 처리 코드가 들어갈 자리
                 $u_id = $_SESSION['userid'];
                 $sql = "SELECT * from `_userSetting` WHERE `id` like '$u_id'";
@@ -104,16 +112,18 @@ if($ban == 1){
                     }
                   echo '<a class="dropdown-item" href="/b/'.$b.'">'.$n.$s.'</a>';
                 }
-              ?>
-            </div>
-        </li>
+              
+        echo '</div>
+        </li>';
+    }
+        ?>
         <li class="nav-item">
           <a class="nav-link text-white" href="/p/">전체</a>
         </li>
       </ul>
   </div>
 <?php
-if(!empty($_SESSION['userid'])){
+if($is_logged === TRUE){
       echo '<button class="btn btn-outline-primary" data-toggle="modal" data-target="#Modal" style="background-color: #fff"
       data-toggle="dropdown" id="dropdown08"><a href="#">'.$_SESSION['userck'].'</a></button>';
       echo '<div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">

@@ -13,4 +13,7 @@ RewriteRule ^b/([^/]*)/admin$ /admin.php?b=$1 [L]
 RewriteRule ^b/([^/]*)/([1-9]+)$ /index.php?b=$1&page=$2 [L]
 RewriteRule ^b/([^/]*)/([^/]*)/([^/]*)$ /read.php?b=$1&id=$3&page=$2 [L]
 
+RewriteRule ^p$ /private.php [L]
+RewriteRule ^r$ /blame.php [L]
 RewriteRule ^p/$ /private.php [L]
+RewriteRule ^r/$ /blame.php [L]
