@@ -252,7 +252,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                         <span style="color: gray; font-size: 8pt"><?php echo $create; ?> /</span><span style="color: gray; font-size: 7pt"> 조회수 </span><span style="color: green; font-size: 7pt"><?php echo $row['view'];?></span>
                         <?php echo '<a href="/b/'.$origin.'" class="badge badge-'.$badgecolor.'">'.$originboard.'</a>';?>
                     </td>
-                    <td><?php echo '<a href="user.php?a='.$row['author_id'].'">'.$row['name'].'</a>'; ?></td>
+                    <td><?php echo '<a href="/user.php?a='.$row['author_id'].'">'.$row['name'].'</a>'; ?></td>
                     <td><?php 
                     if($row['stat'] == 0){
                         $c = 'light';
@@ -283,7 +283,7 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
 </article>
 <hr>
 <?php 
-            $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'bottom' ORDER BY `num` desc LIMIT 20"; #상단 공지
+            $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'bottom' ORDER BY `num` desc LIMIT 20"; #하단 공지
             $result_ = $db->query($sql_);
             echo '<div class="container"><table class="table table-striped"><tbody>';
             while($row_ = $result_->fetch_assoc())

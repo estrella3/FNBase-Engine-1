@@ -19,7 +19,11 @@ $result = mysqli_query($conn, $sql);
     }
 echo '</tbody></table><br>';
 
-echo '<span style="float:right" class="text-muted">이용자들이 만든 채널입니다. <a href="https://fnbase.xyz/b/guide/1/554" class="links">더 알아보기</a></span>';
+echo '<span style="float:right"><span class="text-muted">이용자들이 만든 게시판입니다. <a href="https://fnbase.xyz/b/guide/1/554" class="links"><sub>설명</sub></a></span>'; 
+if(1==1){ #사설 게시판 허용 여부
+    echo '&nbsp;<a class="badge btn-primary text-white" href="/create.php" style="float:right">게시판 만들기</button></a></span>';
+}
+
 echo '<h4>사설 게시판</h4>';
 
 echo '<br><table class="table table-sm"><thead class="thead-light"><tr><th>이름</th><th>#태그</th></tr></thead><tbody>';

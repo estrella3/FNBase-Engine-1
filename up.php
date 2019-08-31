@@ -21,6 +21,7 @@ if(empty($_SESSION['userid'])){
     <link rel="shortcut icon" href="<?php echo $fnSiteFab;?>" type="image/x-icon">
     <meta name="description" content="<?php echo $fnSiteDesc;?>">
     <meta name="theme-color" content="<?php echo $fnSiteColor;?>">
+    <meta name="google-site-verification" content="W6BI1BgDWTmxxpzZhg2L6n1Nz-_sKlUx1jTdzqU2rCU" />
     <title><?php echo $fnSiteTitle;?></title>
 <link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 <script
