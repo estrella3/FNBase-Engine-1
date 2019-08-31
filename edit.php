@@ -5,7 +5,7 @@ $u_id = $_SESSION['userid'];
 $sql = "SELECT * from `_edit` WHERE `author_id` = '$u_id' ORDER BY `time` DESC limit 1";
 $result = mysqli_query($conn, $sql);
 date_default_timezone_set('Asia/Seoul');
-if($result === FALSE){
+if(1 > mysqli_num_rows($result)){
     $CaValue = 61;
 }
 while($row = mysqli_fetch_array($result)){
