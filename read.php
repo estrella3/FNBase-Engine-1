@@ -25,6 +25,8 @@ require 'up.php';
         $result = mysqli_query($conn, $sql);
         if(mysqli_num_rows($result) !== 1){
             echo '<script>alert("위치가 맞지 않는 글 입니다.")</script>';
+            include 'down.php';
+            echo '<script>history.back()</script>';
             exit;
         }
         $reportmodal = '
