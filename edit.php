@@ -1,5 +1,6 @@
 <?php
 require "up.php";
+include 'id_ban.php';
 
 $u_id = $_SESSION['userid'];
 $sql = "SELECT * from `_edit` WHERE `author_id` = '$u_id' ORDER BY `time` DESC limit 1";

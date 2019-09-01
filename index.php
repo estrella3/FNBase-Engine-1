@@ -10,6 +10,7 @@ if($fnSite_Homepage == 'recent'){
 }
 require 'up.php';
 $board = $_GET['b'];
+include 'id_ban.php';
 
 $sql = "SELECT * FROM `_board` WHERE `id` LIKE '$board'";
 $result = mysqli_query($conn, $sql);

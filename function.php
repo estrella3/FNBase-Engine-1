@@ -1,7 +1,7 @@
 <?php
 #불러오기
 require 'setting.php';
-$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+
 require 'ip_ban.php';
 session_start();
 

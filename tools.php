@@ -18,6 +18,7 @@ while($row = mysqli_fetch_array($result)){
     $user_nickname = $row['name'];
     $user_email = $row['email'];
     $user_intro = $row['introduce'];
+    $ban = $row['ban'];
 }
 
 echo '<h5>정보 수정</h5>';
@@ -140,6 +141,11 @@ if($_GET['form'] == 'set'){
     } else {
         echo "<script>alert('수정 완료!'); history.go(-2)</script>";
     }
+}
+
+if($ban == 9){
+    echo '<h5>사이트 전체 설정</h5>';
+    echo '<hr><a href="/modify.php" class="btn btn-primary" style="display:block">바로가기</a>';
 }
 
 include 'down.php';

@@ -1,30 +1,38 @@
 <?php
 # 이 파일은 FNBase.xyz에서 배포하는 게시글 관리 엔진의 설정 파일입니다.
-$fnVersion = '0.8.14';
-/* 이 아래는 중요 설정이며, 반드시 기입하셔야 합니다. */
-$fnSite = 'https://'; #설치하신 주소입니다.
-$fnSiteName = ''; #운영하실 사이트의 이름입니다.
-$fnSiteColor = '#'; #사이트의 대표 색상입니다.
-/* $fnSiteSubColor = '#E8ECEF'; #사이트의 보조 색상입니다. */
-$fnSiteSubColor = '#fff';
-$fnSiteMode = 'board'; #사이트의 동작 방식을 정의합니다. 현재는 변경하실 수 없습니다.
-date_default_timezone_set(''); #사이트의 기본 시간대를 정의합니다. 한국에서 운영하시는 경우 Asia/Seoul로 지정해주세요.
+$fnVersion = '0.9.01';
+
 
 #데이터베이스 연결 설정입니다.
 $fnSiteDB = 'localhost';
 $fnSiteDBuser = '';
 $fnSiteDBpw = '';
 $fnSiteDBname = '';
+$conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
 
-/* 이 아래는 세부 설정이며, 기입하지 않으셔도 됩니다. */
-$fnSiteTitle = $fnSiteName; #운영하실 사이트의 제목입니다. 검색엔진이나 브라우저 탭의 제목으로 표시됩니다.
-$fnSiteDesc = ''; #운영하실 사이트에 대한 설명입니다.
-$fnSiteFab = '/fab.png'; #운영하실 사이트의 파비콘입니다.
-$fnSiteEmail = '';
-$fnSiteFooter = ''; #사이트의 바닥글에 들어갈 내용입니다.
-$fnSiteBoardName = ''; #사이트의 게시판을 부르는 명칭입니다.
-$fnSite_isp = FALSE; #사이트의 공개 설정입니다. 현재는 변경하실 수 없습니다.
-$fnSite_HomepageName = 'rct';
-$fnSite_Homepage = 'recent';
-$fnSite_google = ''; #구글 사이트 관리 스크립트 입력 가능합니다.
+
+/* 이 아래는 일반적인 경우 수정하지 마시길 바랍니다. */
+$fnMultiNum = 1;
+$fnMultiDB_Suffix = FALSE;
+$query = "SELECT * from `_Setting` WHERE `num` = $fnMultiNum";
+$query_result = mysqli_query($conn, $query);
+while($setting = mysqli_fetch_array($query_result)){
+    $fnSite = $setting['Site'];
+    $fnSiteName = $setting['SiteName'];
+    $fnSiteColor = $setting['SiteColor'];
+    $fnSiteSubColor = $setting['SiteSubColor'];
+    $fnSiteMode = $setting['SiteMode'];
+    $fnSiteTitle = $fnSiteName;
+    $fnSiteDesc = $setting['SiteDesc'];
+    $fnSiteFab = $setting['SiteFab'];
+    $fnSiteEmail = $setting['SiteEmail'];
+    $fnSiteFooter = $setting['SiteFooter'];
+    $fnSiteBoardName = $setting['SiteBoardSuffix'];
+    $fnSite_Homepage = $setting['SiteHomepage'];
+    $fnSite_HomepageName = $setting['SiteHomepageName'];
+    $fnSite_google = $setting['Site_google'];
+    $fnSite_isp = $setting['Site_isp'];
+    $fnSiteTimezone = $setting['SiteTimezone'];
+    date_default_timezone_set($fnSiteTimezone);
+}
 ?>

@@ -2,6 +2,7 @@
 require 'up.php';
         $board = Filt($_GET['b']);
         $id = Filt($_GET['id']);
+        include 'id_ban.php';
         echo Filt($_GET['a']);
         $sql = "SELECT * FROM `$fnSiteDBname`.`_article` where id like '{$id}'";
         $result = mysqli_query($conn, $sql);
@@ -336,47 +337,56 @@ require 'up.php';
                     }
                 }
                 if($canKick == TRUE){
-                    echo '<button type="button" class="badge badge-danger text-white" style="float:left"
-                    data-toggle="modal" data-target="#kickModal">작성자 차단</button>';
-                    echo '
-                    <div class="modal fade" id="kickModal" tabindex="-1" role="dialog" aria-labelledby="kickModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="kickModalLabel">작성자 차단</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                                <label class="my-1 mr-2" for="inlineFormCustomSelectPref">차단 기간</label>
-                                <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="kicOpt"
-                                onchange="document.getElementById(\'kickCheck\').style.display = \'\';">
-                                <option disabled selected>--선택해주세요.--</option>
-                                <option value="1">1시간</option>
-                                <option value="2">1일</option>
-                                <option value="3">1주</option>
-                                <option value="4">1개월</option>
-                                <option value="5">6개월</option>
-                                <option value="6">1년</option>
-                                <option value="7">무기한</option>
-                                </select>
+                    $sqlb = "SELECT * FROM `_kicked` WHERE `board_id` like '$board' and `user_id` like '$rowarid';";
+                    $resultb = mysqli_query($conn, $sqlb);
+                    if(mysqli_num_rows($resultb) == 0){
+                        echo '<button type="button" class="badge badge-danger text-white" style="float:left"
+                        data-toggle="modal" data-target="#kickModal">작성자 차단</button>';
+                        echo '
+                        <div class="modal fade" id="kickModal" tabindex="-1" role="dialog" aria-labelledby="kickModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="kickModalLabel">작성자 차단</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <label class="my-1 mr-2" for="inlineFormCustomSelectPref">차단 기간</label>
+                                    <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="kicOpt"
+                                    onchange="document.getElementById(\'kickCheck\').style.display = \'\';">
+                                    <option disabled selected>--선택해주세요.--</option>
+                                    <option value="5">5분</option>
+                                    <option value="30">30분</option>
+                                    <option value="60">1시간</option>
+                                    <option value="1440">1일</option>
+                                    <option value="10080">1주</option>
+                                    <option value="43800">1개월</option>
+                                    <option value="262800">6개월</option>
+                                    <option value="525600">1년</option>
+                                    <option value="52560000">무기한</option>
+                                    </select>
+                                    <input type="hidden" name="writer" value="'.$rowarid.'">
+                                    <div class="custom-control custom-checkbox my-1 mr-sm-2" id="kickCheck" style="display:none">
+                                    <input type="checkbox" class="custom-control-input" id="customControlInline">
+                                    <label class="custom-control-label" for="customControlInline"
+                                    onclick="document.getElementById(\'submitkickModal\').disabled = \'\';">제재에 대한 책임을 감수하겠습니다.</label>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" formaction="/owner_tool.php?mode=kick" class="btn btn-warning" id="submitkickModal" disabled>차단</button>
 
-                                <div class="custom-control custom-checkbox my-1 mr-sm-2" id="kickCheck" style="display:none">
-                                <input type="checkbox" class="custom-control-input" id="customControlInline">
-                                <label class="custom-control-label" for="customControlInline"
-                                onclick="document.getElementById(\'submitkickModal\').disabled = \'\';">제재에 대한 책임을 감수하겠습니다.</label>
-                                </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" formaction="/owner_tool.php?mode=kick" class="btn btn-warning" id="submitkickModal" disabled>차단</button>
-
-                        </div>
+                            </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                    ';
+                        ';
+                }elseif(mysqli_num_rows($resultb) == 1){
+                    echo '<button type="submit" class="badge badge-danger text-white" formaction="/owner_tool.php?mode=unkick" style="float:left">작성자 차단 해제</button>
+                    <input type="hidden" name="writer" value="'.$rowarid.'">';
                 }
+            }
             echo '</td></tr></table></form>';
         }
         echo '<table style="width:100%">';

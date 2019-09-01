@@ -18,7 +18,7 @@ $board = "board";
 		if(isset($getturn)){
 			$board = $getturn;
     }
-    
+include 'id_ban.php';
 ?>
 <nav>
         <p class="fntop">글 저장중...<br><br /></p>

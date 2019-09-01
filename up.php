@@ -21,7 +21,7 @@ if(empty($_SESSION['userid'])){
     <link rel="shortcut icon" href="<?php echo $fnSiteFab;?>" type="image/x-icon">
     <meta name="description" content="<?php echo $fnSiteDesc;?>">
     <meta name="theme-color" content="<?php echo $fnSiteColor;?>">
-    
+
     <title><?php echo $fnSiteTitle;?></title>
 <link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 <script
@@ -148,3 +148,6 @@ if($is_logged === TRUE){
 <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css'/>
 <script src='//code.jquery.com/jquery.min.js'></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
+<?php
+include_once 'id_ban.php';
+?>

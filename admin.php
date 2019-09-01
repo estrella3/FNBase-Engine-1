@@ -115,7 +115,6 @@ while($row = mysqli_fetch_array($result)){
     <input type="hidden" name="b" value="<?=$from?>">
     <button type="submit" class="btn btn-primary" style="float:right">저장</button>
     </form>
-
 <?php
 include 'down.php';
 ?>
