@@ -110,7 +110,7 @@ if($_GET['log'] == 'out'){
     <form class="form-signin" method='post' action='keeplogin.php'>
   <h1 class="h3 mb-3 font-weight-normal">로그인</h1>
   <label for="inputEmail" class="sr-only">아이디</label>
-  <input type="text" <?php echo $id; ?> name="id" class="form-control" placeholder="아이디 입력.." required autofocus>
+  <input type="id" <?php echo $id; ?> name="id" class="form-control" placeholder="아이디 입력.." required autofocus>
   <label for="inputPassword" class="sr-only">비밀번호</label>
   <input type="password" <?php echo $pw; ?> name="pw" class="form-control" placeholder="비밀번호" required>
   <div class="checkbox mb-3">
