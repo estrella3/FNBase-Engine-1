@@ -4,7 +4,7 @@ $is_file = file_exists('./setting.php');
 if($is_file == TRUE){
 require 'function.php';
 }else{
-echo '<script>window.location.href = "./install/index.php";</script>';
+echo '<script>window.location.href = "/install/index.php";</script>';
 exit;
 }
 if(empty($_SESSION['userid'])){

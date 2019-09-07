@@ -71,9 +71,10 @@ require 'up.php';
             </div>
         ';
         $ednrm = '<form method="post"><input name="id" type="hidden" value="'.$id.'">
-        <input name="b" type="hidden" value="'.$board.'"><button type="submit" class="dropdown-item" formaction="/push.php">추천</button>
+        <input name="b" type="hidden" value="'.$board.'">
+        <button type="submit" class="dropdown-item" formaction="/push.php">추천</button>
         <button type="submit" class="dropdown-item" formaction="/push.php?mode=un">비추천</button>
-        <button type="button" class="dropdown-item" data-toggle="modal" data-target="#reportModal"">신고</button>';
+        <button type="button" class="dropdown-item" data-toggle="modal" data-target="#reportModal">신고</button>';
         if($aid == $_SESSION['userid']){
         $ednrm .= '<input name="v" type="hidden" value="viewer">
         <button type="submit" formaction="/edit.php" class="dropdown-item">수정</button>
@@ -289,10 +290,9 @@ require 'up.php';
                 $commentedited = '';
             }
         echo '<div class="card"><div class="card-header" style="background-color: #ddeaff"><h5 style="float:left">'
-        .$row['title'].'</h5><div class="btn-group" role="group" style="float:right;">
-         <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle"
-          data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">이 글을</button>
-           <div class="dropdown-menu" aria-labelledby="btnGroupDrop1"> '.$ednrm.'</div> </div></div><div class="card-body">';
+        .$row['title'].'</h5><div class="dropdown" role="dropdown" style="float:right;">
+         <button id="ednrm" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">이 글을</button>
+         <div class="dropdown-menu" aria-labelledby="ednrm">'.$ednrm.'</div> </div></div><div class="card-body">';
         $rowtitle = $row['title'];
         $rowarid = $row['author_id'];
         if($row['view'] > 9999){$row['view'] = '10000+';}elseif($row['view'] > 999){$row['view'] = '1000+';}
@@ -436,7 +436,7 @@ require 'up.php';
             }else{
                 $commentedited = '';
             }
-            echo '<tr style="width:90%"><td><hr><div class="media">
+            echo '<tr id="cmt_num_'.$row['num'].'" style="width:90%"><td><hr><div class="media">
             <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
             <div class="media-body" '.$commentheadline.'>
             ';
