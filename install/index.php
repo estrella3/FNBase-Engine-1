@@ -1,3 +1,4 @@
+<?php require '../setting.php';?>
 <html lang="ko">
   <head>
     <meta charset="utf-8">
@@ -38,7 +39,6 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
     if(is_file('../setting.php')){
       echo '정상적으로 설치된 것으로 보입니다.
       <h3>FNBase Engine 안내</h3><hr>';
-      include '../setting.php';
       $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
       echo '<table>
       <h4>버전 정보</h4>
