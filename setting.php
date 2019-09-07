@@ -1,10 +1,10 @@
 <?php
 # 이 파일은 FNBase.xyz에서 배포하는 게시글 관리 엔진의 설정 파일입니다.
-$fnVersion = '0.9.01';
+$fnVersion = '0.9.07';
 
 
 #데이터베이스 연결 설정입니다.
-$fnSiteDB = 'localhost';
+$fnSiteDB = '';
 $fnSiteDBuser = '';
 $fnSiteDBpw = '';
 $fnSiteDBname = '';
@@ -33,6 +33,7 @@ while($setting = mysqli_fetch_array($query_result)){
     $fnSite_google = $setting['Site_google'];
     $fnSite_isp = $setting['Site_isp'];
     $fnSiteTimezone = $setting['SiteTimezone'];
+    $fnSiteDefaultSkin = $setting['DefaultSkin'];
     date_default_timezone_set($fnSiteTimezone);
 }
 ?>

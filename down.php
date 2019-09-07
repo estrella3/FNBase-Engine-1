@@ -41,13 +41,14 @@ if($showAlerts == '1'){
                   while($row = mysqli_fetch_array($result)){
                   $link = $row['link'];
                   $no = $row['no'];
+                  $go = $row['go'];
                   echo "<script>
                         toastr.options = {
                         'positionClass': 'toast-bottom-right',
                         'closeButton': true,
                         'timeOut': 3000,
                         'onclick': function() {
-                        location.replace('$link&no=$no')
+                        location.replace('$link&no=$no#$go')
                         }
                   }
                         toastr.success('".$row['msg']."','<h4>전해드려요!</h4>')
@@ -59,11 +60,14 @@ if($showAlerts == '1'){
 
 
 ?>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" crossorigin="anonymous"></script></body>
-<script>$('.collapse').collapse('hide');
+<script src='//code.jquery.com/jquery.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
-})</script>
+})
+</script>
+</body>
 </html>
