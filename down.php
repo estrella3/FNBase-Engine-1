@@ -22,6 +22,15 @@ echo '<form action="/search.php" method="get"><select class="form-control-sm" na
 
 </div>
 </footer>
+<script src='//code.jquery.com/jquery.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
 <?php
 #멘션 처리하는 부분
 $no = $_GET['no'];
@@ -60,14 +69,5 @@ if($showAlerts == '1'){
 
 
 ?>
-<script src='//code.jquery.com/jquery.min.js'></script>
-<script src='//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js'></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script>
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-</script>
 </body>
 </html>

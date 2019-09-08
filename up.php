@@ -67,6 +67,7 @@ $board = Filt($_GET['b']);
               $result = mysqli_query($conn, $sql);
               while($row = mysqli_fetch_array($result)){
                   $subList = $row['subList'];
+                  $showAlerts = $row['showAlerts'];
               }
               if(empty($subList)){
                 echo '<small><span class="text-muted">구독중인 게시판이 없습니다.</span></small>';
