@@ -1,4 +1,3 @@
-<?php require '../setting.php';?>
 <html lang="ko">
   <head>
     <meta charset="utf-8">
@@ -27,19 +26,19 @@ img {float: right; border: 0;}
 hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 </style>
 <title>FNBE</title></head>
-<body><div class="center">
-<table>
-<tr class="h"><td>
-<a href="https://fnbase.xyz"><img src="/install/FNBE.png" style="height: 50px; width: auto"></a><h1 class="p">FNBE Version <?=$fnVersion?></h1>
-</td></tr>
-</table>
+<body>
+  <div class="center">
 <td>
   <?php
-  if($a == false){
     if(is_file('../setting.php')){
-      echo '정상적으로 설치된 것으로 보입니다.
-      <h3>FNBase Engine 안내</h3><hr>';
-      $conn = mysqli_connect("$fnSiteDB", "$fnSiteDBuser", "$fnSiteDBpw", "$fnSiteDBname");
+      $isInstall = TRUE;
+        require '../setting.php';
+      echo '<table>
+      <tr class="h"><td>
+      <a href="https://dev.fnbase.xyz"><img src="/install/FNBE.png" style="height: 50px; width: auto"></a><h1 class="p">FNBE Version '.$setVersion.'</h1>
+      </td></tr>
+      </table>';
+      echo '<h3>FNBase Engine 안내</h3><hr>';
       echo '<table>
       <h4>버전 정보</h4>
       <tr><td class="e">PHP 버전</td><td class="v">'.phpversion().'</td></tr>
@@ -67,10 +66,9 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
       echo '<br><br><br>';
     }else{
       echo '<h3>Setting.php를 찾을 수 없습니다!</h3><hr><p>먼저 사이트를 <a href="step1.php">설정</a>해주세요.</p>';
-      echo '<br><br><br><br><h4>도움이 필요하신가요?</h4><hr><p>게시판 엔진 유지·보수가 정상적으로 이뤄지고 있다면 <a href="https://fnbase.xyz/b/info">여기</a>
+      echo '<br><br><br><br><h4>도움이 필요하신가요?</h4><hr><p>개발 및 유지보수가 끊기지 않았다면 <a href="https://fnbase.xyz/b/info">여기</a>
       에서 관련 도움말이나 지원을 받으실 수 있습니다.</p>';
-    }}
-    echo $a;
+    }
   ?>
 </td>
 <table>
