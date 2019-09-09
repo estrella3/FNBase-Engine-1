@@ -59,7 +59,7 @@ if($connect->connect_errno){
             <h2>상세 설정</h2>
             <label>사이트 바닥글 (푸터) : <textarea name="footer" id="ft" required></textarea></label><br>
             <label>사이트 관리자 이메일 : <input type="text" name="mail" id="ml" required></label><br>
-            <label>사이트 패비콘 주소 : <input type="text" name="fab" id="fb" required></label><br>
+            <label>사이트 패비콘 주소 : <input type="text" name="fab" id="fb"></label><br>
             <label>기본 시간대 : <input type="text" name="time" value="Asia/Seoul" id="tz" required></label><br>
             <br>
             <label>관리자 아이디 : <input type="id" name="adid"></label><br>
