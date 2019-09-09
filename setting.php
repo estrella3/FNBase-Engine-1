@@ -1,5 +1,4 @@
 <?php
-<?php
 # 이 파일은 FNBase.xyz에서 배포하는 게시글 관리 엔진의 설정 파일입니다.
 # 자세한 설정에 관해서는 https://dev.fnbase.xyz/fnbe.html 을 참고하십시오.
 $setVersion = "0.9.08"; #세팅 파일이 작성될 때의 버전입니다.
