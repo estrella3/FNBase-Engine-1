@@ -1,15 +1,3 @@
-# 개요
-
-
-# 요구 사항
-항목 | 최소 | 권장 |
----- | ---- | ---- |
-PHP | 5.4 + | 7.2 + |
-데이터베이스 | MySQL | MariaDB |
-웹 서버 |  | Apache |
-
-
-
 # FNBase-Engine
 [FNBase Develop](https://dev.fnbase.xyz)에서 배포하는 경량 게시판 엔진으로, PHP를 기반으로 작동합니다.
 기본적인 게시판의 기능을 충실하게 제공할 예정입니다.
@@ -20,6 +8,13 @@ PHP | 5.4 + | 7.2 + |
 
 ## 설치 방법 (Installation)
 [여기](https://github.com/estrella3/FNBase-Engine/wiki)를 참고하세요.
+
+### 요구 사항
+항목 | 최소 | 권장 |
+---- | ---- | ---- |
+PHP | 7.2 | 7.3 + |
+데이터베이스 | MySQL | MariaDB |
+웹 서버 |  | Ubuntu 16.04 Apache2 |
 
 ## 사용 방법 (Usage)
 [여기](https://github.com/estrella3/FNBase-Engine/wiki)를 참고하세요.
