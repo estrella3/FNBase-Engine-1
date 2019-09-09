@@ -40,22 +40,11 @@ $board = Filt($_GET['b']);
   <div class="container">
     <a class="navbar-brand text-white" href="<?php echo $fnSite;?>"><?php echo $fnSiteName;?></a>
 
-    <div class="collapse navbar-collapse" id="navbarsExample07">
+    <div class="collapse navbar-collapse" id="navbar_Top">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">공설</a>
-          <div class="dropdown-menu">
-          <a class="dropdown-item" href="/b/board">방명록</a>
-            <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/b/maint">운영실</a>
-              <a class="dropdown-item" href="/b/social">사회 담론</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/b/trash">휴지통</a>
-              <a class="dropdown-item" href="/b/recommend">추천 글 목록</a>
-              <a class="dropdown-item" href="/r">신고된 글 목록</a>
-            </div>
-        </li>
         <?php
+        echo $fnSiteBoardList;
     if($is_logged === TRUE){
       echo '<li class="nav-item dropdown">
         <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown" aria-haspopupage="true" aria-expanded="false">구독</a>
@@ -63,6 +52,11 @@ $board = Filt($_GET['b']);
             
               #구독 처리 코드가 들어갈 자리
               $u_id = $_SESSION['userid'];
+              $sql = "SELECT * from `_account` WHERE `id` like '$u_id'";
+              $result = mysqli_query($conn, $sql);
+              while($row = mysqli_fetch_array($result)){
+                  $ban = $row['ext'];
+              }
               $sql = "SELECT * from `_userSetting` WHERE `id` like '$u_id'";
               $result = mysqli_query($conn, $sql);
               while($row = mysqli_fetch_array($result)){

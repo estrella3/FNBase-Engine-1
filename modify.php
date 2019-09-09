@@ -74,6 +74,13 @@ echo '<p class="text-muted">사이트의 기본적인 설정 내용을 수정할
         </div>
     </div>
     <div class="form-group row">
+    <label for="menu" class="col-sm-2 col-form-label">사이트 상단바 (메뉴)</label>
+    <div class="col-sm-10">
+        <textarea class="form-control" id="menu" name="menu">'.$fnSiteBoardList.'</textarea>
+        <small class="form-text text-muted">정해진 양식대로 작성하셔야 합니다. (도움말 참고 바람)</small>
+    </div>
+    </div>
+    <div class="form-group row">
     <label for="footer" class="col-sm-2 col-form-label">사이트 바닥글 (푸터)</label>
     <div class="col-sm-10">
         <textarea class="form-control" id="footer" name="footer">'.$fnSiteFooter.'</textarea>
@@ -113,9 +120,33 @@ echo '<p class="text-muted">사이트의 기본적인 설정 내용을 수정할
     <input type="text" class="form-control" id="subcolor" name="subcolor" placeholder="예) #ffffff" value="'.$fnSiteSubColor.'">
     </div>
     </div>
-
     <hr>
     <button type="submit" class="btn btn-primary" style="float:right;width:100%">저장</button><br><br>
+    </form>
+    <hr>
+    <h5>운영 기능</h5>
+    <form action="mkBoard.php" method="post">
+    <h6 class="badge badge-success">게시판 생성</h6>
+    <div class="form-group row">
+    <label for="color" class="col-sm-2 col-form-label">게시판 이름 / 명칭</label>
+    <div class="col-sm-5">
+    <input type="text" class="form-control" id="name" name="name" placeholder="예) 자유">
+    </div>
+    <div class="col-sm-5">
+    <input type="text" class="form-control" id="suf" name="suf" placeholder="예) 게시판" value="'.$fnSiteBoardName.'">
+    </div>
+    </div>
+    <div class="form-group row">
+    <label for="color" class="col-sm-2 col-form-label">게시판 주소 / 소개</label>
+    <div class="col-sm-5">
+    <input type="text" class="form-control" id="slug" name="slug" placeholder="예) default">
+    </div>
+    <div class="col-sm-5">
+    <input type="text" class="form-control" id="text" name="text" placeholder="예) 자유 게시판입니다.">
+    </div>
+    </div>
+    <div style="float:right" id="mkBoard"><input type="submit" class="btn btn-success" value="게시판 생성"></div>
+    <br><br>
     </form>
     ';
 }else{

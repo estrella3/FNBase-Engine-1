@@ -50,7 +50,7 @@ if($_GET['log'] == 'out'){
     <meta name="theme-color" content="<?=$fnSiteColor?>">
     <title>로그인 - <?=$fnSiteName?></title>
 
-<link href="/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<link href="/css/bootstrap.min.css" rel="stylesheet">
 
 
     <style>
@@ -65,44 +65,44 @@ if($_GET['log'] == 'out'){
         }
       }
       body {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-align: center;
-  align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #f5f5f5;
-}
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      background-color: #f5f5f5;
+    }
 
-.form-signin {
-  width: 100%;
-  max-width: 330px;
-  padding: 15px;
-  margin: auto;
-}
-.form-signin .checkbox {
-  font-weight: 400;
-}
-.form-signin .form-control {
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="id"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
+    .form-signin {
+      width: 100%;
+      max-width: 330px;
+      padding: 15px;
+      margin: auto;
+    }
+    .form-signin .checkbox {
+      font-weight: 400;
+    }
+    .form-signin .form-control {
+      position: relative;
+      box-sizing: border-box;
+      height: auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-signin .form-control:focus {
+      z-index: 2;
+    }
+    .form-signin input[type="id"] {
+      margin-bottom: -1px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="password"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
     </style>
 
   </head>
@@ -110,9 +110,9 @@ if($_GET['log'] == 'out'){
     <form class="form-signin" method='post' action='keeplogin.php'>
   <h1 class="h3 mb-3 font-weight-normal">로그인</h1>
   <label for="inputEmail" class="sr-only">아이디</label>
-  <input type="id" <?php echo $id; ?> name="id" class="form-control" placeholder="아이디 입력.." required autofocus>
+  <input type="id" <?=$id?> name="id" class="form-control" placeholder="아이디 입력.." required autofocus>
   <label for="inputPassword" class="sr-only">비밀번호</label>
-  <input type="password" <?php echo $pw; ?> name="pw" class="form-control" placeholder="비밀번호" required>
+  <input type="password" <?=$pw?> name="pw" class="form-control" placeholder="비밀번호" required>
   <div class="checkbox mb-3">
     <label onclick="ExpLog()">
     <!-- <input type="checkbox" name="autologin" value="remember-me"> 자동 로그인 -->
@@ -121,7 +121,7 @@ if($_GET['log'] == 'out'){
   </div>
   <button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
   <p><div style="height: 4px">&shy;</div><a href="signup.php"><button class="btn btn-lg btn-secondary btn-block" type="button">회원가입</button></a></p>
-<?php echo $a;?>
+<?=$a?>
 </form>
 </body>
 </html>

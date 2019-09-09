@@ -18,7 +18,7 @@ while($row = mysqli_fetch_array($result)){
     $user_nickname = $row['name'];
     $user_email = $row['email'];
     $user_intro = $row['introduce'];
-    $ban = $row['ban'];
+    $ban = $row['ext'];
 }
 
 echo '<h5>정보 수정</h5>';

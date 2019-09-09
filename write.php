@@ -134,7 +134,7 @@ if($CaValue < 60){
     $result = $conn->query($query);
     $row=mysqli_fetch_assoc($result);
     $ban_reason = $row['whyibanned'];
-    if($row['ban'] == 1){
+    if($row['ext'] == 1){
       echo "<script>alert('게시글을 작성할 수 없습니다! 당신은 $ban_reason 에 의해 공통 차단되었습니다.')</script>";
     }else{
  echo '<section class="container">

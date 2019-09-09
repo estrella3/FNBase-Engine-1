@@ -219,7 +219,6 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
             <tbody>
             <tr>
             <?php
-
                 $sql_ = "SELECT * from `_pinned` WHERE `board_id` LIKE '$board' and `position` LIKE 'top' ORDER BY `num` desc LIMIT 20"; #상단 공지
                 $result_ = $db->query($sql_);
                 while($row_ = $result_->fetch_assoc())
@@ -333,11 +332,15 @@ $sqlLimit = ' limit ' . $currentLimit . ', ' . $onePage;
                 <td></td>
                 <td></td>
                 </tr>
-            </tbody>
-        </table>
-        <table class="table table-light" style="text-align: center">
-        <?php echo $paging ?>
-                        </table>
+                <?php
+                    if(mysqli_num_rows($result) == 0){
+                        echo '<tr><td><span style="color:gray">글이 없습니다.</span></td><td></td><td></td></tr>';
+                        echo '</tbody></table>';
+                    }else{
+                        echo '</tbody></table>';
+                        echo '<table class="table table-light" style="text-align: center">'.$paging.'</table>';
+                    }
+                ?>
         </div>
     </div>
 </article></div>

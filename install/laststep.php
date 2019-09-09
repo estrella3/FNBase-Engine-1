@@ -75,6 +75,7 @@ if($query_result !== FALSE){
         $fnSiteDesc = $setting["SiteDesc"];
         $fnSiteFab = $setting["SiteFab"];
         $fnSiteEmail = $setting["SiteEmail"];
+        $fnSiteBoardList = $setting["SiteBoardList"];
         $fnSiteFooter = $setting["SiteFooter"];
         $fnSiteBoardName = $setting["SiteBoardSuffix"];
         $fnSite_Homepage = $setting["SiteHomepage"];
@@ -169,14 +170,14 @@ $sql5 = "CREATE TABLE `_edit` (
     `author_id` text NOT NULL,
     `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `id` bigint(20) NOT NULL,
-    PRIMARY KEY (`count`);
+    PRIMARY KEY (`count`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 $sql6 = "CREATE TABLE `_ipban` (
     `num` int(11) NOT NULL AUTO_INCREMENT COMMENT '순서',
     `ip` text NOT NULL COMMENT '전체 차단된 ip',
     `reason` text NOT NULL COMMENT '차단 이유',
     `who` text NOT NULL COMMENT '차단자',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='(임시) ip 밴 리스트입니다.';";
 $sql7 = "CREATE TABLE `_kicked` (
     `num` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '순번',
@@ -187,7 +188,7 @@ $sql7 = "CREATE TABLE `_kicked` (
     `reason` text NOT NULL COMMENT '제재 이유 (사용 안함)',
     `date` datetime NOT NULL COMMENT '추방 날짜',
     `type` int(11) NOT NULL DEFAULT '0' COMMENT '유형 (기본값 0)',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='추방 기능';";
 $sql8 = "CREATE TABLE `_log` (
     `num` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '순서',
@@ -196,7 +197,7 @@ $sql8 = "CREATE TABLE `_log` (
     `right` tinyint(1) NOT NULL COMMENT '로그인 성공 여부 (성공시 1, 실패시 0)',
     `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '로그인 타입 (아직 사용 안함, 기본값 1)',
     `at` datetime NOT NULL COMMENT '로그인 요청 시간',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='로그인 기록';
   ";
 $sql9 = "CREATE TABLE `_mailAuth` (
@@ -206,7 +207,7 @@ $sql9 = "CREATE TABLE `_mailAuth` (
     `ip` text NOT NULL,
     `at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `code` text NOT NULL,
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='이메일 인증을 기록합니다.';";
 $sql10 = "CREATE TABLE `_ment` (
     `no` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '멘션 번호입니다',
@@ -218,7 +219,7 @@ $sql10 = "CREATE TABLE `_ment` (
     `type` text NOT NULL COMMENT '알림의 타입입니다. 아직 사용하지 않습니다.',
     `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `go` text NOT NULL,
-    PRIMARY KEY (`no`);
+    PRIMARY KEY (`no`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 $sql11 = "CREATE TABLE `_pinned` (
     `num` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -226,7 +227,7 @@ $sql11 = "CREATE TABLE `_pinned` (
     `did_id` text NOT NULL,
     `article_id` bigint(20) NOT NULL,
     `position` char(6) NOT NULL DEFAULT 'top' COMMENT '공지 글이 노출될 위치 (미사용)',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 $sql12 = "CREATE TABLE `_push` (
     `num` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -235,7 +236,7 @@ $sql12 = "CREATE TABLE `_push` (
     `b` text NOT NULL,
     `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `type` tinytext NOT NULL,
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 $sql13 = "CREATE TABLE `_reply` (
     `num` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -249,7 +250,7 @@ $sql13 = "CREATE TABLE `_reply` (
     `step` int(2) NOT NULL,
     `email` text,
     `edited` int(1) NOT NULL DEFAULT '0',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='대댓글';";
 $sql14 = "CREATE TABLE `_report` (
     `num` int(11) NOT NULL AUTO_INCREMENT,
@@ -259,7 +260,7 @@ $sql14 = "CREATE TABLE `_report` (
     `time` datetime NOT NULL,
     `ip` text NOT NULL,
     `userid` text NOT NULL,
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 $sql15 = "CREATE TABLE `_Setting` (
     `num` int(11) NOT NULL AUTO_INCREMENT,
@@ -272,6 +273,7 @@ $sql15 = "CREATE TABLE `_Setting` (
     `SiteDesc` text NOT NULL COMMENT '사이트의 설명입니다.',
     `SiteFab` text NOT NULL COMMENT '사이트의 파비콘 주소입니다.',
     `SiteEmail` text NOT NULL COMMENT '사이트 관리자의 이메일입니다.',
+    `SiteBoardList` text NOT NULL COMMENT '사이트 상단바에 들어갈 코드입니다.',
     `SiteFooter` text NOT NULL COMMENT '사이트 바닥글입니다.',
     `SiteBoardSuffix` text NOT NULL COMMENT '기본적으로 적용될 게시판 이름입니다.',
     `SiteHomepage` text NOT NULL COMMENT '사이트 메인 페이지의 동작을 설정합니다.',
@@ -280,7 +282,7 @@ $sql15 = "CREATE TABLE `_Setting` (
     `Site_isp` text NOT NULL COMMENT '공개 여부를 설정합니다.',
     `SiteTimezone` text NOT NULL COMMENT '사이트의 기본 시간대를 설정합니다.',
     `DefaultSkin` text NOT NULL COMMENT '사이트 기본 스킨입니다.',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='사이트 기본 설정입니다.';";
 $sql16 = "CREATE TABLE `_userRights` (
     `num` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '번호 (의미 없음)',
@@ -302,7 +304,7 @@ $sql16 = "CREATE TABLE `_userRights` (
     `makeBoardNotice` int(11) NOT NULL COMMENT '게시판 공지 설정',
     `addBoardVolunteer` int(11) NOT NULL COMMENT '게시판 보조 관리인 임명',
     `disableBoard` int(11) NOT NULL COMMENT '게시판 비활성화 가능 여부',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='사용자 권한';";
 $sql17 = "CREATE TABLE `_userSetting` (
     `id` text NOT NULL COMMENT '사용자 아이디',
@@ -312,7 +314,7 @@ $sql17 = "CREATE TABLE `_userSetting` (
     `evadeBoardList` text COMMENT '보고싶지 않은 채널 실시간에서 제외',
     `evadeUserList` text COMMENT '보고싶지 않은 사람 제외',
     `selectSkin` text NOT NULL COMMENT '사용자가 설정한 스킨입니다.',
-    PRIMARY KEY (`num`);
+    PRIMARY KEY (`num`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
 $sql18 = "INSERT INTO `_Setting` (`num`, `Version`, `Site`, `SiteName`, `SiteColor`, `SiteSubColor`, `SiteMode`, 
@@ -332,9 +334,13 @@ $sql22 = "INSERT INTO `_board` (`num`, `id`, `name`, `suffix`,
 `owner`, `keeper`, `volunteer`, `text`, `hashtag`, `sub`, `stat`) 
 VALUES (NULL, 'default', '기본', '게시판', '$aid', NULL, NULL, '설치시 생성된 게시판', '', '0', '1')";
 
+$pw = password_hash($apw, PASSWORD_BCRYPT);
 $sql23 = "INSERT INTO `_account` (`id`, `pw`, `name`, `email`, `at`, `cert`,
  `point`, `UIP`, `introduce`, `ext`, `whyibanned`) 
-VALUES ('$aid', '$apw', '$ack', '$mail', CURRENT_TIMESTAMP, '1', '1000', '127.0.0.1', NULL, '9', '')";
+VALUES ('$aid', '$pw', '$ack', '$mail', CURRENT_TIMESTAMP, '1', '1000', '127.0.0.1', NULL, '9', '')";
+$sql23_1 = "INSERT INTO `_account` (`id`, `pw`, `name`, `email`, `at`, `cert`,
+`point`, `UIP`, `introduce`, `ext`, `whyibanned`) 
+VALUES ('Installer', 'Do_not_change_this', 'Installer', 'no_reply@fnbase.xyz', CURRENT_TIMESTAMP, '9', '0', '127.0.0.1', 'FNBE 설치 계정입니다.', '9', '')";
 
 $sql24 = "INSERT INTO `_userRights` (`num`, `type`, `exp`, `read`, `write`, `comment`, `reply`, `edit`, `delete`, `push`, `report`, `mention`, `editUserInfo`, `deleteAnother`, `kickAnother`, `editBoardInfo`, `makeBoardNotice`, `addBoardVolunteer`, `disableBoard`) VALUES
 (1, 0, '비로그인', 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
@@ -381,124 +387,124 @@ hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 <a href="https://dev.fnbase.xyz"><img src="/install/FNBE.png" style="height: 50px; width: auto"></a><h1 class="p">FNBE Version '.$INSTALL_VERSION.'</h1>
 </td></tr>
 </table>
-<tr>';
+<table>';
 $result = mysqli_query($conn, $sql1);
 if($result === FALSE){
     $count = 1;
 }else{
-    echo "<td>회원 테이블 생성 완료</td>";
+    echo "<tr><td>회원 테이블 생성 완료</td>";
     $right = 1;
 }
 $result = mysqli_query($conn, $sql2);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>게시글 테이블 생성 완료</td>";
+    echo "<tr><td>게시글 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql3);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>게시판 테이블 생성 완료</td>";
+    echo "<tr><td>게시판 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql4);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>댓글 테이블 생성 완료</td>";
+    echo "<tr><td>댓글 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql5);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>수정 기록 테이블 생성 완료</td>";
+    echo "<tr><td>수정 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql6);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>ip 차단 기록 테이블 생성 완료</td>";
+    echo "<tr><td>ip 차단 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql7);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>추방 기록 테이블 생성 완료</td>";
+    echo "<tr><td>추방 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql8);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>로그인 기록 테이블 생성 완료</td>";
+    echo "<tr><td>로그인 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql9);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>메일 인증 기록 테이블 생성 완료</td>";
+    echo "<tr><td>메일 인증 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql10);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>알림 테이블 생성 완료</td>";
+    echo "<tr><td>알림 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql11);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>공지 테이블 생성 완료</td>";
+    echo "<tr><td>공지 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql12);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>추천 기록 테이블 생성 완료</td>";
+    echo "<tr><td>추천 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql13);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>답글 테이블 생성 완료</td>";
+    echo "<tr><td>답글 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql14);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>신고 기록 테이블 생성 완료</td>";
+    echo "<tr><td>신고 기록 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql15);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>사이트 설정 테이블 생성 완료</td>";
+    echo "<tr><td>사이트 설정 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql16);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>사용자 권한 테이블 생성 완료</td>";
+    echo "<tr><td>사용자 권한 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql17);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>사용자 설정 테이블 생성 완료</td>";
+    echo "<tr><td>사용자 설정 테이블 생성 완료</td>";
     $right = $right + 1;
 }
 
@@ -507,65 +513,68 @@ $result = mysqli_query($conn, $sql18);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>사용자 설정 테이블 기입 완료</td>";
+    echo "<tr><td>사용자 설정 테이블 기입 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql19);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>게시판 테이블 기입.. 1</td>";
+    echo "<tr><td>게시판 테이블 기입.. 1</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql20);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>게시판 테이블 기입.. 2</td>";
+    echo "<tr><td>게시판 테이블 기입.. 2</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql21);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>게시판 테이블 기입.. 3</td>";
+    echo "<tr><td>게시판 테이블 기입.. 3</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql22);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>게시판 테이블 기입.. 4</td>";
+    echo "<tr><td>게시판 테이블 기입.. 4</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql23);
+$result = mysqli_query($conn, $sql23_1);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>관리자 계정 생성 완료</td>";
+    echo "<tr><td>관리자 계정 생성 완료</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql24);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>사용자 권한 테이블 기입</td>";
+    echo "<tr><td>사용자 권한 테이블 기입</td>";
     $right = $right + 1;
 }
 $result = mysqli_query($conn, $sql25);
 if($result === FALSE){
     $count = $count + 1;
 }else{
-    echo "<td>도움말 생성</td>";
+    echo "<tr><td>도움말 생성</td>";
     $right = $right + 1;
 }
 
 if($count == 25){
-    echo '<td>데이터베이스 접속 실패</td></tr>';
+    echo '<tr><td>데이터베이스 접속 실패</td></tr>';
 }elseif($right == 25){
-    echo '<td>데이터베이스 생성이 완료되었습니다.';
-    echo '이제 당신의 커뮤니티에 접속할 수 있습니다.';
-    echo '<a href="'.$path.'">바로가기</a></td></tr>';
+    echo '<tr style="background-color:#cdffe2"><td>데이터베이스 생성이 완료되었습니다.';
+    echo '<tr><td>이제 당신의 커뮤니티에 접속할 수 있습니다.';
+    echo '<tr><td><a href="'.$path.'">바로가기</a></td></tr>';
+}else{
+    echo '<tr style="background-color:#FF0000;color:#fff"><td></td></tr>';
 }
 echo '</table>
 <table>

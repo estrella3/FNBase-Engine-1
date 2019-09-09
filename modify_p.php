@@ -8,7 +8,8 @@ if($ban == 9){
             $desc = Filt($_POST['desc']);
             $tz = Filt($_POST['timezone']);
             $main = Filt($_POST['main']);
-            $footer = Filt($_POST['footer']);
+            $footer = $_POST['footer'];
+            $menu = $_POST['menu'];
             $fab = Filt($_POST['fab']);
             $suf = Filt($_POST['suffix']);
             $google = $_POST['google'];
@@ -16,7 +17,7 @@ if($ban == 9){
             $subcolor = Filt($_POST['subcolor']);
             $email = Filt($_POST['email']);
                 $sql_ = "UPDATE `_Setting` SET `Site`='$url',`SiteName`='$name',`SiteColor`='$color',`SiteSubColor`='$subcolor',
-                `SiteDesc`='$desc',`SiteFab`='$fab',`SiteEmail`='$email',`SiteFooter`='$footer',`SiteBoardSuffix`='$suf',
+                `SiteDesc`='$desc',`SiteFab`='$fab',`SiteEmail`='$email',`SiteBoardList`='$menu',`SiteFooter`='$footer',`SiteBoardSuffix`='$suf',
                 `Site_google`='$google',`SiteTimezone`='$tz' WHERE `num` like 1";
                 $result_ = mysqli_query($conn, $sql_);
                 if($result_ === FALSE){
