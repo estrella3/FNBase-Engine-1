@@ -574,7 +574,7 @@ if($count == 25){
     echo '<tr><td>이제 당신의 커뮤니티에 접속할 수 있습니다.';
     echo '<tr><td><a href="'.$path.'">바로가기</a></td></tr>';
 }else{
-    echo '<tr style="background-color:#FF0000;color:#fff"><td></td></tr>';
+    echo '<tr style="background-color:#FF0000;color:#fff"><td>에러!</td></tr>';
 }
 echo '</table>
 <table>
