@@ -1,6 +1,12 @@
 <?php
 $INSTALL_VERSION = '0.9.09';
 
+$is_file_exist = file_exists('../setting.php');
+
+if ($is_file_exist) {
+    exit;
+}
+
 $path = $_POST['path'];
 $name = $_POST['name'];
 $main = $_POST['main'];
