@@ -1,5 +1,5 @@
 <?php
-$INSTALL_VERSION = '0.9.08';
+$INSTALL_VERSION = '0.9.09';
 
 $path = $_POST['path'];
 $name = $_POST['name'];
