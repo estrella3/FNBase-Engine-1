@@ -289,7 +289,7 @@ require 'up.php';
             }else{
                 $commentedited = '';
             }
-        echo '<div class="card"><div class="card-header" style="background-color: #ddeaff"><h5 style="float:left">'
+        echo '<div class="card art"><div class="card-header" id="title"><h5 style="float:left">'
         .$row['title'].'</h5><div class="dropdown" role="dropdown" style="float:right;">
          <button id="ednrm" type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">이 글을</button>
          <div class="dropdown-menu" aria-labelledby="ednrm">'.$ednrm.'</div> </div></div><div class="card-body">';
@@ -316,7 +316,7 @@ require 'up.php';
         echo '<br>'.$user_exp;
         echo "</div></div></form>";
         $cont = $row['description'];
-        echo '<div class="card-body border-white">'.nl2br($cont).'</div>';
+        echo '<div id="desc" class="card-body border-white">'.nl2br($cont).'</div>';
         $count = $row['comment'];
         $n++;
         }
