@@ -6,3 +6,10 @@
 .gray {
     color:gray;
 }
+.art #title{
+    background-color: #ddeaff;
+}
+#desc{
+    word-break: keep-all;
+    word-wrap: break-word;
+}
