@@ -70,4 +70,12 @@ if($showAlerts == '1'){
 
 ?>
 </body>
+<!--
+      이 사이트는 Fnbase.xyz 에서 배포하는
+      FNBase Engine의 버전 1 미만 프로그램을 사용하여 구동되고 있습니다.
+
+      This site is running on FNBE.
+      FNBase Engine(FNBE) is maintananced by Fnbase.xyz.
+      This sites engine is pre-relased version.
+-->
 </html>
