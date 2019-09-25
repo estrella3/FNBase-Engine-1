@@ -67,12 +67,18 @@ function activeForm() {
     }
     echo '<td>본인 소개</td><td><textarea name="intro" class="form-control"'.$if_user_intro_empty.'>'.$user_intro.'</textarea></td>';
     echo '</tr>';
+    echo '<tr><td>비밀번호 변경</td><td><input class="form-control" type="password" placeholder="현재 비밀번호 확인" name="prevPWD">
+    <input class="form-control" type="password" placeholder="새 비밀번호 입력" name="newPWD">
+    <input class="form-control" type="password" placeholder="새 비밀번호 다시 입력" name="newPWDconf"></td></tr>';
+    echo '<tr><td>이메일 주소 변경</td><td>
+        <input class="form-control" type="email" placeholder="변경할 메일 주소를 입력" name="newMailAddr">
+    </td></tr>';
     echo '<tr><td><button type="submit" class="btn btn-secondary">수정 완료</button></td></tr></span></table>';
 echo '</form></span>';
 if($_GET['form'] == 'submit'){
     echo '저장중...';
     $intro = Filt($_POST['intro']);
-    $nick = $_POST['nickname'];
+    $nick = Filt($_POST['nickname']);
         if($_POST['original'] == $nick){
             $sql = "UPDATE `_account` set introduce = '{$intro}' where `id` like '{$user}'";
             $result = mysqli_query($conn, $sql);
@@ -80,8 +86,7 @@ if($_GET['form'] == 'submit'){
             echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
             exit;
             } else {
-            echo "<script>alert('수정 완료!'); history.go(-2)</script>";
-            exit;
+                $result_up = $result;
             }
         }else{
             $re = '/[^가-힣, ㄱ-ㅣ, a-z, A-Z, à-ź, À-Ź, 0-9, _, ]/m';
@@ -92,13 +97,41 @@ if($_GET['form'] == 'submit'){
             if($result === false){
             echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
             exit;
-            } else {
-            session_unset();
-            session_destroy();
-            echo "<script>alert('닉네임 변경 완료! 반영을 위해 다시 로그인 해주세요.'); location.replace('/login.php')</script>";
-            exit;
+            }else {
+                $result_up = $result;
             }
         }
+    $pwd = $_POST['newPWD'];
+    $pwd = mysqli_real_escape_string($conn, $pwd);
+    $pwdc = $_POST['newPWDconf'];
+    $pwdc = mysqli_real_escape_string($conn, $pwdc);
+    $pwdo = $_POST['prevPWD'];
+    $pwdo = mysqli_real_escape_string($conn, $pwdo);
+        if(!empty($pwd)){
+            if($pwd == $pwdc){
+                if($pwdo == $_SESSION['userpw']){
+                    $pw = password_hash($pwd, PASSWORD_BCRYPT);
+                    $sql = "UPDATE `_account` set pw = '$pw' where `id` like '$user'";
+                    $result = mysqli_query($conn, $sql);
+                    if($result === false){
+                        echo '데이터베이스에 저장하는 과정에서 문제가 생겼습니다. 관리자에게 문의해주세요';
+                        exit;
+                    }
+                }else{
+                    echo '<script>alert("변경 전 비밀번호를 다시 한 번 확인해주세요.")</script>';
+                    exit;
+                }
+            }else{
+                echo '<script>alert("새로운 비밀번호를 다시 한 번 확인해주세요. 입력하신 새 비밀번호와 새 비밀번호 확인의 값이 다릅니다.")</script>';
+                exit;
+            }
+        }
+    if($result_up === TRUE){
+        session_unset();
+        session_destroy();
+        echo "<script>alert('변경 완료! 반영을 위해 다시 로그인 해주세요.'); location.replace('/login.php')</script>";
+        exit;
+    }
 }
 
 $sql = "SELECT * from `_userSetting` WHERE `id` like '".$user."'";
