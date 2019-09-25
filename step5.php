@@ -7,6 +7,12 @@ require 'function.php';
         $name = Filt($_POST['name']);
         $uip = $_POST['ip'];
         $intro = Filt($_POST['intro']);
+
+        $re = '/[^a-z, A-Z, 0-9, _]/m';
+        $id = preg_replace($re, '', $id);
+        $re = '/[^가-힣, ㄱ-ㅣ, a-z, A-Z, à-ź, À-Ź, 0-9, _, ]/m';
+        $name = preg_replace($re, '', $name);
+
         if(empty($id)){
                 ?><script>alert('id가 비어있습니다.');history.back();</script><?php
         }elseif(empty($pw)){
@@ -27,6 +33,7 @@ require 'function.php';
         if($result) {
         ?>      <script>
                 alert('가입 되었습니다.');
+                alert('입력하신 아이디와 비밀번호를 이용해 로그인 해보세요!');
                 location.replace("./login.php?from=keepgoing");
                 </script>
 <?php   }

@@ -10,7 +10,7 @@ require "up.php";
                         <p>아이디 : <input class="form-control-sm" maxlength="12" type="text" id="iiii" name="id" required>
                         <input type="hidden" id="chk" name="chk" value="false">
                         <button type="button" onclick="checkid()">중복 확인</button><br>
-                        <span class="text-muted">영문 / 숫자 / 공백 문자 (_) 만 사용 가능합니다.</span></p><span id="res"></span><br>
+                        <span class="text-muted">영문 / 숫자 / 공백 문자 (_) 만 사용 가능합니다.</span></p><span id="res">(허용되지 않는 문자는 제거됩니다.)</span><br>
                         <button type="button" class="btn btn-primary" style="display:none" onclick="aaaa()" id="next">다음 단계로</button>
                 </fieldset>
                 </form>
@@ -38,7 +38,7 @@ function checkid() {
                         document.getElementById('next').style = "width:100%";
                         }
                 }else if(data == 0){
-                        res.innerHTML = ' 이 아이디는 이미 등록되었습니다.';
+                        res.innerHTML = ' 이 아이디는 이미 등록되었거나 사용이 불가능합니다.';
                         res.style = 'color:red';
                 }
         });
