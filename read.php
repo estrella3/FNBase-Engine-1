@@ -397,6 +397,16 @@ require 'up.php';
         while ($row = mysqli_fetch_array($result)){
             $sqi = "SELECT * FROM `_account` WHERE id = '".$row['id']."'";
             $resulp = mysqli_query($conn, $sqi);
+            $rowname = $row['name'];
+            $rowcmid = $row['id'];
+
+            if($rowcmid == 'Installer'){
+                $rowcmid = '';
+                $isDel = TRUE;
+            }else{
+                $isDel = FALSE;
+            }
+
             while ($raw = mysqli_fetch_array($resulp)){
                 $user_email = $raw['email'];
             }
@@ -436,12 +446,12 @@ require 'up.php';
             }else{
                 $commentedited = '';
             }
+            if($isDel == FALSE){
             echo '<tr id="cmt_num_'.$row['num'].'" style="width:90%"><td><hr><div class="media">
             <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
             <div class="media-body" '.$commentheadline.'>
             ';
-            $rowname = $row['name'];
-            $rowcmid = $row['id'];
+
             echo '<h5 class="mt-0"><a href="/user.php?a='.$row['id'].'">'.$row['name'].'</a><span style="color: gray;font-size:0.5em">('.$row['id'].')</h5>';
             echo '<p>'.$commentheadtext.$commentedited.$row['content'].$commentment.'</p>';
             echo '<span style="color: gray">'.$row['created'].'</span>';
@@ -457,6 +467,12 @@ require 'up.php';
                     }
             echo ' <button class="badge badge-light" data-toggle="collapse" href="#reply'.$num.'" role="button" aria-expanded="false" aria-controls="#reply'.$num.'">답변</button>';
             }
+            }else{
+            echo '<tr id="cmt_num_'.$row['num'].'"><td><hr>
+            <span class="text-muted">삭제된 댓글입니다. </span><span style="color: gray;font-size: 0.7em">'.$row['created'].'에 작성됨.</span>
+            </td></tr>';
+            }
+            if($isDel == FALSE){
             echo '<div class="collapse" id="reply'.$num.'">
             <form action="/reply.php" id="wrtrpl'.$num.'" method="post">
             <textarea name="d" id="rpltxt'.$num.'" class="border text-dark" style="width:100%"></textarea>
@@ -466,6 +482,7 @@ require 'up.php';
             <input type="hidden" name="b" value="'.$board.'">
             <input type="hidden" name="title" value="'.$rowtitle.'">
             <input type="hidden" name="to" value="'.$rowname.'"><input type="hidden" name="id" value="'.$rowcmid.'">';
+            }
             echo '</form></div>
             <script>
             $(function ()
@@ -487,6 +504,13 @@ require 'up.php';
                 $hash = md5( strtolower( trim( "$user_email" ) ) );
                 $rep_num = $raw['num'];
                 $rowcmid = $raw['id'];
+                if($rowcmid == 'Installer'){
+                    $rowcmid = '';
+                    $isDel = TRUE;
+                }else{
+                    $isDel = FALSE;
+                }
+        if($isDel == FALSE){
         echo '<br><br><div class="media">
         <img src="https://secure.gravatar.com/avatar/'.$hash.'?s=64&d=identicon" class="mr-3 rounded" alt="Gravatar">
         <div class="media-body">
@@ -505,6 +529,12 @@ require 'up.php';
                     }
             echo ' <button class="badge badge-light" data-toggle="collapse" href="#reply'.$num.'" role="button" aria-expanded="false" aria-controls="#reply'.$num.'">답변</button>';
             }
+        }else{
+            echo '<div class="media"><div class="media-body"><tr id="fn_reply_'.$rep_num.'"><td style="padding-left:5em">
+            <span class="text-muted" style="font-size:0.7em">달렸던 답글이 삭제되었습니다. </span>
+            <span style="color: gray;font-size: 0.5em">'.$row['created'].'에 작성됨.</span>
+            </td></tr></div></div>';
+        }
             echo '<div class="collapse" id="reply'.$num.'">
             <form action="/reply.php?step=1" id="wrtrpl2'.$num.'" method="post">
             <textarea name="d" id="rpltxt2'.$num.'" class="border text-dark" style="width:100%"></textarea>
