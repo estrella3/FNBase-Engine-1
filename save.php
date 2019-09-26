@@ -194,7 +194,7 @@ echo '<script>location.replace("/b/'.$board.'/1/'.$atc_no.'")</script>';
 </div>
 </section>
 <footer>
-        <p class="fnbottom">Contact : admin@fnbase.xyz</p>
+        <p class="fnbottom">글을 저장하고 있습니다.</p>
 </footer>
   </body>
 </html>
